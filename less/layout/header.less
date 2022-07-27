@@ -1,0 +1,53 @@
+.header {
+    padding: .8rem 3.2rem;
+    
+    background-color: @colors[grey-80];
+
+    &__content {
+        max-width: @grid-width;
+        margin: 0 auto;
+
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__title {
+        &:link, &:visited {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1;
+
+            text-transform: uppercase;
+            text-decoration: none;
+
+            color: @colors[primary];
+        }
+    }
+
+    &__navigation {
+        ul {
+            list-style: none;
+            height: 100%;
+
+            display: flex;
+            gap: 2.4rem;
+            align-items: center;
+        }
+    }
+
+    &__navigation-item {
+        &:link, &:visited {
+            font-size: 2rem;
+            line-height: 2.4rem;
+
+            text-transform: uppercase;
+            text-decoration: none;
+
+            color: @colors[white];
+        }
+
+        &:hover {
+            color: @colors[secondary];
+        }
+    }
+}
