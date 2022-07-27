@@ -1,0 +1,23 @@
+.models-page {
+    height: ~"calc(100vh - @{header-height})";
+    max-width: @grid-width;
+    margin: 0 auto;
+
+    #display-12-grid();
+
+    &__models {
+        grid-column: span 3;
+
+        overflow-y: auto;
+
+        background-color: @colors[grey-20];
+
+        padding: 1.6rem;
+    }
+
+    &__content {
+        grid-column: span 9;
+
+        padding: 3.2rem;
+    }
+}

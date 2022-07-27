@@ -1,14 +1,17 @@
 .header {
-    padding: .8rem 3.2rem;
+    height: @header-height;
+    padding: 0 3.2rem;
     
     background-color: @colors[grey-80];
 
     &__content {
+        height: 100%;
         max-width: @grid-width;
         margin: 0 auto;
 
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
     &__title {
@@ -27,7 +30,6 @@
     &__navigation {
         ul {
             list-style: none;
-            height: 100%;
 
             display: flex;
             gap: 2.4rem;
