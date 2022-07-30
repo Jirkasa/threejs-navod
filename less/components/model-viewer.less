@@ -2,11 +2,124 @@
     width: 100%;
     height: 100%;
 
+    position: relative;
+
     &__canvas {
         width: 100%;
         height: 100%;
 
         background-color: @colors[grey-80];
         border: .2rem solid @colors[secondary];
+
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &__model-name {
+        position: absolute;
+        top: 1.6rem;
+        left: 1.6rem;
+
+        font-size: 2rem;
+        font-weight: 400;
+        line-height: 1;
+
+        text-transform: uppercase;
+
+        color: @colors[secondary];
+    }
+
+    &__download-button {
+        font-size: 0;
+        position: absolute;
+        right: 1.6rem;
+        bottom: 1.6rem;
+
+        width: 4.8rem;
+        height: 4.8rem;
+        
+        opacity: .8;
+        background-color: @colors[secondary];
+        border: none;
+        border-radius: 50%;
+
+        cursor: pointer;
+
+        svg {
+            width: 2.4rem;
+            height: 2.4rem;
+            fill: @colors[grey-80];
+
+            #center-pos-abs();
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__variations {
+        position: absolute;
+        top: 1.6rem;
+        right: 1.6rem;
+
+        display: flex;
+        flex-direction: column;
+        gap: .8rem;
+    }
+
+    &__variation-button {
+        font-family: inherit;
+        font-size: 1.6rem;
+        line-height: 1;
+
+        padding: .6rem .8rem;
+
+        color: @colors[grey-80];
+        background-color: @colors[secondary];
+        border: none;
+
+        opacity: .8;
+        
+        cursor: pointer;
+
+        &:hover, &--active {
+            opacity: 1;
+        }
+    }
+
+    &__control {
+        position: absolute;
+        bottom: 1.6rem;
+        left: 1.6rem;
+
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+
+        label {
+            font-size: 1.6rem;
+            line-height: 1.6rem;
+
+            text-transform: uppercase;
+
+            color: @colors[secondary];
+        }
+    }
+
+    &__load-icon {
+        width: 11.2rem;
+        height: 11.2rem;
+
+        #center-pos-abs();
+
+        animation: rotate 1s linear infinite;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: @colors[secondary];
+        }
     }
 }

@@ -1,0 +1,21 @@
+.button-secondary {
+    &, &:link, &:visited {
+        display: inline-block;
+
+        font-family: inherit;
+        font-size: 1.6rem;
+        line-height: 1;
+
+        text-transform: uppercase;
+        text-decoration: none;
+
+        color: @colors[white];
+        background-color: @colors[primary-dark];
+
+        padding: .8rem 1.2rem;
+    }
+
+    &:hover {
+        background-color: darken(@colors[primary-dark], 5%);
+    }
+}

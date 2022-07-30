@@ -20,10 +20,35 @@
             </div>
         </header>
         <div class="models-page">
-            <div class="models-page__models"></div>
             <div class="models-page__content">
-                <div class="model-viewer">
-                    <canvas class="model-viewer__canvas"></canvas>
+                <div id="ModelsSelectMenu" class="models-page__models"></div>
+                <div class="models-page__viewport">
+                    <div class="model-viewer" id="ModelViewerViewport">
+                        <canvas id="WebGLCanvas" class="model-viewer__canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-overlay" id="PageOverlay"></div>
+        <div class="download-window" id="DownloadWindow">
+            <div class="download-window__header">
+                <h2 class="download-window__window-heading">Stáhnout model</h2>
+                <button class="download-window__close-button" id="DownloadWindowCloseButton">zrušit
+                    <svg>
+                        <use xlink:href="../static/img/icon-sprite.svg#icon-cross"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="download-window__content">
+                <h3 class="download-window__heading u-mb-3">Model</h3>
+                <div class="download-window__buttons u-mb-4">
+                    <a href="#" class="button-secondary" id="ModelDownloadButton">FBX soubor</a>
+                </div>
+                <hr class="u-mb-4">
+                <h3 class="download-window__heading u-mb-3">Textury</h3>
+                <select class="select-input u-mb-2" id="DownloadWindowVariationSelectInput">
+                </select>
+                <div id="DownloadWindowTexturesContainer">
                 </div>
             </div>
         </div>

@@ -4,7 +4,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        main: './main.js'
+        main: './main.js',
+        modelViewer: './js/model-viewer/main.js'
     },
     output: {
         path: path.resolve(__dirname, "dist"),
@@ -14,11 +15,13 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "index.html"),
+            chunks: ["main"],
             inject: true
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "3d-modely", "index.html"),
             filename: "3d-modely/index.html",
+            chunks: ["main", "modelViewer"],
             inject: true
         }),
         new CopyPlugin({

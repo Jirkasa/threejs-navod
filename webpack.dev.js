@@ -10,6 +10,7 @@ module.exports = merge(commonConfig, {
             }
         ]
     },
+    devtool: 'source-map',
     devServer: {
         static: "./dist",
         port: 3000

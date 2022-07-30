@@ -1,23 +1,55 @@
 .models-page {
     height: ~"calc(100vh - @{header-height})";
-    max-width: @grid-width;
-    margin: 0 auto;
 
-    #display-12-grid();
+    padding: 0 3.2rem;
+
+    &__content {
+        #display-12-grid();
+        max-width: @grid-width;
+        margin: 0 auto;
+        height: 100%;
+        width: 100%;
+    }
 
     &__models {
         grid-column: span 3;
 
         overflow-y: auto;
 
-        background-color: @colors[grey-20];
+        background-color: @colors[grey-40];
 
         padding: 1.6rem;
+
+        // width
+        &::-webkit-scrollbar {
+            width: 1.2rem;
+        }
+
+        // track
+        &::-webkit-scrollbar-track {
+            // background: @colors[grey-40];
+            // background: @colors[primary-dark];
+            background: darken(@colors[grey-40], 8%);
+        }
+
+        // handle
+        &::-webkit-scrollbar-thumb {
+            background: @colors[grey-60];
+            // border: .2rem solid lighten(@colors[grey-60], 10%);
+
+            &:hover {
+                background: darken(@colors[grey-60], 5%);
+            }
+        }
     }
 
-    &__content {
+    &__viewport {
         grid-column: span 9;
 
-        padding: 3.2rem;
+        padding: 3.2rem 0;
+
+        height: 100%;
+
+        overflow: visible;
     }
 }

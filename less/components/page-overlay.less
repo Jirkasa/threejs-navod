@@ -1,0 +1,14 @@
+.page-overlay {
+    display: none;
+    
+    position: absolute;
+    left: 0;
+    top: @header-height;
+
+    width: 100%;
+    height: ~"calc(100% - @{header-height})";
+
+    background-color: rgba(@colors[black], .75);
+
+    z-index: 15;
+}
