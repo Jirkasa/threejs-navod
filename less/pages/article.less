@@ -1,0 +1,30 @@
+.article {
+    padding: 0 3.2rem;
+
+    &__container {
+        max-width: @grid-width;
+        margin: 0 auto;
+
+        display: grid;
+        grid-template-columns: repeat(11, minmax(0, 1fr)) @grid-column-width;
+        gap: @grid-gutter;
+
+        background-image: url("../../css-images/SideIllustration.svg");
+        background-position: top 0 right 0;
+        background-repeat: repeat-y;
+    }
+
+    &__sidebar {
+        grid-column: span 3;
+
+        background-color: @colors[grey-20];
+
+        padding: 1.6rem;
+    }
+
+    &__content {
+        grid-column: span 8;
+
+        padding: 3.2rem 0;
+    }
+}

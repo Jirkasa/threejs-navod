@@ -1,0 +1,21 @@
+.button-primary {
+    &:link, &:visited {
+        display: inline-block;
+
+        font-size: 2rem;
+        line-height: 2.4rem;
+
+        padding: 1.2rem 1.6rem;
+
+        text-transform: uppercase;
+        text-decoration: none;
+
+        color: @colors[grey-80];
+        background-color: @colors[primary-light];
+        border: .2rem solid @colors[grey-80];
+    }
+
+    &:hover {
+        background-color: @colors[primary];
+    }
+}

@@ -1,0 +1,28 @@
+.navigation {
+    list-style: none;
+
+    li:not(:last-child) {
+        margin-bottom: .8rem;
+    }
+
+    &__item {
+        &:link, &:visited {
+            display: block;
+
+            font-size: 2rem;
+            line-height: 2.4rem;
+
+            text-transform: uppercase;
+            text-decoration: none;
+
+            padding: 1.2rem 1.6rem;
+
+            border: .2rem solid @colors[grey-80];
+            color: @colors[grey-80];
+        }
+
+        &:hover, &--active:link, &--active:visited {
+            background-color: @colors[primary];
+        }
+    }
+}
