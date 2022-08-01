@@ -36,11 +36,12 @@ class InteractiveExamplesRunner {
         // hide play button and display reset button
         example.playButton.style.display = "none";
         example.resetButton.style.display = "flex";
-        // place canvas to example canvas container
-        example.canvasContainer.appendChild(canvas);
 
         // reset currently active example
         this.resetExample();
+
+        // place canvas to example canvas container
+        example.canvasContainer.appendChild(canvas);
 
         // set passed example as active example
         this._activeExample = example;

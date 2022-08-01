@@ -1,0 +1,11 @@
+.link {
+    &:link, &:visited {
+        color: darken(@colors[secondary], 10%);
+
+        transition: all .15s;
+    }
+    &:hover {
+        color: @colors[grey-80];
+        background-color: @colors[secondary];
+    }
+}
