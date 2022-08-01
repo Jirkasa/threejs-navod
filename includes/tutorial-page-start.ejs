@@ -29,9 +29,9 @@
             <div class="article__container">
                 <nav class="article__sidebar">
                     <ul class="navigation">
-                        <li><a href="../co-je-threejs/" class="navigation__item">Co je Three.js</a></li>
-                        <li><a href="../prvni-scena/" class="navigation__item">První scéna</a></li>
-                        <li><a href="../webpack/" class="navigation__item">Webpack</a></li>
+                        <li><a href="../co-je-threejs/" class="navigation__item <%= activePage === "co-je-threejs" ? "navigation__item--active" : "" %>">Co je Three.js</a></li>
+                        <li><a href="../prvni-scena/" class="navigation__item <%= activePage === "prvni-scena" ? "navigation__item--active" : "" %>">První scéna</a></li>
+                        <li><a href="../webpack/" class="navigation__item <%= activePage === "webpack" ? "navigation__item--active" : "" %>">Webpack</a></li>
                     </ul>
                 </nav>
                 <main class="article__content">

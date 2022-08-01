@@ -1,4 +1,4 @@
-<%- include("../../includes/tutorial-page-start.ejs", { title: "Webpack" }) %>
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Webpack", activePage: "webpack" }) %>
     <h1 class="heading-primary u-mb-6">Webpack</h1>
     <p class="paragraph u-mb-4">Načítání Three.js knihovny přes script tag, jak jsme to dělali v minulé části, má pár omezení. První omezení je, že nemáme k dispozici všechny třídy, které pro práci s Three.js můžeme potřebovat. Pokud bychom je potřebovali, tak bychom si pro ně museli najít soubory v zazipovaném souboru, který jsme si stáhli a stejně jako samotné Three.js si je na stránku přidat přes script tag, což není moc komfortní. Je to tak proto, aby výsledný soubor knihovny nebyl zbytečně moc velký, když některé její části nepotřebujeme. Další omezení je, že z bezpečnostích důvodů by nám prohlížeč nedovolil načíst třeba textury, když bychom si html soubor jen tak otevřeli v prohlížeči. Pro práci s Three.js potřebujeme na svém počítači spustit webový server a stránku otevírat přes něj. Z těchto důvodů je lepší si Three.js nainstalovat přes NPM a použít nějaký sestavovací nástroj jako je Webpack. To v této části uděláme.</p>
     <h2 class="heading-secondary u-mb-2">Co je NPM</h2>
@@ -268,7 +268,7 @@ module.exports = merge(commonConfig, {
         new MiniCssExtractPlugin()
     ]
 });</code></pre>
-    <p class="paragraph u-mb-2">S konfigurací pro produkci jsme hotovi. Mohli bychom sice přidat ještě pár dalších věcí a zminifikovat třeba CSS soubor, ale tím už se zabývat nebudeme. Jak jsem psal, pokud se chcete o Webpack dozvědět více, tak můžeme navštívit mé <a href="https://jirkasa.github.io/webpack-tahak/" target="_blank" class="link">webové stránky</a>. Teď můžeme změnit název konfiguračního souboru v našem build skriptu a zkusit aplikaci sestavit.</p>
+    <p class="paragraph u-mb-2">S konfigurací pro produkci jsme hotovi. Mohli bychom sice přidat ještě pár dalších věcí a zminifikovat třeba CSS soubor, ale tím už se zabývat nebudeme. Jak jsem psal, pokud se chcete o Webpack dozvědět více, tak můžeme navštívit mé <a href="https://jirkasa.github.io/webpack-tahak/" target="_blank" class="link">webové stránky o Webpacku</a>, na kterých se nachází menší tutoriál. Teď můžeme změnit název konfiguračního souboru v našem build skriptu a zkusit aplikaci sestavit.</p>
     <pre class="code-box code-box--command u-mb-2"><code>"build": "webpack --config webpack.prod.js --mode production",</code></pre>
     <p class="paragraph u-mb-4">Po zavolání příkazu "npm run build" by se nám aplikace měla sestavit. Teď máme již vše připraveno, abychom mohli začít pracovat s Three.js.</p>
     <h2 class="heading-secondary u-mb-2">Importování Three.js</h2>
@@ -311,11 +311,11 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);</code></pre>
     <div data-example-id="1" class="u-mb-6"></div>
     <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
-    <p class="paragraph u-mb-2">Projekt, který jsme si v této části vytvořili budeme používat i v ostatních částech tutoriálu abychom si vždy nemuseli vše znovu pracně konfigurovat. Zde jsem vám tedy připravil tlačítko pro stažení startovního kódu.</p>
+    <p class="paragraph u-mb-4">Projekt, který jsme si v této části vytvořili budeme používat i v ostatních částech tutoriálu abychom si vždy nemuseli vše znovu pracně konfigurovat. Připravil jsem vám zde tedy tlačítko pro stažení startovního kódu. Po jeho stažení si vždy budete muset nainstalovat balíčky, které jsou specifikované v souboru package.json pomocí příkazu "npm install".</p>
     <div class="u-center-text u-mb-6">
         <a href="../../static/other/threejs-startovni-kod.zip" download="threejs-startovni-kod.zip" class="button-secondary">Stáhnout startovní kód</a>
     </div>
-    <p class="paragraph u-mb-4">To je pro tuto část vše. Teď jsme již připraveni abychom mohli Three.js začít zkoumat do větší hloubky.</p>
+    <p class="paragraph u-mb-4">To je pro tuto část vše. Teď jsme již připraveni abychom v příštích částech mohli Three.js začít zkoumat do větší hloubky.</p>
     <div class="u-center-text">
         <a href="#" class="button-primary">Pokračovat</a>
     </div>
