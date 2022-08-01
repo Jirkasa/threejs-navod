@@ -1,8 +1,19 @@
 .header {
     height: @header-height;
+    width: 100%;
+
     padding: 0 3.2rem;
     
     background-color: @colors[grey-80];
+
+    z-index: 30;
+
+    &--fixed {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 
     &__content {
         height: 100%;
@@ -52,4 +63,8 @@
             color: @colors[secondary];
         }
     }
+}
+
+.header-container {
+    height: @header-height;
 }

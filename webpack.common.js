@@ -15,7 +15,7 @@ const entriesForTutorialPages = {};
 
 // CREATE PLUGINS FOR TUTORIAL PAGES
 fs.readdirSync("./tutorial").forEach(pageName => {
-    const chunks = ["main"];
+    const chunks = ["main", "stickyHeader"];
 
     if (interactivePages[pageName]) {
         chunks.push(`interactiveExamples-${pageName}`);
@@ -37,7 +37,7 @@ module.exports = {
     entry: {
         main: './main.js',
         modelViewer: './js/model-viewer/main.js',
-        // test: './js/interactive-examples/pages/co-je-threejs/main.js',
+        stickyHeader: './js/sticky-header/main.js',
         ...entriesForTutorialPages
     },
     output: {
@@ -56,7 +56,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "index.html"),
-            chunks: ["main"],
+            chunks: ["main", "stickyHeader"],
             inject: true
         }),
         new HtmlWebpackPlugin({
