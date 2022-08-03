@@ -1,0 +1,273 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Transformace objektů", activePage: "transformace-objektu" }) %>
+    <h1 class="heading-primary u-mb-6">Transformace objektů</h1>
+    <p class="paragraph u-mb-4">V minulé části jsme si vytvořili startovní kód, který teď můžeme používat v každé další části tutoriálu. Jsme tedy připraveni věnovat se pouze Three.js. V této části se podíváme na to, jak můžeme ve scéně pozicovat, rotovat a nastavovat velikost objektů.</p>
+    <h2 class="heading-secondary u-mb-2">Souřadnicový systém</h2>
+    <p class="paragraph u-mb-2">Abychom mohli ve scéně pozicovat objekty, tak k tomu musíme porozumět souřadnicovému systému, který Three.js používá. Není to nic složitého a možná že už i víte nebo tušíte jak to funguje. Je to o tom že máme 3 osy: X, Y a Z. Na ose X pozicujeme objekty horizontálně (doleva nebo doprava), na ose Y pozicujeme objekty vertikálně (nahoru nebo dolů) a na ose Z pozicujeme objekty dopředu nebo dozadu (k nám nebo od nás). Pro lepší pochopení jsem tu pro vás připravil interaktivní ukázku, ve které si můžete pomocí inputů v pravé horní části pozicovat ve scéně kostku.</p>
+    <div data-example-id="1" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">Jak jste si mohli v předchozí interaktivní ukázce zkusit, tak pokud na ose X nastavíte kladnou hodnotu, kostka se posune doprava. Pokud nastavíme zápornou tak se posune doleva. Podobné je to i u osy Y a Z. Pokud nastavíme kladnou hodnotu na ose Y, tak se objekt posune nahoru. Pokud nastavíme kladnou hodnotu na ose Z, tak se objekt posune směrem k nám. Záleží samozřejmě také na tom, kde se nachází kamera.</p>
+    <h2 class="heading-secondary u-mb-2">Vlastnosti pro transformaci objektů</h2>
+    <p class="paragraph u-mb-2">Pro transformaci objektů používáme vlastnosti position, scale, rotation a quaternion. Tyto vlastnosti mají k dispozici třídy, které dědí od třídy Object3D (takže Mesh, PerspectiveCamera, atd.). Pokud chcete zjistit od kterých tříd nějaká třída dědí, tak se můžete podívat do <a href="https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene" target="_blank" class="link">dokumentace</a>. Když si tam nějakou třídu rozkliknete, tak to vidíte v levé horní části.</p>
+    <img src="../../static/img/SeeClassInheritance.png" alt="třídy od kterých třída dědí" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">K čemu jednotlivé vlastnosti slouží jsem popsal v těchto bodech:</p>
+    <ul class="list u-mb-2">
+        <li><b>position</b> - určuje pozici objektu</li>
+        <li><b>scale</b> - určuje zvětšení/zmenšení objektu</li>
+        <li><b>rotation</b> - určuje rotaci pomocí eulerových úhlů</li>
+        <li><b>quaternion</b> - určuje rotaci pomocí quaternionu</li>
+    </ul>
+    <p class="paragraph u-mb-2">Jak vidíte, tak rotaci objektů můžeme nastavovat dvěma způsoby. Pomocí eulerových úhlů nebo pomocí quaternionu. Jak funguje nastavování rotace pomocí eulerových úhlů si později ukážeme, ale jak funguje rotace pomocí quaternionu si neukážeme. Jak to funguje totiž nechápu, jelikož nejsem na matematiku vůbec dobrý.</p>
+    <p class="paragraph u-mb-2">Abychom si mohli transformaci objektu vyzkoušet, tak si na to vytvoříme základní scénu do které si umístíme kostku. Můžete si vzít startovní kód z minulé části a začít scénu vytvářet v JavaScript souboru jménem main.js ve složce src. Jak si projekt spustíte, nainstalujete balíčky a podobné věci tu již vysvětlovat nebudu. To byste již měli vědět z minulé části nebo si to tam případně můžete najít. Teď se budeme věnovat pouze Three.js. Začneme třeba tím, že si vytvoříme scénu a přidáme do ní kostku.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kostky (meshe)
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x78E8FA })
+);
+
+// přidání kostky do scény
+scene.add(cube);</code></pre>
+    <p class="paragraph u-mb-2">Dále můžeme do scény přidat kameru. Protože již nebudeme zjišťovat rozměry canvasu z canvas elementu ale budeme je canvasu nastavovat v JavaScriptu, tak si na velikost cavnasu nadefinujeme objekt, který bude obsahovat šířku a výšku canvasu. Při vytváření kamery rozměry canvasu potřebujeme, ale teď nemusíte bádat nad tím k čemu. To si vysvětlíme až v části o kamerách. Jen si kód pro vytvoření kamery zkopírujte. Co jednotlivé možnosti které do konstruktoru předáváme znamenají si vysvětlíme jindy.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// velikosti canvasu
+const sizes = {
+    width: 700, // šířka
+    height: 400 // výška
+}
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);</code></pre>
+    <p class="paragraph u-mb-2">Nakonec ještě potřebujeme renderer, abychom mohli scénu vyrenderovat na canvas. Takže si jej vytvoříme a předáme mu canvas, který z DOMu získáme podle id. Protože chceme velikost canvasu změnit až v JavaScriptu, tak k tomu po vytvoření rendereru použijeme metodu setSize, které předáme šířku a výšku, kterou by měl canvas mít.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+
+// změnění velikosti canvasu, který jsme
+// rendereru při jeho vytváření předali
+renderer.setSize(sizes.width, sizes.height);</code></pre>
+    <p class="paragraph u-mb-2">Teď můžeme scénu vyrenderovat. Abychom ale naši kostku viděli, tak nejprve posuneme naši kameru směrem dozadu a až poté zavoláme render metodu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// posunutí kamery směrem dozadu
+camera.position.z = 3;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po otevření aplikace v prohlížeči bychom na canvasu měli vidět vyrenderovanou modrou kostku. Teď jsme již připraveni vyzkoušet si transformaci s kostkou, kterou jsme si do scény přidali.</p>
+    <div data-example-id="2" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">position</h3>
+    <p class="paragraph u-mb-2">Pomocí vlastnosti position můžeme objekty pozicovat. Jak to funguje jsem již popsal výše. Máme tři osy pomocí kterých můžeme objekt umístit na jakékoliv místo ve scéně. Vlastnost position je instance třídy <a href="https://threejs.org/docs/index.html?q=Vector3#api/en/math/Vector3" target="_blank" class="link">Vector3</a>. Ten obsahuje hodnoty "x", "y" a "z". V případě pozice tyto hodnoty reprezentují 3 osy souřadnicového systému o kterém jsem psal výše.</p>
+    <p class="paragraph u-mb-2">U naší kostky si třeba můžeme zkusit posunout ji trochu doprava a nahoru. Nastavíme pro ni tedy kladnou hodnotu na ose X a Y. Musíme to udělat dříve než provedeme renderování, takže před zavoláním metody render.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// posunutí kostky doprava a nahoru
+cube.position.x = 1;
+cube.position.y = 1;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se kostka měla vyrenderovat vpravo nahoře.</p>
+    <div data-example-id="3" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">V předchozí ukázce jsme kostku posunuli o 1 doprava a o 1 nahoru. Možná se ale můžete ptát, co vlastně to 1 znamená. Jsou to metry, centimentry nebo snad milimetry? Není to nic, v jakých jednotkách budeme pracovat je na nás. Můžeme si třeba říct že hodnota 1 bude představovat 1 metr. Záleží na tom co děláme a podle toho si můžeme určit v jakých jednotkách se nám bude pracovat nejlépe.</p>
+    <h3 class="heading-tertiary u-mb-2">scale</h3>
+    <p class="paragraph u-mb-2">Pomocí vlastnosti scale můžeme objekty zvětšovat nebo zmenšovat. Stejně jako u position se také jedná o instanci třídy <a href="https://threejs.org/docs/index.html?q=vec#api/en/math/Vector3" target="_blank" class="link">Vector3</a>. V tomto případě ale hodnoty "x", "y" a "z" určují zvětšení/zmenšení objektu na dané ose.</p>
+    <p class="paragraph u-mb-2">Naši kostku si například můžeme zkusit zvětšit na ose X. Stejně jako vlastnost position, tak i vlastnost scale musíme nastavit než provedeme renderování.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// zvětšení kostky na ose X
+cube.scale.x = 2;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se kostka měla na ose X zvětšit.</p>
+    <div data-example-id="4" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">rotation</h3>
+    <p class="paragraph u-mb-2">Pomocí vlastnosti rotation můžeme objektům nastavovat rotaci pomocí eulerových úhlů. Možná vás název "eulerovy úhly" děsí, to ale nemusí. Zas tak složité to není, myslím že to pochopíte. Vlastnost rotation je instancí třídy <a href="https://threejs.org/docs/index.html?q=euler#api/en/math/Euler" target="_blank" class="link">Euler</a>, která eulerovy úhly reprezentuje. Stejně jako třída Vector3 obsahuje hodnoty "x", "y" a "z".  Funguje to tak, že když nastavujeme třeba hodnotu x, tak objekt rotuje kolem své osy X. Když nastavujeme hodnotu y, tak objekt rotuje kolem své osy Y a když hodnotu Z, tak rotuje kolem osy Z. Pro lepší pochopení jsem tu pro vás připravil interaktivní ukázku. Červená čára reprezentuje osu X, zelená osu Y a modrá osu Z. V pravé horní části ukázky máte možnost měnit rotaci objektu.</p>
+    <div data-example-id="5" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Když jste si v předchozí ukázce hráli s inputy a nastavovali kolem různých os rotaci, tak jste si mohli všimnout, že ne vždy když hodnoty posouváte se objekt točí kolem vyznačené osy. Záleží na tom jestli jsou hodnoty ostatních os na nule nebo ne. Vyjímka je osa Z, kolem té se v ukázce objekt točí vždy. Je to proto, že se rotace na objekt aplikuje v určitém pořadí. Když nejdříve nastavíte hodnotu ose X, poté hodnotu na ose Y a nakonec hodnotu na ose Z, tak uvidíte že objekt bude vždy rotovat kolem vyznačené osy. Musíte si uvědomit že objektem nerotujeme, ale nastavujeme mu rotaci. Můžeme si to představit tak, že Three.js naši nastavenou rotaci vezme, a podle toho jakou rotaci jsme nastavili otočí objekt kolem jeho osy X, poté kolem osy Y a nakonec kolem osy Z. Toto pořadí se dá změnit. V následující ukázce si to můžete zkusit a poté objektem podle nastaveného pořadí rotovat.</p>
+    <div data-example-id="6" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Doufám, že vám interaktivní ukázky pomohli pochopit jak nastavování rotace pomocí eulerových úhlů funguje. Teď si to můžeme zkusit s naší kostkou. Rotaci nenastavujeme ve stupních ale v radiánech. Pokud radiány neznáte, tak nevadí, já je taky moc neznám. Jen vím že jedno π radiánů je 180°, to mi stačí. Pokud chci tedy třeba objektem kolem nějaké osy rotovat například o 90°, tak v kódu napíšu Math.PI * 0.5 (polovina π). Pokud nevíte co je to π, tak je to taková konstanta představující číslo zaokrouhleně 3.14, ale to je celkem jedno. Důležité pro nás je vědět, že jedno π radiánů je 180°, podle toho už se dá logicky odvodit jak nastavit jakýkoliv úhel. V JavaScriptu ke konstantě π máme přístup pomocí Math.PI. Naší kostce jen tak pro zkoušku můžeme nastavit rotaci třeba kolem osy Z o 45°, tedy čtvrtiny π radiánů.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// rotace kostky kolem osy Z
+cube.rotation.z = Math.PI * 0.25;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by kostka měla mít kolem osy Z rotaci 45°.</p>
+    <div data-example-id="7" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">O rotaci pomocí eulerových úhlů bych chtěl zmínit, že se vám občas může stát, že si nějakou osu jakoby zablokujete. Říká se tomu gimbal lock. Rozhodl jsem se k jeho ukázání vytvořit ukázku. Do ukázky jsem tentokrát namísto os přidal kruhy, pomocí kterých objekt otáčíme. Červený kruh představuje rotaci kolem osy X, zelený kolem osy Y a modrý kolem osy Z. Když si ukázku spustíte, tak se objekt bude otáčet do doby vzniku gimbal locku, potom se ukázka zastaví (ne že by to nefungovalo, ale zařídil jsem aby se to tam zastavilo). Ten nastane když spolu budou dva kruhy rovnoběžné.</p>
+    <div data-example-id="8" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Jak byste teď rotovali kostku horizontálně (jakoby kolem osy Y scény)? Víc vám k tomu raději neřeknu ať vám to nevysvětlím nějak špatně. Já jsem gimbal lock pochopil v následujícím videu (nebo si to alespoň myslím), tak se na něj můžete také podívat. Myslím že byste to tam mohli pochopit. Pokud ne, tak nevadí.</p>
+    <div class="video u-mb-2">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/zc8b2Jo7mno" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <p class="paragraph u-mb-2">Jak jsem již psal, tak pořadí os podle kterého se rotace nastaví se dá měnit. Třída <a href="https://threejs.org/docs/index.html?q=euler#api/en/math/Euler" target="_blank" class="link">Euler</a> obsahuje vlastnost order, které můžeme nastavit řetězec představující pořadí os ve kterém se má rotace aplikovat.</p>
+    <pre class="code-box u-mb-4"><code>// nejprve se aplikuje rotace kolem osy Z, poté kolem osy Y a nakonec kolem osy X
+cube.rotation.order = "ZYX";</code></pre>
+    <h3 class="heading-tertiary u-mb-2">quaternion</h3>
+    <p class="paragraph u-mb-4">Dalším způsobem jak objektům nastavovat rotaci je přes quaternion. Eulerovy úhly jsou jednoduché ale pořadí os může být problematické. Jak jste viděli, tak může dojít ke gimbal locku. Pokud použijeme k nastavení rotace quaternion, tak se tomuto problému vyhneme. Vyjadřuje rotaci větší matematickou cestou ale je o dost složitější než eulerovy úhly. Narozdíl od nich vůbec nevím jak quaternion funguje, protože nejsem na matematiku vůbec dobrý. Takže si o o rotaci objektů pomocí quaternionu budete moci zjistit informace jinde, pokud by vás to zajímalo.</p>
+    <h2 class="heading-secondary u-mb-2">Seskupování objektů</h2>
+    <p class="paragraph u-mb-4">Transformace můžeme aplikovat i na více objektů zároveň namísto toho abychom je aplikovali na každý objekt zvlášť. Můžeme to udělat tak, že objekty seskupíme do skupiny a transformace aplikujeme na ni. Také ale stejně jako do scény můžeme přidávat objekty, tak můžeme objekty přidávat do objektů jako potomky. Oba způsoby si ukážeme.</p>
+    <h3 class="heading-tertiary u-mb2">Přidávání objektů do objektů</h3>
+    <p class="paragraph u-mb-2">Objekty můžeme nastavovat jako potomky pro jiné objekty. Když potom na objekt obsahující jiné objekty aplikujeme transformace, tak budou mít vliv i na jeho potomky. Objekty můžeme do objektů přidávat stejnou cestou, jakou bychom je přidávali do scény. Použijeme k tomu metodu add.</p>
+    <p class="paragraph u-mb-2">Seskupování objektů si zkusíme na našem příkladu s kostkou. Odstraňte veškeré transformace, které jste na ni aplikovali (nebo je zakomentujte) a přidejte si do kostky kouli, jak ukazuje následující ukázka. Na vytváření různých typů tvarů se zaměříme v jiné části, teď si tento kód jen zkopírujte.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// // posunutí kostky doprava a nahoru
+// cube.position.x = 1;
+// cube.position.y = 1;
+
+// // zvětšení kostky na ose X
+// cube.scale.x = 2;
+
+// // rotace kostky kolem osy Z
+// cube.rotation.z = Math.PI * 0.25;
+
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xFAB278 })
+);
+// posunutí koule o něco nahoru
+sphere.position.y = 1;
+// přidání koule do kostky
+cube.add(sphere);
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se vám měla vyrenderovat kostka a na ní koule.</p>
+    <div data-example-id="9" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Pokud teď aplikujeme transformaci na kostku, tak to bude mít vliv i na kouli. Můžeme si třeba zkusit kostku zmenšit na ose Y.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// zmenšení kostky na ose Y
+cube.scale.y = 0.4;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění uvidíte, že se zároveň s kostkou zmenšila i koule.</p>
+    <div data-example-id="10" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Seskupování objektů do skupin</h3>
+    <p class="paragraph u-mb-2">Druhý způsob jak můžeme aplikovat transformace na více objektů zároveň je seskupit je do skupiny. Skupinu můžeme vytvořit pomocí třídy <a href="https://threejs.org/docs/index.html?q=group#api/en/objects/Group" target="_blank" class="link">Group</a> a přidat do ní objekty stejným způsobem jako do scény.</p>
+    <p class="paragraph u-mb-2">V našem příkladu odstraňte přidání kostky do scény a přidání koule do kostky. Také odstraňte aplikování transformace na kostku. Namísto toho si vytvořte skupinu, do té kostku a kouli přidejte a přidejte skupinu do scény. Zkrátka upravte svůj kód do podoby, jakou ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kostky (meshe)
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x78E8FA })
+);
+
+// // přidání kostky do scény
+// scene.add(cube);
+
+// velikosti canvasu
+const sizes = {
+    width: 700, // šířka
+    height: 400 // výška
+}
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+
+// změnění velikosti canvasu, který jsme
+// rendereru při jeho vytváření předali
+renderer.setSize(sizes.width, sizes.height);
+
+// posunutí kamery směrem dozadu
+camera.position.z = 3;
+
+// // posunutí kostky doprava a nahoru
+// cube.position.x = 1;
+// cube.position.y = 1;
+
+// // zvětšení kostky na ose X
+// cube.scale.x = 2;
+
+// // rotace kostky kolem osy Z
+// cube.rotation.z = Math.PI * 0.25;
+
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xFAB278 })
+);
+// posunutí koule o něco nahoru
+sphere.position.y = 1;
+// // přidání koule do kostky
+// cube.add(sphere);
+
+// // zmenšení kostky na ose Y
+// cube.scale.y = 0.4;
+
+// vytvoření skupiny
+const group = new THREE.Group();
+// přidání objektů do skupiny
+group.add(cube, sphere);
+// přidání skupiny do scény
+scene.add(group);
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Teď můžeme se skupinou objektů pracovat a nastavit jí třeba nějaké transformace. Zkusíme ji stejně jako předtím kostku zmenšit na ose Y.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// zmenšení skupiny na ose Y
+group.scale.y = 0.4;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace dostaneme úplně stejný výsledek jako předtím.</p>
+    <div data-example-id="11" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Třída Vector3</h2>
+    <p class="paragraph u-mb-2">Jak jsem již psal, třídy které dědí od třídy <a href="https://threejs.org/docs/index.html#api/en/core/Object3D" target="_blank" class="link">Object3D</a> (Mesh, PerspectiveCamera, atd.) mají k dispozici vlasnosti jako je position, scale a rotation, pomocí kterých můžeme objekty transformovat. Také jsem psal, že position a scale vlastnosti jsou instance třídy <a href="https://threejs.org/docs/index.html#api/en/math/Vector3" target="_blank" class="link">Vector3</a>, která uchovává hodnoty "x", "y" a "z". Kromě těchto hodnot ale třída Vector3 obsahuje i různé užitečné metody, které by se vám mohli hodit. Všechny je najdete v dokumentaci, ale některé jsem se tu rozhodl jen tak pro ukázku zmínit.</p>
+    <ul class="list u-mb-4">
+        <li><b>length</b> - vypočítá vzdálenost bodu od středu scény ([0, 0, 0])</li>
+        <li><b>normalize</b> - převede vektor aby měl délku 1 (ale nechá mu směr)</li>
+        <li><b>equals</b> - zjistí jestli se dva vektory rovnají</li>
+        <li>a další...</li>
+    </ul>
+    <h2 class="heading-secondary u-mb-2">Třída Object3D</h2>
+    <p class="paragraph u-mb-2">Když už jsem zmínil, že třída <a href="https://threejs.org/docs/index.html#api/en/math/Vector3" target="_blank" class="link">Vector3</a> obsahuje různé užitečné metody, tak bych chtěl také zmínit, že třída <a href="https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D" target="_blank" class="link">Object3D</a> také. Všechny její metody najdete v dokumentaci, ale zde jsem se rozhodl pro ukázku zmínit jen metodu lookAt. Pomocí metody lookAt můžeme zařídit, aby se objekt natočil směrem k předanému bodu (Vector3). Takže můžeme třeba kameře nastavit, aby se podívala na nějaký objekt.</p>
+    <pre class="code-box language-javascript u-mb-4"><code>camera.lookAt(cube.position);</code></pre>
+    <h2 class="heading-secondary u-mb-2">Axes Helper</h2>
+    <p class="paragraph u-mb-2">Pozicování objektů ve scéně může být těžké. Pokud si chceme pomoci tím, že si u objektů zobrazíme jejich osy, tak můžeme. Jde to udělat pomocí třídy <a href="https://threejs.org/docs/index.html?q=helper#api/en/helpers/AxesHelper" target="_blank" class="link">AxesHelper</a>. Můžeme si vytvořit její instanci a pracovat s ní podobně jako třeba s meshy. Můžeme ji přidat do scény nebo ji například nastavit jako potomka některému objektu. To přesně uděláme v našem příkladu s kostkou. Vytvoříme si AxesHelper a nastavíme jej jako potomka kostce. Při jeho vytváření můžeme specifikovat délku os, nastavíme je třeba na velikost 2. A abychom viděli všechny osy, tak ještě posuneme kameru směrem doprava.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Axes Helperu
+const axesHelper = new THREE.AxesHelper(2);
+// přidání Axes Helperu do kostky
+cube.add(axesHelper);
+
+// posunutí kamery doprava, abychom viděli všechny osy
+camera.position.x = 1;
+
+// vyrenderování scény na canvas
+renderer.render(scene, camera);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace bychom měli na kostce Axes Helper vidět. Osa Y bude trochu zmenšená, ale to je proto, že máme na skupinu aplikované zmenšení na ose Y a kostka do této skupiny patří.</p>
+    <div data-example-id="12" class="u-mb-6"></div>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Dozvěděli jste se jak můžete objekty ve scéně pozicovat, měnit jejich velikost a nastavovat jim rotaci. Také jste se dozvěděli, že můžete nastavovat objekty jako potomky jiným objektům nebo je přidávat do skupin. V příští části si ukážeme, jak můžeme provádět animaci.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>

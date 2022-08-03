@@ -30,15 +30,15 @@ class InteractiveExamplesRunner {
     playExample(example) {
         if (!this.initialized) return;
 
-        // start Three.js clock to measure time since example started
-        this._clock.start();
-
         // hide play button and display reset button
         example.playButton.style.display = "none";
         example.resetButton.style.display = "flex";
 
         // reset currently active example
         this.resetExample();
+
+        // start Three.js clock to measure time since example started
+        this._clock.start();
 
         // place canvas to example canvas container
         example.canvasContainer.appendChild(canvas);
