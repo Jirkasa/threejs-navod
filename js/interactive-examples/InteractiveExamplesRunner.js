@@ -94,11 +94,16 @@ class InteractiveExamplesRunner {
     _resize() {
         if (this._activeExample) {
             // update camera
-            this._activeExample.camera.aspect = this._activeExample.canvasContainer.clientWidth / this._activeExample.canvasContainer.clientHeight;
-            this._activeExample.camera.updateProjectionMatrix();
+            if (this._activeExample.camera) {
+                this._activeExample.camera.aspect = this._activeExample.canvasContainer.clientWidth / this._activeExample.canvasContainer.clientHeight;
+                this._activeExample.camera.updateProjectionMatrix();
+            }
             // update renderer
             webGLRenderer.setSize(this._activeExample.canvasContainer.clientWidth, this._activeExample.canvasContainer.clientHeight);
             webGLRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // call example onResize function
+            this._activeExample.onResize?.(this._activeExample.canvasContainer.clientWidth, this._activeExample.canvasContainer.clientHeight);
         }
     }
 }

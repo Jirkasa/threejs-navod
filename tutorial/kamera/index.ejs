@@ -1,0 +1,59 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Kamera", activePage: "kamera" }) %>
+    <h1 class="heading-primary u-mb-6">Kamera</h1>
+    <p class="paragraph u-mb-4">Tato část je o kamerách. Dozvíte se tu jaké máme typy kamer a vysvětlíme si jaké má vlastnosti perspektivní a ortografická kamera.</p>
+    <h2 class="heading-secondary u-mb-2">Typy kamer</h2>
+    <p class="paragraph u-mb-4">Existuje více typů kamer. Dědí od abstraktní třídy jménem Camera (většinou). Nejpoužívanější je PerspectiveCamera a OrthographicCamera. Ostatní se moc nepoužívají, takže si je tu jen ukážeme ale nebudeme je dále zkoumat. Pokud byste je někdy chtěli použít, tak je najdete v dokumentaci.</p>
+    <h3 class="heading-tertiary u-mb-2">Array Camera</h3>
+    <p class="paragraph u-mb-2"><a href="https://threejs.org/docs/?q=camera#api/en/cameras/ArrayCamera" target="_blank" class="link">ArrayCameru</a> můžeme použít k efektivnímu vyrenderování scény s více kamerami na různé části canvasu. Může se to třeba hodit pro nějaké hry pro dva hráče na jednom počítači.</p>
+    <div data-example-id="1" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Cube Camera</h3>
+    <p class="paragraph u-mb-4"><a href="https://threejs.org/docs/?q=camera#api/en/cameras/CubeCamera" target="_blank" class="link">CubeCamera</a> provádí celkem 6 renderování. Každé směřuje jiným směrem (nahoru, dolů, doprava, doleva, před sebe, za sebe). Neprovádí je ale do canvasu, ale do <a href="https://threejs.org/docs/?q=camera#api/en/renderers/WebGLCubeRenderTarget" target="_blank" class="link">WebGLCubeRenderTargetu</a>. Vyrenderuje se nám vlastně environment mapa, kterou potom můžeme použít v materiálech nějakých objektů. Hodí se to třeba pro provádění různých odrazů a tak podobně, jak to ukazuje <a href="https://threejs.org/examples/#webgl_materials_cubemap_dynamic" target="_blank" class="link">tato ukázka</a>.</p>
+    <h3 class="heading-tertiary u-mb-2">Orthographic Camera</h3>
+    <p class="paragraph u-mb-2"><a href="https://threejs.org/docs/index.html?q=camera#api/en/cameras/OrthographicCamera" target="_blank" class="link">OrthographicCamera</a> vykresluje objekty v nezávislosti na jejich vzdálenosti od kamery. Nezáleží na tom jak jsou objekty vzdáleny od kamery, vždy budou mít stejnou velikost.</p>
+    <div data-example-id="2" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Perspective Camera</h3>
+    <p class="paragraph u-mb-2"><a href="https://threejs.org/docs/index.html?q=pers#api/en/cameras/PerspectiveCamera" target="_blank" class="link">PerspectiveCamera</a> je navržena tak, aby napodobovala způsob, jakým vidí lidské oko. Vzdálenější objekty od kamery jsou menší a bližší větší. Jedná se o nejpoužívanější kameru pro vykreslování 3D grafiky.</p>
+    <div data-example-id="3" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Stereo Camera</h3>
+    <p class="paragraph u-mb-4"><a href="https://threejs.org/docs/index.html?q=camera#api/en/cameras/StereoCamera" target="_blank" class="link">StereoCamera</a> obsahuje dvě perspektivní kamery. Umožňuje nám provádět efekty jako je <a href="https://en.wikipedia.org/wiki/Anaglyph_3D" target="_blank" class="link">3D Analygraph</a> nebo <a href="https://en.wikipedia.org/wiki/Parallax_barrier" target="_blank" class="link">Parallax Barrier</a>. Pokud máte takové ty brýle s červeným a modrým sklíčkem, tak si je můžete zkusit nasadit a podívat se na <a href="https://threejs.org/examples/#webgl_effects_anaglyph" target="_blank" class="link">tuto ukázku</a>.</p>
+    <h2 class="heading-secondary u-mb-2">Perspektivní kamera</h2>
+    <p class="paragraph u-mb-2">Perspektivní kameru budete pravděpodobně používat asi nejvíce. Jak jste se dozvěděli a viděli, tak napodobuje způsob, jakým vidí lidské oko. Už jsme ji v předchozích částech tutoriálu používali ale nevysvětlili jsme si jaké má vlastnosti. Do toho se pustíme teď. Když perspektivní kameru vytváříme, tak můžeme do konstruktoru předat celkem 4 parametry:</p>
+    <ul class="list u-mb-2">
+        <li><b>fov (field of view)</b> - určuje jakoby jak moc do stran můžeme vidět</li>
+        <li><b>aspect ratio</b> - poměr stran (šířka canvasu / výška canvasu)</li>
+        <li><b>near</b> - určuje odkud začíná kamera vidět</li>
+        <li><b>far</b> - určuje kam až kamera může dohlédnout</li>
+    </ul>
+    <pre class="code-box u-mb-2"><code>const camera = new THREE.PerspectiveCamera(45, canvasWidth/canvasHeight, 0.1, 10);</code></pre>
+    <p class="paragraph u-mb-2">Aspect ratio kamery bude pravděpodobně skoro vždy nastavovat na šířku canvasu vydělenou výškou canvasu. Tak to prostě je pokud nechcete mít vyrenderovanou scénu po canvasu divně roztaženou. Ostatní parametry již ale budete nastavovat podle toho co děláte a hodí se pro vás nejvíc. Než abych vám tyto parametry vysvětloval v textu, tak jsem vám pro jejich vyzkoušení vytvořil interaktivní ukázku, kde si s nimi můžete pohrát. Tím to podle mě pochopíte mnohem lépe než v textu.</p>
+    <div data-example-id="4" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">Doufáme že jste díky předchozí ukázce vlastnostem perspektivní kamery porozumněli. Pokud se ptáte jaké je takové nejvhodnější fov (field of view), tak je to většinou mezi hodnotou 40-50.</p>
+    <h2 class="heading-secondary u-mb-2">Ortografická kamera</h2>
+    <p class="paragraph u-mb-2">Ortografická kamera vykresluje objekty v nezávislosti na jejich vzdálenosti od kamery. Nezáleží na tom jak jsou objekty vzdáleny od kamery, vždy budou mít stejnou velikost. Hodí se například na renderování 2D scén. Při vytváření ortografické kamery můžeme specifikovat celkem 6 parametrů:</p>
+    <ul class="list u-mb-2">
+        <li><b>left</b> - levá strana kamery</li>
+        <li><b>right</b> - pravá strana kamery</li>
+        <li><b>top</b> - horní strana kamery</li>
+        <li><b>bottom</b> - spodní strana kamery</li>
+        <li><b>near</b> - určuje odkud začíná kamera vidět</li>
+        <li><b>far</b> - určuje kam až kamera může dohlédnout</li>
+    </ul>
+    <p class="paragraph u-mb-2">Při vytváření ortografické kamery nespecifikujeme field of view ale specifikujeme její levou, pravou, horní a dolní stranu. Její výhled tedy tvoří jakoby takový obdelníkový tunel a ne kužel jako u perspektivní kamery. Tento obdelník by měl mít stejný poměr stran jako canvas do kterého renderujeme, aby vyrenderovaná scéna nebyla po canvasu divně roztažená. Proto ortografickou kameru vytvářím následujícím způsobem, aby měla stejný poměr stran, jako canvas.</p>
+    <pre class="code-box u-mb-2"><code>// poměr stran canvasu
+const aspectRatio = canvasWidth / canvasHeight;
+
+const camera = new OrthographicCamera(
+    -1 * aspectRatio, // levá strana
+    1 * aspectRatio, // pravá strana
+    1, // horní strana
+    -1, // dolní strana
+    0.1,
+    10
+);</code></pre>
+    <p class="paragraph u-mb-2">Pokud chcete obdelník ortografické kamery zvětšit/zmenšit, tak můžete v předchozí ukázce číslo 1 změnit za nějaké jiné a ortografická kamera bude mít stále stejný poměr stran jako canvas. V následující interaktivní ukázce si to můžete zkusit.</p>
+    <div data-example-id="5" class="u-mb-6"></div>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Ukázali jsme si jaké nám Three.js poskytuje typy kamer a popsali si vlastnosti perspektivní a ortografické kamery. Myslím že díky interaktivním ukázkám, které se na této stránce nachází to nebylo nic těžkého. V příští části si ukážeme, jak můžeme měnit nebo reagovat na změnu velikosti canvasu a aktualizovat podle toho kamery a renderer.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>
