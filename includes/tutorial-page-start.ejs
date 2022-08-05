@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.2, minimum-scale=1.0">
 
     <% if (typeof noCode == 'undefined') { %>
-        <script src="../../js/highlight.min.js"></script>
+        <script src="../../static/js/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     <% } %>
 
@@ -38,6 +38,7 @@
                         <li><a href="../animace/" class="navigation__item <%= activePage === "animace" ? "navigation__item--active" : "" %>">Animace</a></li>
                         <li><a href="../kamera/" class="navigation__item <%= activePage === "kamera" ? "navigation__item--active" : "" %>">Kamera</a></li>
                         <li><a href="../meneni-velikosti-canvasu/" class="navigation__item <%= activePage === "meneni-velikosti-canvasu" ? "navigation__item--active" : "" %>">Měnění velikosti canvasu</a></li>
+                        <li><a href="../typy-ovladani" class="navigation__item <%= activePage === "typy-ovladani" ? "navigation__item--active" : "" %>">Typy ovládání</a></li>
                     </ul>
                 </nav>
                 <main class="article__content">

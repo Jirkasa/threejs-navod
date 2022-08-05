@@ -49,9 +49,19 @@ module.exports = {
         rules: [
             {
                 test: /\.ejs$/i,
-                use: ['html-loader', 'template-ejs-loader']
+                use: [{
+                    loader: 'html-loader',
+                    options: {
+                        sources: false
+                    }
+                }, 'template-ejs-loader']
             }
         ]
+    },
+    optimization: {
+        splitChunks: {
+            chunks: "all"
+        }
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -66,12 +76,6 @@ module.exports = {
             inject: true
         }),
         ...htmlPluginsForTutorialPages,
-        // new HtmlWebpackPlugin({
-        //     template: path.resolve(__dirname, "tutorial", "co-je-threejs", "index.ejs"),
-        //     filename: "tutorial/co-je-threejs/index.html",
-        //     chunks: ["main", "test"],
-        //     inject: true
-        // }),
         new CopyPlugin({
             patterns: [
                 {
