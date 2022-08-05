@@ -8,6 +8,7 @@ canvas.classList.add("webgl-canvas");
 const webGLRenderer = new THREE.WebGLRenderer({
     canvas: canvas
 });
+webGLRenderer.setPixelRatio(window.devicePixelRatio);
 export default webGLRenderer;
 
 // todo - později by se renderu mohli předávat nějaké vlastnosti, takže to potom asi budu muset ještě nějak předělat, uvidím

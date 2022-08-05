@@ -29,7 +29,7 @@ class ModelRenderer {
         this._scene = new THREE.Scene();
 
         // create camera
-        this._camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 10000);
+        this._camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 10000);
 
         // load environment map
         const cubeTextureLoader = new THREE.CubeTextureLoader();
