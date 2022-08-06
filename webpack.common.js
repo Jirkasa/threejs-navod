@@ -59,7 +59,7 @@ module.exports = {
         ]
     },
     optimization: {
-        splitChunks: {
+        splitChunks: { // todo - toto ještě nějak prozkoumat, tvoří se nějak moc JS souborů, to se mi nelíbí
             chunks: "all"
         }
     },

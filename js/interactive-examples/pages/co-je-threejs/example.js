@@ -1,6 +1,6 @@
 import InteractiveExample from "../../InteractiveExample";
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/orbitcontrols';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
