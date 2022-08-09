@@ -2,7 +2,31 @@
     list-style: none;
 
     position: sticky;
-    top: @header-height + 1.6rem;
+    top: @header-height;
+
+    padding: 1.6rem;
+
+    overflow-y: auto;
+    max-height: ~"calc(100vh - @{header-height})";
+
+    // width
+    &::-webkit-scrollbar {
+        width: 1.2rem;
+    }
+
+    // track
+    &::-webkit-scrollbar-track {
+        background: lighten(@colors[grey-40], 5%);
+    }
+
+    // handle
+    &::-webkit-scrollbar-thumb {
+        background: @colors[grey-60];
+
+        &:hover {
+            background: darken(@colors[grey-60], 5%);
+        }
+    }
 
     li:not(:last-child) {
         margin-bottom: .8rem;
