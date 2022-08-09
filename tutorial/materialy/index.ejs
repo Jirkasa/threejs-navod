@@ -1,4 +1,473 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Materiály", activePage: "materialy" }) %>
     <h1 class="heading-primary u-mb-6">Materiály</h1>
-    <p class="paragraph u-mb-4"></p>
+    <p class="paragraph u-mb-2">V této části se podíváme na materiály. Ty slouží k popisu vzhledu objektů. Už jsme se s nimi v tutoriálu setkali, ale nevysvětlovali jsme si o nich žádné velké detaily. V této části si je tedy rozebereme a podívame se, jaké máme typy materiálů.</p>
+    <p class="paragraph u-mb-4">Abychom mohli na canvas vykreslit objekt, tak k tomu potřebujeme shadery. Ty obsahují instrukce pro vykreslování. Můžeme si je sami napsat a vytvořit si tedy vlastní materiál. To si ale zkusíme až v samostatné části o shaderech. Shadery si nemusíme psát sami, můžeme použít materiály, které nám Three.js nabízí. Postupně si některé v této části projdeme.</p>
+    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <p class="paragraph u-mb-2">Abychom si mohli vyžkoušet a vidět různé materiály, tak si je budeme muset aplikovat na nějaké objekty. Proto je tu pro vás připravený startovní kód, který objekty vytváří, přidává je do scény a tu poté renderuje. Také vytváří OrbitControls ovládání, aby jste se po scéně mohli pohybovat. Takže si pomocí startovního kódu z části o Webpacku vytvořte nový projekt a následující kód si zkopírujte do JavaScript souboru.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial();
+
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    material
+);
+scene.add(cube);
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 12, 10),
+    material
+);
+sphere.position.x = -1.5;
+scene.add(sphere);
+
+// vytvoření dodecahedronu (nebo co to je)
+const dodecahedron = new THREE.Mesh(
+    new THREE.DodecahedronGeometry(0.5, 0),
+    material
+);
+dodecahedron.position.x = 1.5;
+scene.add(dodecahedron);
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // protože máme zapnuté tlumení při posunutí,
+    // tak musíme OrbitControls aktualizovat
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Kromě předchozího kódu si zkopírujte také následující CSS kód, protože opět roztahujeme canvas přes celou velikost okna.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět tři objekty. Na ty si budeme zkoušet aplikovat různé materiály.</p>
+    <div data-example-id="1" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Mesh Basic Material</h2>
+    <p class="paragraph u-mb-4">Nejzákladnějším materiálem je <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshBasicMaterial" target="_blank" class="link">MeshBasicMaterial</a>. Tento materiál nepotřebuje světlo a můžeme s jeho pomocí na geometrii jednoduše aplikovat barvu nebo texturu. Co všecho můžeme tomuto materiálu nastavit za vlastnosti si můžete prohlédnout v dokumentaci. Mi si tu ukážeme jen některé.</p>
+    <h3 class="heading-tertiary u-mb-2">Barva</h3>
+    <p class="paragraph u-mb-2">Začneme s barvou. Tu můžeme nastavit pomocí vlastnosti color. Nastavovat materiál můžeme v konstruktoru předáním objektu s nastavením nebo až po vytvoření materiálu měněním jeho vlastností. Co vám vyhovuje víc záleží na vás. Mi si třeba materiál nastavíme předáním objektu při jeho vytváření. V kódu již máme kód pro vytvoření materiálu, takže jen do konstruktoru předáme objekt s nastavením barvy. Nastavíme třeba oranžovou barvu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    color: 0xFAB278
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Jak si v předchozí ukázce můžete všimnout, tak barvu nastavujeme pomocí hexadecimálního zápisu čísla. Pokud si tento zápis vložíte do konzole, tak uvidíte, že nazpět dostanete číslo. Mohli bychom použít i řetězec "#FAB278", jak to znáte z CSS, ale použití čísla namísto řetězce je lepší. Také byste mohli vytvořit instanci třídy <a href="https://threejs.org/docs/?q=color#api/en/math/Color" target="_blank" class="link">Color</a> a tu použít jako barvu. To se vlastně automaticky děje, když instanci třídy Color nepředáme a předáme například číslo, jak jsme to udělali mi.</p>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by objekty měli být oranžové.</p>
+    <div data-example-id="2" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">V nastavování barvy při vytváření materiálu a po vytvoření materiálu je trochu rozdíl, protože vlastnost color bude po vytvoření materiálu instance třídy <a href="https://threejs.org/docs/?q=color#api/en/math/Color" target="_blank" class="link">Color</a>. Proto bychom museli barvu změnit pomocí metody set, nebo vytvořit novou instanci třídy Color a tu jako barvu nastavit. To ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    color: 0xFAB278
+});
+// změnění barvy na modrou po vytvoření materiálu
+material.color = new THREE.Color(0x78E8FA);
+
+/* ... */</code></pre>
+    <div data-example-id="3" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Color textura</h3>
+    <p class="paragraph u-mb-2">Kromě barvy můžeme pro MeshBasicMaterial nastavit i texturu. Z minulé části víte jak textury načítat. Není to nic složitého, vytvoříme instanci třídy TextureLoader a použijeme metodu load. Poté můžeme načtenou (nebo i načítající se) texturu pro materiál nastavit pomocí vlastnosti map a to je vše. Budeme ale nějakou texturu potřebovat abychom si to mohli vyzkoušet, proto si nějakou vyberte třeba na <a href="https://polyhaven.com/textures" target="_blank" class="link">Poly Haven</a>, kde jsou všechny textury zdarma. Já budu používat stejně jako v minulé části <a href="https://polyhaven.com/a/brick_wall_001" target="_blank" class="link">tuto texturu</a>. Tentokrát si stáhněte všechny typy textur, jelikož je později budeme potřebovat u jiných typů materiálů. Stažené textury si umístěte do složky static v kořenové složce projektu. Následující ukázka ukazuje, jak můžeme namísto barvy nastavit pro materiál texturu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Texture Loaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textury
+const colorTexture = textureLoader.load("./static/brick_wall_001_diffuse_1k.jpg");
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    map: colorTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Objekty by teď na sobě měli mít aplikovanou texturu.</p>
+    <div data-example-id="4" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Pokud bychom chtěli zkombinovat barvu a texturu, tak to jde. Aplikovaná textura potom bude obarvená podle nastavené barvy. Můžeme si třeba zkusit materiálu nastavit modrou barvu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+    
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    map: colorTexture
+});
+// nastavení modré barvy
+material.color = new THREE.Color(0x78E8FA);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Když si teď aplikaci spustíte, aplikovaná textura bude obarvená podle nastavené barvy.</p>
+    <div data-example-id="5" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Průhlednost</h3>
+    <p class="paragraph u-mb-2">Pokud chceme materiálu nastavit průhlednost, tak to můžeme udělat pomocí vlastnosti opacity, které předáme číslo od 0 do 1. Hodnota 0 znamená, že objekt není vidět a hodnota 1 znamená, že je plně vidět. Musíme ale také nastavit, že má být být materiál průhledný, nastavením vlastnosti transparent na true. Bez toho by nastavení opacity nemělo žádný vliv.</p>
+    <p class="paragraph u-mb-2">U našeho materiálu si třeba můžeme průhlednost nastavit na polovinu. A kdyžtak si ještě odstraňte nastavení barvy, aby to bylo lépe vidět.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    map: colorTexture,
+    transparent: true,
+    opacity: 0.5
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Objekty by se teď měli zobrazit jako průhledné. Možná to není na první pohled vidět, ale když se podívate na nějaký objekt přes jiný objekt, tak to uvidíte lépe.</p>
+    <div data-example-id="6" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">Pokud bychom nechtěli jako průhledný nastavit celý objekt, ale jen některé jeho části, tak bychom to mohli udělat přes alpha texturu, kterou bychom nastavili pomocí vlastnosti alphaMap. Jelikož u naší textury ale alpha texturu nemáme, tak si to zkoušet nebudeme. Pokud jste si stáhli texturu, která alpha texturu má, tak si to klidně můžete zkusit sami. Nesmíte ale zapomenout nastavit vlastnost transparent na true, aby to fungovalo.</p>
+    <h3 class="heading-tertiary u-mb-2">Renderování obou stran polygonů</h3>
+    <p class="paragraph u-mb-2">Možná jste si všimli, že se defaultně renderuje jen přední strana polygonů. Když například kameru posunute do objektu, neuvidíte jej zevnitř. Je to tak kvůli optimalizaci. Můžeme to změnit pomocí vlastnosti side, které předáme jednu z následujících hodnot:</p>
+    <ul class="list u-mb-2">
+        <li><b>THREE.FrontSide</b> - renderuje se pouze přední strana polygonů (toto je defaultní)</li>
+        <li><b>THREE.BackSide</b> - renderuje se pouze zadní strana polygonů</li>
+        <li><b>THREE.DoubleSide</b> - renderují se obě strany polygonů</li>
+    </ul>
+    <p class="paragraph u-mb-2">Pokud chceme renderovat obě strany polygonů, nastavíme vlastnost side na THREE.DoubleSide.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření materiálu
+const material = new THREE.MeshBasicMaterial({
+    map: colorTexture,
+    transparent: true,
+    opacity: 0.5,
+    side: THREE.DoubleSide
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace byste měli objekty vidět i zevnitř.</p>
+    <div data-example-id="7" class="u-mb-4"></div>
+    <p class="paragraph u-mb-4">Vlastnosti, které jsme si na Mesh Basic Materiálu ukázali se dají použít i u některých dalších materiálu. Nebudu se k nim tedy u dalších typů materiálů vracet. Co všechno se dá u daného typu materiálu nastavit si vždy můžete prohlédnout v dokumentaci.</p>
+    <h2 class="heading-secondary u-mb-2">Mesh Normal Material</h2>
+    <p class="paragraph u-mb-2">Jako druhý materiál si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshNormalMaterial" target="_blank" class="link">MeshNormalMaterial</a>. Jedná se vlastně o reprezentaci normálů a většinou se používá pro jejich debugování. Protože ale vypadá dobře, tak jej klidně můžeme použít ve svých projektech. Možná si říkáte co to normály jsou. U polygonů normály určují, kam polygon směřuje. Vlastně určuje jaká je přední a zadní strana polygonu. Následující obrázek normály ukazuje.</p>
+    <img src="../../static/img/Normals.png" alt="normály" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Normály také u některých materiálů pracují se světlem. Čím více normál směruje ke světlu, tím bude polygon více osvětlen. Proto se vlastně normal textuře říká tak jak se jí říká. Pracuje s normály, tedy se světlem.</p>
+    <p class="paragraph u-mb-2">Na našem příkladu si můžeme MeshNormalMaterial vyzkoušet. Smažte si vytváření MeshBasicMateriálu a nahraďte jej následujícím kódem.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshNormalMaterial();
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli materiál na objektech vidět aplikovaný. Když se teď budete na objekty dívat, tak polygony, které směřují směrem ke kameře budou vybarveny modře, ty které směřují jakoby nahoru od kamery budou zelené, ty doprava růžové a tak podobně. Barva se tedy aplikuje podle směru normálů vůči kameře. Podobně normály fungují se světlem.</p>
+    <div data-example-id="8" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Flat Shading</h3>
+    <p class="paragraph u-mb-2">Asi jste si všimli, že u kostky má jeden polygon vždy stejnou barvu, zatímco u koule je barevný přechod přes více polygonů. Pokud modelujete, tak možná znáte Smooth shading a Flat shading. Smooth shading znamená, že se hrany spojených polygonů jakoby vyhladí a neuvidíme je. Flat shading znamená, že hrany zůstanou tak jak jsou. To jsem vám vysvětlil jen tak na povrchu, protože o tom nic moc nevím. Jestli se má použít Flat shading můžeme u materiálu určit pomocí vlastnosti flatShading. Můžeme to u našeho příkladu klidně zkusit.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshNormalMaterial({
+    flatShading: true
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď bychom již barevný přechod na kouli neměli vidět.</p>
+    <div data-example-id="9" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Mesh Matcap Material</h2>
+    <p class="paragraph u-mb-2">U předchozího materiálu jste se dozvěděli co to jsou normály. Teď si ukážeme materiál, který je používá k výběru barvy na textuře a podle toho na objekt aplikuje barvu. Jedná se o <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshMatcapMaterial" target="_blank" class="link">MeshMatcapMaterial</a>. K jeho vyzkoušení potřebujeme Matcap texturu. Jedná se o obrázek s koulí, ze které se bere podle směru normálu barva.</p>
+    <img src="../../static/img/textures/matcaps/Matcap.png" alt="Matcap textura" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Spoustu Matcap textur najdete <a href="https://github.com/nidorx/matcaps" target="_blank" class="link">zde</a>, ale mylím že není tolik těžké vytvořit si v nějakém 3D modelovacím programu svoji vlastní. Je to jen o tom vytvořit kouli a vyrenderovat ji. Já jsem použil <a href="https://raw.githubusercontent.com/nidorx/matcaps/master/256/D0CCCB_524D50_928891_727581-256px.png" target="_blank" class="link">tuto texturu</a>, takže si ji můžete také stáhnout a vložit do static složky.</p>
+    <p class="paragraph u-mb-2">Matcap texturu můžeme načíst jako každou jinou texturu pomocí Texture Loaderu. Poté ji můžeme nastavit na Matcap materiál pomocí vlastnosti matcap. Smažte si předchozí materiál, který jsme si zkoušeli, a namísto něj vložte následující kód, který Matcap materiál vytváří.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Texture Loaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textury
+const matcapTexture = textureLoader.load("./static/Matcap.png");
+
+const material = new THREE.MeshMatcapMaterial({
+    matcap: matcapTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace uvidíte, že na objektech bude matcap textura aplikována. Když se podívate na kouli, tak můžete vidět, že vypadá úplně stejně jako koule na textuře. Díky Matcap materiálu můžeme simulovat světlo na objektech bez toho, aniž bychom ve skutečnosti ve scéně nějaké světlo měli.</p>
+    <div data-example-id="10" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Mesh Lambert Material</h2>
+    <p class="paragraph u-mb-2">Jako další materiál si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshLambertMaterial" target="_blank" class="link">MeshLambertMaterial</a>. Tento materiál již potřebuje světlo aby byl vidět, proto si do scény nějaká přídáme. Světlem se budeme zabývat v samostatné části, takže si jen zkopírujte následující kód, který světla vytváří. Nemusíte mu rozuměť. Můžete jej umístit třeba hned za kód pro vytvoření scény.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// přidání světel
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď můžeme MeshLambertMaterial vytvořit. Odstraňte si kód pro vytvoření předchozího materiálu, pokud jste to ještě neudali, a namísto něj vložte následující kód. Tento kód MeshLambertMaterial vytváří a nastavuje mu jen barvu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshLambertMaterial({
+    color: 0xfddabe
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace byste na objektech měli MeshLambertMaterial vidět.</p>
+    <div data-example-id="11" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">MeshLambertMaterial je výkonný, ale můžeme na objektech vidět divné vzory. V našem příkladu je asi neuvidíte, ale na <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshLambertMaterial" target="_blank" class="link">ukázce v dokumentaci</a> byste mohli. Také nemůže simulovat lesklé povrchy. Proto je často lepší použít spíš MeshPhongMaterial, který si ukážeme jako další. Pokud byste se chtěli dozvědět, jaké různé vlastnosti můžeme MeshLambertMaterialu nastavit, tak se můžete podívat do dokumentace.</p>
+    <h2 class="heading-secondary u-mb-2">Mesh Phong Material</h2>
+    <p class="paragraph u-mb-2">Teď si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshPhongMaterial" target="_blank" class="link">MeshPhongMaterial</a>. Je podobný MeshLambertMaterialu, ale nevytváří na objektech divné vzory. Také může narozdíl od něj simulovat lesklé povrchy. Je ale samozřejmě méně výkonný než MeshLambertMaterial.</p>
+    <p class="paragraph u-mb-2">Smažte si v kódu MeshLambertMaterial a vložte si tam namísto něj kód pro vytvoření MeshPhongMaterialu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshPhongMaterial({
+    color: 0xfddabe
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace můžete MeshPhongMaterial na objektech vidět.</p>
+    <div data-example-id="12" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Lesklost</h3>
+    <p class="paragraph u-mb-2">Zvýšit nebo snížit lesklost můžeme u MeshPhongMaterialu pomocí vlastnosti shininess. Také můžeme změnit barvu odlesku pomocí vlastnosti specular. Následující kód zvyšuje lesklost na hodnotu 60 (defaultní je 30) a nastavuje barvu odlesku na červenou.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshPhongMaterial({
+    color: 0xfddabe,
+    shininess: 60,
+    specular: 0xff0000
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Když si aplikaci spustíte, tak si můžete zvýšenou lesklost prohlédnout. Pod určitým úhlem na kouli uvidíte červený odlesk.</p>
+    <div data-example-id="13" class="u-mb-4"></div>
+    <p class="paragraph u-mb-4">Více si toho o MeshPhongMaterialu neukážeme. V dokumentaci se o něm můžete dozvědět víc.</p>
+    <h2 class="heading-secondary u-mb-2">Mesh Toon Material</h2>
+    <p class="paragraph u-mb-2">Další materiál, který si ukážeme, je <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshToonMaterial" target="_blank" class="link">MeshToonMaterial</a>. Tento materiál vytváří takový kreslený efekt. Smažte si předchozí materiál a vytvořte si MeshToonMaterial, jak ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshToonMaterial({
+    color: 0x78E8FA
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete MeshPhongMaterial prohlédnout.</p>
+    <div data-example-id="14" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Gradient Map</h3>
+    <p class="paragraph u-mb-2">Pro MeshToonMaterial si můžeme vytvořit gradient texturu a použít ji. Jedná se o obrázek, který může mít výšku 1 a na šířku vytváříme černobílý gradient. Tento gradient může být široký například klidně jen 5 pixelů. Gradient, který použijeme pro náš příklad si můžete stáhnout <a href="../../static/img/textures/gradients/Gradient.jpg" download class="link">zde</a> a vložit si jej do složky static. Poté si jej můžete načíst pomocí Texture Loaderu a můžete nastavit na MeshToonMaterial přes vlastnost gradientMap. U Gradient textury je ale ještě nutno změnit minification a magnification filter na THREE.NearestFilter, jak se píše v dokumentaci.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Texture Loaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textury
+const gradientTexture = textureLoader.load("./static/Gradient.jpg");
+// změnění minification a magnification filteru
+gradientTexture.minFilter = THREE.NearestFilter;
+gradientTexture.magFilter = THREE.NearestFilter;
+
+const material = new THREE.MeshToonMaterial({
+    color: 0x78E8FA,
+    gradientMap: gradientTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď byste na materiálu měli gradient vidět. Když se podívate na kouli, tak uvidíte, že má 5 barevných částí, stejně jako gradient textura.</p>
+    <div data-example-id="15" class="u-mb-4"></div>
+    <p class="paragraph u-mb-4">Více si o MeshToonMaterialu můžete přečíst v dokumentaci.</p>
+    <h2 class="heading-secondary u-mb-2">Mesh Standard Material</h2>
+    <p class="paragraph u-mb-2">Jako další si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshStandardMaterial" target="_blank" class="link">MeshStandardMaterial</a>. Tento materiál narozdíl od těch předchozích používá PBR principy. Stejně jako například MeshPhongMaterial pracuje se světlem, ale používá více realistický algoritmus. Podporuje všechny typy textur, které jsme si ukazovali v minulé části o texturách.</p>
+    <p class="paragraph u-mb-2">Smažte si předchozí materiál a můžeme začít používat MeshStandardMaterial. Zatím si jej vytvořte bez žádného nastavení.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshStandardMaterial();
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete MeshStandardMaterial prohlédnout. Zatím je tak nějak stejný jako MeshPhongMaterial.</p>
+    <div data-example-id="16" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Textury</h3>
+    <p class="paragraph u-mb-2">Zkusíme si na náš materiál aplikovat textury. Někde dříve jsem tu psal, že kromě Base Color si máte stáhnout i jiné typy textur. Teď je budeme potřebovat. Pomocí Texture Loaderu si načtěte Color, Normal a Roughness texturu. Poté načtené textury aplikujte na materiál pomocí vlastností map, normalMap a roughnessMap. Ambient Occlusion použijeme zachvíli, protože ji nemůžeme použít jen tak.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Texture Loaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textur
+const colorTexture = textureLoader.load("./static/brick_wall_001_diffuse_1k.jpg");
+const normalTexture = textureLoader.load("./static/brick_wall_001_nor_gl_1k.png");
+const roughnessTexture = textureLoader.load("./static/brick_wall_001_rough_1k.png");
+
+const material = new THREE.MeshStandardMaterial({
+    map: colorTexture,
+    normalMap: normalTexture,
+    roughness: roughnessTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete aplikované textury prohlédnout.</p>
+    <div data-example-id="17" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Ambient Occlusion</h3>
+    <p class="paragraph u-mb-2">Teď si na naše objekty zkusíme aplikovat i Ambient Occlusion texturu. Ta ale vyžaduje druhý UV set. Co je to UV jsme si v předchozí části vysvětlovali. Jedná se o souřadnice vertexů na 2D ploše. Podle toho jak jsou vertexy rozmístěné, se na objekt aplikuje textura. Proč Ambient Occlusion textura druhý UV set vyžaduje nevím, jen vím že jej vyžaduje. Můžeme jej nastavit pomocí metody setAttribute, jelikož se jedná o atribut, který se posílá do shaderu. Jako název nastavíme "uv2". A klidně můžeme namísto vytváření nového UV setu jen odkázat na ten první. K tomu máme u geometrie přístup pomocí attributes.uv.array. Je to vlastně pole souřadnic vertexů na 2D ploše. Druhý UV set můžeme u každého našeho objektu vytvořit způsobem, jaký ukazuje následující ukázka. To podlě mě není něco, co byste měli chápat, spíš to berte jako fakt. Ale to je jen můj názor, já o tom totiž nic moc nevím.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    material
+);
+scene.add(cube);
+// vytvoření druhého UV setu
+cube.geometry.setAttribute("uv2",new THREE.Float32BufferAttribute(cube.geometry.attributes.uv.array, 2));
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 12, 10),
+    material
+);
+sphere.position.x = -1.5;
+scene.add(sphere);
+// vytvoření druhého UV setu
+sphere.geometry.setAttribute("uv2",new THREE.Float32BufferAttribute(sphere.geometry.attributes.uv.array, 2));
+
+// vytvoření dodecahedronu (nebo co to je)
+const dodecahedron = new THREE.Mesh(
+    new THREE.DodecahedronGeometry(0.5, 0),
+    material
+);
+dodecahedron.position.x = 1.5;
+scene.add(dodecahedron);
+// vytvoření druhého UV setu
+dodecahedron.geometry.setAttribute("uv2",new THREE.Float32BufferAttribute(dodecahedron.geometry.attributes.uv.array, 2));
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď si můžeme naši Ambient Occlusion načíst a použít jako ostatní textury. Nastavíme ji pomocí vlastnosti aoMap.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Texture Loaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textur
+const colorTexture = textureLoader.load("./static/brick_wall_001_diffuse_1k.jpg");
+const normalTexture = textureLoader.load("./static/brick_wall_001_nor_gl_1k.png");
+const roughnessTexture = textureLoader.load("./static/brick_wall_001_rough_1k.png");
+const ambientOcclusionTexture = textureLoader.load("./static/brick_wall_001_ao_1k.jpg");
+
+const material = new THREE.MeshStandardMaterial({
+    map: colorTexture,
+    normalMap: normalTexture,
+    roughness: roughnessTexture,
+    aoMap: ambientOcclusionTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete materiál s aplikovanou Ambient Occlusion texturou prohlédnout.</p>
+    <div data-example-id="18" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Možná po aplikování Ambient Occlusion textury nevidíte žádné velké rozdíly. Proto jsem tu pro vás připravil ukázku, ve které si ji můžete zkusit zapnout nebo vypnout.</p>
+    <div data-example-id="19" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">Jak vidíte, tak Ambient Occlusion vytvoří takové falešné stíny v různých štěrbinách objektu (když je něco blízko u sebe).</p>
+    <h3 class="heading-tertiary u-mb-2">Environment mapa</h3>
+    <p class="paragraph u-mb-2">Abychom měli více realistické vykreslování, tak je dobré pro materiál ještě přidat environment mapu. Jedná se o obrázek kolem scény. Můžeme ji použít pro odrazy, ale také základní obecné nasvícení namísto AmbientLight. Podporuje ji více materiálů, ne jen MeshStandardMaterial. Třeba také MeshPhongMaterial ji podporuje. Následující ukázka environment mapu ukazuje.</p>
+    <div data-example-id="20" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Většinou environment mapu nechceme nastavit jako pozadí scény, jak to ukazuje předchozí ukázka, ale chceme ji použít pro základní osvícení objektů a odrazy. Jak to udělat si teď ukážeme. Nejdříve ale musíme nějakou environment mapu mít. Environment mapy, které jsou zdarma, najdete stejně jako textury na <a href="https://polyhaven.com/hdris" target="_blank" class="link">Poly Haven</a>. Je to skvělý web co se týče zdrojů pro 3D grafiku. Nevýhoda ale je, že Three.js podporuje pouze Cube mapy a na Poly Haven se nacházejí jen HDRI. Cube mapa funguje tak, že máme 6 obrázků: nahoře, dole, nalevo, napravo, před námi, za námi. HDRI je pouze jeden obrázek, takže ji s Three.js použít nemůžeme. Můžeme ji ale do Cube mapy převést pomocí toho <a href="https://matheowis.github.io/HDRI-to-CubeMap/" target="_blank" class="link">online převaděče z HDRI do Cube mapy</a>. Já jsem to již udělal za vás a cube mapu kterou použijeme si můžete <a href="../../static/other/environment-map.zip" download class="link">stáhnout zde</a>. Stáhne se vám zazipovaný soubor s 6 obrázky. Umístěte si je do složky static.</p>
+    <p class="paragraph u-mb-2">Stejně jako pro načítání textur slouží TextureLoader, tak pro načítání environment map slouží <a href="https://threejs.org/docs/?q=cubetexture#api/en/loaders/CubeTextureLoader" target="_blank" class="link">CubeTextureLoader</a>. Následující ukázka ukazuje, jak jej můžeme k načtení environment mapy použít. Je to podobné jako u načítání textur, akorát teď do funkce load předáváme cestu k 6 obrázkům.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Cube Texture Loaderu
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+// načtení environment mapy
+const environmentMapTexture = cubeTextureLoader.load([
+    './static/px.png',
+    './static/nx.png',
+    './static/py.png',
+    './static/ny.png',
+    './static/pz.png',
+    './static/nz.png',
+]);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po načtení environment mapy ji můžeme pro náš materiál použít. Ještě předtím ale odstraňte Ambient světlo, jelikož se teď o základní nasvícení bude starat environment mapa. V kódu pro vytváření světla tedy nyní zůstane jen DirectionLight.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// přidání světel
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+// scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Environment mapu můžeme materiálu nastavit pomocí vlastnosti envMap.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+const material = new THREE.MeshStandardMaterial({
+    map: colorTexture,
+    normalMap: normalTexture,
+    roughness: roughnessTexture,
+    aoMap: ambientOcclusionTexture,
+    envMap: environmentMapTexture
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se měla pro materiál environment mapa použít.</p>
+    <div data-example-id="21" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Pokud se chcete ujistit, že se environment mapa na materiál opravdu aplikovala, tak můžete zakomentovat všechny textury a nastavit materiálu vlastnost roughness na 0 a metalness na 1. Vytvoří se vám tím v podstatě zrcadlo, ve kterém environment mapu na objektech uvidíte.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+const material = new THREE.MeshStandardMaterial({
+    // map: colorTexture,
+    // normalMap: normalTexture,
+    // roughness: roughnessTexture,
+    // aoMap: ambientOcclusionTexture,
+    envMap: environmentMapTexture,
+    roughness: 0,
+    metalness: 1
+});
+
+/* ... */</code></pre>
+    <div data-example-id="22" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">V našem příkladu jsme environment mapu nastavovali na materiál. Můžeme ji ale nastavit také na scénu a ta ji automaticky aplikuje na každý PBR materiál, který nemá nastavanou vlastnost envMap. Aplikuje ji ale jen na PBR materiály, takže pokud například chceme environment mapu použít třeba na Mesh Phong Materiály, tak ji musíme ručně nastavit na materiál pomocí vlastnosti envMap. Na scénu environment mapu nastavíme pomocí vlastnosti environment.</p>
+    <pre class="code-box u-mb-4"><code>scene.environment = environmentMapTexture;</code></pre>
+    <p class="paragraph u-mb-4">To je vše co jsme si o MeshStandardMaterialu ukázali. Více vlastností, které můžete nastavovat, najdete v dokumentaci.</p>
+    <h2 class="heading-secondary u-mb-2">Další materiály</h2>
+    <p class="paragraph u-mb-4">V této části jsme si ukázali různé druhy materiálů, ale je tu ještě pár dalších materiálů, které jsme si neukázali. Chtěl bych tu u některých jen krátce popsat k čemu slouží. Zbývající najdete v dokumentaci.</p>
+    <h3 class="heading-tertiary u-mb-2">Mesh Physical Material</h3>
+    <p class="paragraph u-mb-4"><a href="https://threejs.org/docs/?q=material#api/en/materials/MeshPhysicalMaterial" target="_blank" class="link">MeshPhysicalMaterial</a> je rozšíření MeshStandardMaterialu a poskytuje pokročilejší PBR vlastnosti. Má například podporu pro clear coat efekt. Co mu můžeme nastavit za vlastnosti a tak podobně si můžete přečíst v dokumentaci. Je tam také pár ukázek, na které se můžete podívat.</p>
+    <h3 class="heading-tertiary u-mb-2">Points Material</h3>
+    <p class="paragraph u-mb-4"><a href="https://threejs.org/docs/?q=material#api/en/materials/PointsMaterial" target="_blank" class="link">PointsMaterial</a> slouží k vykreslování vertexů namísto geometrie. Můžeme jej použít pro particles. Proto se k němu později vrátíme, až se jimi začneme zabývat.</p>
+    <h3 class="heading-tertiary u-mb-2">Shader Material a Raw Shader Material</h3>
+    <p class="paragraph u-mb-6">Tyto materiály můžeme použít k vytvoření našich vlastních materiálů. Vrátíme se k nim v části o shaderech.</p>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Některé materiály o kterých jste se v této části dozvěděli vyžadovali světlo aby byly vidět. To jsme zatím neprobírali, takže jsme si jen zkopírovali kód, který nám nějaká světla vytvořil. V příští části světla prozkoumáme a ukážeme si jaké existují typy světel.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
 <%- include("../../includes/tutorial-page-end.ejs") %>
