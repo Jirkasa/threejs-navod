@@ -1,0 +1,334 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Stíny", activePage: "stiny" }) %>
+    <h1 class="heading-primary u-mb-6">Stíny</h1>
+    <p class="paragraph u-mb-4">V minulé části jste se dozvěděli o různých typech světel. Když používáme světla, tak často také chceme stíny. Ty se v této části naučíme nastavovat.</p>
+    <h2 class="heading-secondary u-mb-2">Jak tvorba stínů funguje</h2>
+    <p class="paragraph u-mb-2">Stíny byly pro real-time renderování vždy výzvou a vývojáři museli hledat triky k zobrazení realistických stínů s rozumným výkonem. Three.js na to má vestavěné řešení. Není to perfektní, ale je to celkem pohodlné. Funguje to takto:</p>
+    <ul class="list u-mb-2">
+        <li>Když provedem renderování, tak Three.js také provede renderování pro každé světlo, které má zapnuté vrhání stínů. Světla tedy mají kamery, které jakoby simulují co světlo vidí.</li>
+        <li>Během těchto renderování <a href="https://threejs.org/docs/index.html?q=meshdepthmaterial#api/en/materials/MeshDepthMaterial" target="_blank" class="link">MeshDepthMaterial</a> mění materiál renderovaných meshů. Tento typ materiálu jsme si v části o materiálech nepopisovali, ale funguje tak, že co je blíž bude bílé, co je dál bude černé. Three.js s tím prostě nějak pracuje, nemusíme vědět jak.</li>
+        <li>Vyrenderované snímky se poté uloží do textur, kterým se říká shadow mapy. Je to jakoby reprezentace co světlo vidí.</li>
+        <li>Shadow mapy jsou poté umístěny na každý materiál, který přijímá stíny a promítnuty na geometrii.</li>
+    </ul>
+    <p class="paragraph u-mb-2">Pro lepší pochopení jsem tu přidal obrázek. Prostě světlo má kameru, pomocí které udělá snímek všech objektů, které mají nastaveno že mohou vrhat stíny. Vytvoří se tím textura (shadow mapa), která se poté promítne na objekty, které mají nastaveno, že mohou přijímat stíny. V obrázku je to plocha pod objekty.</p>
+    <img src="../../static/img/ThreeJSShadowProcess.png" alt="Tvorba stínů ve Three.js" class="centered-image u-mb-6">
+    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <p class="paragraph u-mb-2">Abychom si mohli zkusit vytváření stínů nastavit, tak k tomu budeme potřebovat základní scénu. Takže je tu pro vás připravený startovní kód. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a zkopírujte si do JavaScript souboru kód z následující ukázky. Ten vytváří scénu, přidává do ní pár objektů, AmbientLight a DirectionalLight světlo, a tak dále. Prostě vytváří základní scénu jako v ostatních částech tutoriálu.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření materiálů
+const orangeMaterial = new THREE.MeshStandardMaterial({
+    color: 0xFAB278,
+    roughness: 0.5
+});
+const blueMaterial = new THREE.MeshStandardMaterial({
+    color: 0x78E8FA,
+    roughness: 0.5
+});
+const greyMaterial = new THREE.MeshStandardMaterial({
+    color: 0xbbbbbb
+});
+
+// vytvoření plochy pod objekty
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(15, 15),
+    greyMaterial
+);
+plane.position.y = -0.5;
+plane.rotation.x = -Math.PI * 0.5;
+scene.add(plane);
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    orangeMaterial
+);
+scene.add(cube);
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 12, 10),
+    blueMaterial
+);
+sphere.position.x = -1.1;
+sphere.position.z = -0.5;
+scene.add(sphere);
+
+// vytvoření dodecahedronu (nebo co to je)
+const dodecahedron = new THREE.Mesh(
+    new THREE.DodecahedronGeometry(0.5, 0),
+    blueMaterial
+);
+dodecahedron.position.x = 2;
+dodecahedron.position.z = -0.2;
+scene.add(dodecahedron);
+
+
+// přidání AmbientLight světla
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+// přidání DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // protože máme zapnuté tlumení při posunutí,
+    // tak musíme OrbitControls aktualizovat
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Také si zkopírujte následující CSS kód, který vám je už určitě důvěrně známý z minulých částí.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikaci si můžete prohlédnout scénu, na které si budeme zkoušet nastavování stínů.</p>
+    <div data-example-id="1" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Zapnutí stínů</h2>
+    <p class="paragraph u-mb-2">Abychom zapnuli stíny, tedy vytváření shadow map, tak to musíme zapnout na rendereru. Je to jeho práce. Stíny se vytvářejí když provedeme renderování. Jak stíny na rendereru zapneme ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// zapnutí shadow map
+renderer.shadowMap.enabled = true;</code></pre>
+    <p class="paragraph u-mb-2">Samotné zapnutí shadow map nestačí. Ještě musíme určit, které objekty ve scéně mohou vrhat stíny a které je přijímat. To můžeme udělat pomocí vlastností castShadow a receiveShadow, které nastavíme na true. Vlastnost castShadow určuje, jestli může objekt vrhat stín. Vlastnost receiveShadow určuje, jestli může objekt přijímat stín. Světla, která mohou vrhat stíny jsou jen tyto tři: PointLight, DirectionalLight a SpotLight.</p>
+    <p class="paragraph u-mb-2">V našem příkladu bude DirectionalLight světlo moci vrhat stíny, plocha pod objekty přijímat stíny a ostatní objekty je budou moci vrhat i přijímat. Následující ukázka ukazuje, jak to můžeme nastavit.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// DirectionalLight vrhá stín
+directionalLight.castShadow = true;
+// plocha pod objekty přijímá stín
+plane.receiveShadow = true;
+// ostatní objekty mohou vrhat i přijímat stín
+cube.castShadow = true;
+cube.receiveShadow = true;
+sphere.castShadow = true;
+sphere.receiveShadow = true;
+dodecahedron.castShadow = true;
+dodecahedron.receiveShadow = true;</code></pre>
+    <p class="paragraph u-mb-2">Když si teď aplikaci spustíte, tak bude vytváření stínů fungovat. Akorát jejich kvalita bude celkem mizerná.</p>
+    <div data-example-id="2" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Zlepšení kvality stínů</h2>
+    <p class="paragraph u-mb-4">V našem příkladu jsme si stíny úspěšně zapnuli. Jejich kvalita ale není moc dobrá. Proto si teď ukážeme, jak je můžeme vylepšit.</p>
+    <h3 class="heading-tertiary u-mb-2">Rozlišení shadow mapy</h3>
+    <p class="paragraph u-mb-2">Jak jsem psal, tak vytváření stínů funguje tak, že světlo má kameru a pomocí ní vytvoří snímek, kterému se říká shadow mapa. Jedná se o snímek, takže má nějaké rozlišení. Defaultní rozlišení je 512x512 pixelů. Toto rozlišení můžeme změnit, ale měli bychom dodržovat násobky dvou kvůli mipmappingu. U každého světla máme přístup k vlastnosti shadow, pomocí které můžeme stíny nastavovat. Pokud chceme změnit rozlišení shadow mapy, tak to můžeme udělat pomocí vlastnosti mapSize, jak ukazuje následující ukázka. V našem příkladu měníme rozlišení na 1024x1024 pixelů.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// změnění rozlišení shadow mapy pro DirectionalLight
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak by jste měli vidět, že se kvalita stínů o něco zlepšila.</p>
+    <div data-example-id="3" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Rozměry kamery pro stíny</h3>
+    <p class="paragraph u-mb-2">Možná si říkáte, jak může DirectionalLight světlo renderovat shadow mapy, když funguje tak, že všude ve scéně svítí stejným směrem jakoby do nekonečna paralelně. Nevím jak to vyjádřit, myslím že víte co tím myslím, pokud jste četli předchozí část. Je to proto, že kamera světla renderuje shadow mapu jen v určité části podle pozice světla ve scéně. Takže pro stíny na pozici DirectionalLight světla záleží, neurčuje jen směr světla.</p>
+    <p class="paragraph u-mb-2">Ke kameře světla máme přístup pomocí shadow.camera. Můžeme tedy klidně této kameře nastavit helper. Helper pro kameru jsme si v tutoriálu neukazovali, ale funguje stejně jako helpery pro světla. Vytvoříme jej a při jeho vytváření mu předáme kameru, pro kterou chceme helper vytvořit. Poté jej přidáme do scény.</p>
+    <!-- todo - dopsat -->
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření helperu pro kameru pro stíny DirectionalLight světla
+const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// přidání helperu do scény
+scene.add(cameraHelper);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete kameru pro stíny DirectionalLight světla pomocí helperu prohlédnout.</p>
+    <div data-example-id="4" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Jak můžete vidět, tak DirectionalLight světlo používá pro tvorbu stínů ortografickou kameru. SpotLight světlo zase například používá pro stíny perspektivní kameru. Záleží na typu světla. S kamerou světla můžeme manipulovat. V naší aplikaci můžete vidět, že je její rozměr na naši scénu zbytečně velký. Objekty vrhající stín jsou potom na shadow mapě malé, ale zbytek shadow mapy není vůbec pokrytý. Tím si zbytečně kazíme kvalitu stínů.</p>
+    <img src="../../static/img/ShadowMapWasteOfSpace.png" alt="špatné pokrytí shadow mapy" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Rozměry kamery si zmenšíme, aby pokryla jen potřebnou část scény. Než ale zkoušet různé rozměry v kódu, tak k tomu použijeme dat.GUI knihovnu, o které v tomto tutoriálu již byla jedna část. Víte tedy o co se jedná a jak ji používat. Následujícím příkazem ji pro náš projekt nainstalujeme.</p>
+    <pre class="code-box code-box--command u-mb-2"><code>npm install dat.gui --save</code></pre>
+    <p class="paragraph u-mb-2">Po instalaci si můžeme dat.GUI knihovnu naimportovat do našeho JavaScript souboru.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as dat from 'dat.gui';
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď si můžeme vytvořit nový panel a přidat si do něj input pro měnění velikosti kamery. Jelikož chceme, aby kamera měla stejný poměr stran jako shadow mapa (čtverec), tak budeme chtít měnit obě strany zároveň. Rozměry stran ortografické kamery určujeme pomocí vlastností left, right, top a bottom. Definujeme vlastně vzdálenost jednotlivých stran od středu kamery. Všechny tyto vlastnosti tedy budeme měnit pomocí jednoho inputu. To můžeme udělat vytvořením pomocného objektu a reagováním na změnu inputu pomocí onChange metody. Následující ukázka to ukazuje. V onChange metodě měníme vlastnosti kamery: left, right, top a bottom. Poté aktualizujeme kameru zavoláním metody updateProjectionMatrix a také helper zavoláním metody update.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// přidání inputu pro změnu rozměrů kamery pro stíny
+gui.add(debugObject, "size")
+.min(0).max(10).step(0.01)
+.onChange(val => {
+    // změna velikosti kamery
+    directionalLight.shadow.camera.right = val;
+    directionalLight.shadow.camera.left = -val;
+    directionalLight.shadow.camera.top = val;
+    directionalLight.shadow.camera.bottom = -val;
+    // aktualizování kamery
+    directionalLight.shadow.camera.updateProjectionMatrix();
+    // aktualizování helperu
+    cameraHelper.update();
+});</code></pre>
+    <p class="paragraph u-mb-2">Když teď aplikaci spustíme, tak si můžeme pomocí dat.GUI měnit velikost kamery.</p>
+    <div data-example-id="5" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Po experimentování s velikostí kamery mi nejlepší přišla hodnota 2. Nastavíme tedy rozměr kamery na 4x4 jednotky (určovali jsme pozici stran od středu). Můžeme smazat input pro experimentování s velikostí kamery a velikost nastavit přímo v kódu.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// // přidání inputu pro změnu rozměrů kamery pro stíny
+// gui.add(debugObject, "size")
+// .min(0).max(10).step(0.01)
+// .onChange(val => {
+//     // změna velikosti kamery
+//     directionalLight.shadow.camera.right = val;
+//     directionalLight.shadow.camera.left = -val;
+//     directionalLight.shadow.camera.top = val;
+//     directionalLight.shadow.camera.bottom = -val;
+//     // aktualizování kamery
+//     directionalLight.shadow.camera.updateProjectionMatrix();
+//     // aktualizování helperu
+//     cameraHelper.update();
+// });
+
+// nastavení rozměrů kamery pro stíny
+directionalLight.shadow.camera.right = 2;
+directionalLight.shadow.camera.left = -2;
+directionalLight.shadow.camera.top = 2;
+directionalLight.shadow.camera.bottom = -2;
+// aktualizace kamery
+directionalLight.shadow.camera.updateProjectionMatrix();
+// aktualizace helperu
+cameraHelper.update();</code></pre>
+    <div data-example-id="6" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Teď bychom mohli ještě změnit kam až kamera může dohlédnout. Nejsem si jistý, jestli to má na stíny v tomto případě nějaký efekt, ale pokud to můžeme udělat, tak proč ne. To záleží na vás, pokud si myslíte že je to jedno, tak to klidně dělat nemusíte. Já na tyto věci nejsem žádný expert. Pro měnění kam až může kamera dohlédnout si do dat.GUI panelu přidáme input.</p>
+    <pre class="code-box language-javascript u-mb-2"><code>/* ... */
+
+// přidání inputu pro měnění kam až kamera může dohlédnout
+gui.add(directionalLight.shadow.camera, "far")
+.min(0).max(10).step(0.01)
+.onChange(() => {
+    // po změnění kamery ji musíme aktualizovat
+    directionalLight.shadow.camera.updateProjectionMatrix();
+    // aktualizace helperu
+    cameraHelper.update();
+});</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžeme zkoušet měnit, kam až kamera může dohlédnout a vybrat tak nejvhodnější vzdálenost.</p>
+    <div data-example-id="7" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Jako nejvhodnější vzdálenost se mi tak nějak zdála hodnota 3. Takže si ji můžeme pro kameru nastavit přímo v kódu a dat.GUI a helper pro kameru již úplně smazat.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// // vytvoření helperu pro kameru pro stíny DirectionalLight světla
+// const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// // přidání helperu do scény
+// scene.add(cameraHelper);
+
+// // vytvoření dat.GUI panelu
+// const gui = new dat.GUI();
+
+// const debugObject = {
+//     size: directionalLight.shadow.camera.right
+// }
+
+// // přidání inputu pro změnu rozměrů kamery pro stíny
+// gui.add(debugObject, "size")
+// .min(0).max(10).step(0.01)
+// .onChange(val => {
+//     // změna velikosti kamery
+//     directionalLight.shadow.camera.right = val;
+//     directionalLight.shadow.camera.left = -val;
+//     directionalLight.shadow.camera.top = val;
+//     directionalLight.shadow.camera.bottom = -val;
+//     // aktualizování kamery
+//     directionalLight.shadow.camera.updateProjectionMatrix();
+//     // aktualizování helperu
+//     cameraHelper.update();
+// });
+
+// nastavení rozměrů kamery pro stíny
+directionalLight.shadow.camera.right = 2;
+directionalLight.shadow.camera.left = -2;
+directionalLight.shadow.camera.top = 2;
+directionalLight.shadow.camera.bottom = -2;
+// změnění kam až kamera může dohlédnout
+directionalLight.shadow.camera.far = 3;
+// aktualizace kamery
+directionalLight.shadow.camera.updateProjectionMatrix();
+// // aktualizace helperu
+// cameraHelper.update();
+
+// // přidání inputu pro měnění kam až kamera může dohlédnout
+// gui.add(directionalLight.shadow.camera, "far")
+// .min(0).max(10).step(0.01)
+// .onChange(() => {
+//     // po změnění kamery ji musíme aktualizovat
+//     directionalLight.shadow.camera.updateProjectionMatrix();
+//     // aktualizace helperu
+//     cameraHelper.update();
+// });</code></pre>
+    <div data-example-id="8" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Rozmazání stínů</h3>
+    <p class="paragraph u-mb-2">Pokud chceme kontrolovat rozmazání našich stínů, tak to můžeme dělat pomocí vlastnosti radius. Jedná se ale jen o obecné levné rozmazání, takže bude vypadat všude stejně. Následující ukázka ukazuje, jak si jej můžeme v našem příkladu nastavit.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// zvýšení rozmazání stínů
+directionalLight.shadow.radius = 10;</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace můžete rozmazání stínů vidět. Je to nic moc, ale je to lepší než nic.</p>
+    <div data-example-id="9" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Změna algoritmu pro shadow mapy</h3>
+    <p class="paragraph u-mb-2">Pro shadow mapy můžeme nastavit, jaký algoritmus se pro ně použije. Můžeme to nastavit na rendereru pomocí shadowMap.type. Máme na výběr z těchto 4 možností (algoritmů):</p>
+    <ul class="list u-mb-2">
+        <li><b>THREE.BasicShadowMap</b> - velmi výkonný, ale mizerná kvalita</li>
+        <li><b>THREE.PCFShadowMap</b> - méně výkonný, ale vytváří hladší hrany (toto je defaultní)</li>
+        <li><b>THREE.PCFSoftShadowMap</b> - méně výkonný, ale vytváří ještě hladší hrany</li>
+        <li><b>THREE.VSMShadowMap</b> - méně výkonný, ale nevím jak to funguje. V dokumentaci se píše něco o tom, že objekty, které přijímají stíny budou také vrhat stíny. Nic o tom nevím, takže si o tom budete muset zjistit informace jinde.</li>
+    </ul>
+    <p class="paragraph u-mb-2">Pro náš příklad si můžeme třeba zkusit nastavit THREE.PCFSoftShadowMap algoritmus. U tohoto algoritmu nemá rozmazání stínů žádný vliv.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// změnění algoritmu pro shadow mapy
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace si můžete stíny po změnění algoritmu prohlédnout. Možná to v našem příkladu není tolik vidět, protože máme celkem velkou shadow mapu. Pokud bychom ale THREE.PCFSoftShadowMap algoritmus použili pro shadow mapu z menším rozlišením, tak už by to mohlo jít vidět lépe.</p>
+    <div data-example-id="10" class="u-mb-4"></div>
+    <h3 class="heading-secondary u-mb-2">Čemu se vyhnout</h3>
+    <p class="paragraph u-mb-2">Teď bych tu chtěl jen krátce popsat dvě věci, kterým by jste se při nastavování stínů měli vyhnout. Ta první je, že by jste neměli mít moc světel vytvářejících stín na jednom místě. Mixování stínů totiž není fyzikálně správně a nemusí to vypadat dobře.</p>
+    <p class="paragraph u-mb-4">Druhou věc, kterou by jste neměli při vytváření stínů dělat, je měnit field of view kamery pro stín u PointLight světla. U PointLight světla se totiž shadow mapy vytvářejí tak, že se provede 6 renderování: nahoře, dole, nalevo, napravo, před a za. Dělá se to tak, protože PointLight světlo svítí na všechny strany. Celkem tedy máme 6 shadow map. Field of view je nastaveno tak, aby na sebe shadow mapy navazovali. Pokud bychom jej změnili, stíny by se nevytvářeli správně. Ale další vlastnosti kamery jako je třeba její dohled již nastavovat můžete. Mi jsme si v této části zkoušeli nastavovat stín jen pro DirectionalLight světlo a pro PointLight a SpotLight už ne. Proto jsem to tu chtěl jen zmínit. Jinak je nastavování stínů pro tyto typy světel podobné jako pro DirectionalLight.</p>
+    <h2 class="heading-secondary u-mb-2">Vypékání stínů do textur</h2>
+    <p class="paragraph u-mb-6">V minulé části jsem se zmiňoval, že můžeme do textur vypékat světlo. Stejně to můžeme udělat i se stíny. Můžeme si je již připravit do textury v nějakém 3D programu jako je třeba Blender. To se samozřejmě hodí třeba jen pro nějaké statické objekty.</p>
+    <p class="paragraph u-mb-4">To je vše co jsem vám chtěl o stínech sdělit. Možná dá trochu práce je nastavit, ale i tak si myslím že je to celkem pohodlné. V příští části si ukážeme, jak můžeme vytvářet particles.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>
