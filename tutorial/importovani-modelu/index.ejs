@@ -1,0 +1,328 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Importování modelů", activePage: "importovani-modelu" }) %>
+    <h1 class="heading-primary u-mb-6">Importování modelů</h1>
+    <p class="paragraph u-mb-4">V této části si ukážeme, jak můžeme do Three.js naimportovat 3D modely, které jsme si mohli vytvořit v nějakém 3D modelovacím programu jako je Blender. To potřebujeme dost často, jelikož vytvářet nějaké komplexní geometrie v kódu moc nejde.</p>
+    <h2 class="heading-secondary u-mb-2">Formáty pro 3D modely</h2>
+    <p class="paragraph u-mb-2">Pro ukládání 3D modelů existuje spoustu formátů. Při výběrů formátu bereme v potaz ukládaná data, velikost souboru, kompresy, a tak podobně. Populární formáty jsou následující:</p>
+    <ul class="list u-mb-2">
+        <li>OBJ</li>
+        <li>FBX</li>
+        <li>STL</li>
+        <li>PLY</li>
+        <li>COLLADA</li>
+        <li>3DS</li>
+        <li>GLTF</li>
+        <li>a další...</li>
+    </ul>
+    <p class="paragraph u-mb-4">My se v této části budeme zabývat načítáním 3D modelů uložených v GLTF formátu. Pro ostatní formáty je to ale podobné (možná i stejné).</p>
+    <h3 class="heading-tertiary u-mb-2">GLTF</h3>
+    <p class="paragraph u-mb-2">GLTF je zkratka pro GL Transmission Format. Tento formát byl vytvořen skupinou Khronos Group, která vyvíjí OpenGL, WebGL, atd. Podporuje různé typy dat jako je geometrie, materiály, kamery, světla, animace, skeletony, a podobně. Můžeme tedy GLTF soubor načíst a do scény se nám kromě samotné geometrie mohou automaticky přidat třeba i materiály a světla.</p>
+    <p class="paragraph u-mb-2">U GLTF formátu máme více způsobů jak data ukládat. Můžeme všechno umístit do jednoho souboru, nebo můžeme mít více souborů, které budeme referencovat z jednoho hlavního souboru. Také třeba máme možnost využít kompresy. Máme v podstatě 4 možnosti:</p>
+    <ul class="list u-mb-4">
+        <li>glTF</li>
+        <li>glTF Binary</li>
+        <li>glTF Draco</li>
+        <li>glTF Embedded</li>
+    </ul>
+    <h4 class="heading-quaternary">glTF</h4>
+    <p class="paragraph u-mb-4">První způsob, jak ukládat data v GLTF formátu, je mít jeden .gltf soubor. V tomto souboru většinou ukládáme data jako jsou kamery, světla, scény, materiály nebo transformace objektů. Neukládáme tam ale třeba geometrii nebo textury. Na ty v souboru jen odkazujeme. Takže kromě samotného .gltf souboru máme také například soubor .bin, což je binární soubor ukládající geometrii objektu, a soubory různých textur. Pokud by jste si .gltf soubor otevřeli, tak uvidíte, že se v podstatě jedná o JSON a na některých místech se referencuje cesta k texturám a geometriím, které se mají načíst.</p>
+    <h4 class="heading-quaternary">glTF Binary</h4>
+    <p class="paragraph u-mb-4">Další způsob, jak ukládat data v GLTF, je ukládat je binárně do souboru .glb. Jelikož je to binární soubor, tak má většinou menší velikost. Také je snadnější na načtení, protože se může jednat jen o jeden soubor. Horší je ale na změnu dat, protože binární soubor jen tak editovat nemůžeme. </p>
+    <h4 class="heading-quaternary">glTF Draco</h4>
+    <p class="paragraph u-mb-4">Na buffer data (typicky geometrii) můžeme aplikovat Draco kompresy. Díky tomu máme možnost načíst nějaký složitý model rychleji. Tento algoritmus vyvíjí Google a není exkluzivní pro GLTF. Stali se ale populárními ve stejný čas. Načtení GLTF souboru s Draco komresí je trochu složitější, ale později si to ukážeme.</p>
+    <h4 class="heading-quaternary">glTF Embedded</h4>
+    <p class="paragraph u-mb-4">Poslední způsob, jak ukládat data v GLTF, je použít jen jeden .gltf soubor, který v sobě bude mít uloženo všechno. Nejedná se o binární soubor, takže data jako textury tam budou uloženy v Base64 kódování. Jedná se o kódování, které převádí binární data na posloupnosti tisknutelných znaků, takže je můžeme uložit v textu.</p>
+    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <p class="paragraph u-mb-2">Abychom si mohli vyzkoušet načítání 3D modelů, tak je tu pro vás přichystaný startovní kód. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód jen vytváří scénu a nastavuje další základní věci, na které jste asi již zvyklí z minulých částí.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Protože roztahujeme canvas přes celou velikost okna prohlížeče, tak si ještě zkopírujte následující kód, pomocí kterého se zbavíte defaultních marginů a paddingů.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-4">Po spuštění aplikace by jste zatím neměli vidět nic. Později si do scény načteme objekt.</p>
+    <h2 class="heading-secondary u-mb-2">Načítání 3D modelů</h2>
+    <p class="paragraph u-mb-2">Abychom si mohli vyzkoušet načíst 3D model, tak musíme nějaký mít. Připravil jsem pro vás zazipovaný soubor, který si můžete <a href="../../static/other/DeskModel.zip" download class="link">stáhnout zde</a>, rozbalit si jej a umístit do složky static ve vašem projektu. Jedná se o 4 složky obsahující model uložený v GLTF formátu. U každé složky je model uložen jinou cestou. V jedné máme samostatné soubory pro textury a geometrii, v druhé ukládáme model binárně, ve třetí používáme Draco kompresy a v poslední používáme jen jeden .gltf soubor, který obsahuje všechno.</p>
+    <p class="paragraph u-mb-2">Pro načtení 3D modelů potřebujeme Loader. Existuje více typů loaderů pro různé formáty. Můžete je najít v dokumentaci, ale ne všechny tam jsou. Občas se musíte podívat do zdrojového kódu v node_modules složce, nebo v <a href="https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders" target="_blank" class="link">repozitáři na GitHubu</a>. Například <a href="https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/FBXLoader.js" target="_blank" class="link">FBXLoader</a>, který jsem použil pro svůj <a href="../../3d-modely/" class="link">prohlížeč 3D modelů</a> jsem v dokumentaci nenašel. Protože máme modely uložené v GLTF formátu, tak použijeme <a href="https://threejs.org/docs/index.html?q=loader#examples/en/loaders/GLTFLoader" target="_blank" class="link">GLTFLoader</a>. Jelikož není součástí THREE proměnné, kterou si do našeho JavaScript souboru importujeme, tak si jej musíme naimportovat zvlášť. Odkud jej naimportovat je napsáno v dokumentaci v části source (nebo se můžete podívat do zdrojáku). Následující ukázka ukazuje, jak to udělat.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po naimportování si můžeme vytvořit jeho instanci.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();</code></pre>
+    <p class="paragraph u-mb-2">Pomocí GLTFLoaderu můžeme načíst 3D model pomocí metody load. Té předáváme jako parametr cestu k GLTF souboru a callback funkci, která se zavolá až se model načte. Také můžeme předat funkci, která se zavolá při pokroku načítání a funkci, která se zavolá když dojde k chybě. Ty ale nejsou povinné. Následující ukázka ukazuje, jak můžeme metodu load použít. Načítáme GLTF soubor ve složce glTF a po načtení logujeme výsledek do konzole.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DeskModel/glTF/Desk.gltf",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+    }
+);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se vám měl do konzole vypsat JavaScript objekt, obsahující data načteného GLTF souboru. Vidíte tam toho spoustu. To co nás zajímá je vlastnost scene a její vlastnost children, která uchovává potomky načtené scény (náš 3D model).</p>
+    <img src="../../static/img/LoggedLoadedGLTF.png" alt="lognutí výsledku načtení GLTF souboru" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Pokud chceme umístit načtený model do scény, tak můžeme například všechny potomky načtené scény umístit do naší scény. V našem případě je to jen jeden objekt (mesh). Pokud mesh z načtené scény přidáme do jiné scény, tak se z načtené scény automaticky odstraní. Můžeme k tomu tedy použít cyklus while, uvnitř kterého budeme načtené potomky do scény přidávat, a ptát se jestli načtená scéna ještě má potomky. Následující ukázka ukazuje, jak to udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DeskModel/glTF/Desk.gltf",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+
+        // přidání všech potomků načtené scény do scény
+        while (gltf.scene.children.length > 0) {
+            scene.add(gltf.scene.children[0]);
+        }
+    }
+);</code></pre>
+    <p class="paragraph u-mb-2">Model se nám do scény přidal, ale nevidíme jej, protože nemáme žádné světlo. Můžeme si tedy do scény nějaké přidat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// přidání AmbientLight světla
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+// přidání DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli ve scéně načtený objekt vidět.</p>
+    <div data-example-id="1" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Ukázali jsme si, jak můžeme potomky načtené scény přidat do naší scény. Je tu ale jednodušší cesta jak načtený objekt do scény přidat. Stačí do scény přidat celou načtenou scénu, jak ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DeskModel/glTF/Desk.gltf",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+
+        // přidání načtené scény (modelu) do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace se vám načtený model do scény přidá stejně jako předtím.</p>
+    <div data-example-id="2" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Teď si ještě můžete zkusit načíst GLTF soubor ze složky glTFBinary a glTFEmbedded. Mělo by to fungovat úplně stejně.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    // "./static/DeskModel/glTF/Desk.gltf",
+    "./static/DeskModel/glTFBinary/Desk.glb",
+    // "./static/DeskModel/glTFEmbedded/Desk.gltf",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+
+        // přidání načtené scény (modelu) do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <h2 class="heading-secondary u-mb-2">Načítání GLTF souboru s Draco kompresí</h2>
+    <p class="paragraph u-mb-2">Pokud si nyní zkusíte načíst GLTF soubor ve složce glTFDraco, tak dostanete chybu, kterou ukazuje následující obrázek. Tento soubor totiž používá Draco kompresy.</p>
+    <img src="../../static/img/NoDracoLoaderError.png" alt="chyba - nebyl předán Draco Loader" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Abychom mohli GLTF soubor používající Draco kompresy načíst, tak k tomu potřebujeme <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank" class="link">DracoLoader</a>. Následujícím způsobem si jej můžeme naimportovat.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po naimportování DracoLoaderu můžeme vytvořit jeho instanci a říct GLTFLoaderu, aby jej použil. DracoLoaderu musíme ale také nastavit decoder. To uděláme pomocí metody setDecoderPath, kde předáme k decoderu cestu. Mi použijeme decoder, který je napsaný ve Webassembly a používá workery. Takže je rychlý a neblokuje běh aplikace. Najdete jej ve složce node_modules/three/examples/js/libs/draco. Tuto složku si zkopírujte do složky static, protože node_modules složka není součástí naší sestavené aplikace a nemohli bychom ji použít. Metodě setDecoderPath tedy předáme cestu ke složce, kterou jsme si zkopírovali a nachází se ve static složce.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+
+// vytvoření DRACOLoaderu
+const dracoLoader = new DRACOLoader();
+// nastavení cesty k decoderu pro DRACOLoader
+dracoLoader.setDecoderPath("./static/draco/");
+// říkáme GLTFLoaderu, aby v případě potřeby použil DRACOLoader
+gltfLoader.setDRACOLoader(dracoLoader);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po nastavení DRACOLoaderu by již mělo jít GLTF soubor používající Draco kompresy načíst.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DeskModel/glTFDraco/Desk.glb",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+
+        // přidání načtené scény (modelu) do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <div data-example-id="3" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">Je potřeba zmínit, že Draco komprese není vždy výhrou. Geometrie sice zabere méně místa a stáhne se rychleji, ale uživatel také musí stáhnout Decoder. Také samozřejmě zabere nějaký čas a zdroje počítače dekódovat zkompresovaný soubor. U našeho modelu není geometrie nijak komplexní a má jen pár vertexů. V tomto případě by tedy bylo lepší Draco kompresy nepoužít. Hodně místa v našem modelu zaberou hlavně textury.</p>
+    <h2 class="heading-secondary u-mb-2">Načítání animací</h2>
+    <p class="paragraph u-mb-2">GLTF soubory mohou obsahovat kromě samotných 3D modelů i animace. Ty si teď zkusíme na načteném modelu zprovoznit. Budeme k tomu ale potřebovat objekt, který animace obsahuje. Stáhnul jsem pro vás 3D model s animací z <a href="https://www.mixamo.com/" target="_blank" class="link">Mixamo</a> a převedl na .glb soubor. Mixamo obsahuje spoustu animací, které můžete zdarma použít ve svých projektech. Tento soubor můžete stáhnout <a href="../../static/other/DancingAnimation.glb" download target="_blank" class="link">zde</a> a vložit si jej do složky static.</p>
+    <p class="paragraph u-mb-2">Můžeme začít tím, že si výsledek načtení GLTF souboru zatím jen logneme do konzole. Upravte si tedy volání load metody do následující podoby.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DancingAnimation.glb",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli v konzoli vidět lognutý JavaScript objekt s informacemi o načteném souboru. V části animations můžete vidět, že model obsahuje animaci. Jedná se o instanci třídy <a href="https://threejs.org/docs/index.html?q=animationclip#api/en/animation/AnimationClip" target="_blank" class="link">AnimationClip</a>.</p>
+    <img src="../../static/img/GLTFLoggedAnimationInformation.png" alt="lognuté informace o animaci načteného GLTF souboru" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Pokud si načtený model přidáte do scény, tak uvidíte, že se zatím neanimuje. To musíme zařídit sami.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DancingAnimation.glb",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <div data-example-id="4" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Abychom mohli AnimationClipy v poli animations použít, tak potřebujeme <a href="https://threejs.org/docs/index.html?q=animationmixer#api/en/animation/AnimationMixer" target="_blank" class="link">AnimationMixer</a>. Ten slouží jako takový přehrávač, který je spojený s objektem obsahujícím jeden či více AnimationClipů. Jak jej můžeme pro náš načtený model vytvořit ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+let animMixer;
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DancingAnimation.glb",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+        // vytvoření AnimationMixeru pro načtený model
+        animMixer = new THREE.AnimationMixer(gltf.scene);
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po vytvoření AnimationMixeru můžeme vytvořit pomocí metody clipAction, které předáme animaci k přehrání, instanci třídy <a href="https://threejs.org/docs/index.html?q=animation#api/en/animation/AnimationAction" target="_blank" class="link">AnimationAction</a> a přehrát ji metodou play.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// načtení GLTF souboru
+gltfLoader.load(
+    "./static/DancingAnimation.glb",
+    (gltf) => {
+        // lognutí načteného výsledku do konzole
+        console.log(gltf);
+        // vytvoření AnimationMixeru pro načtený model
+        animMixer = new THREE.AnimationMixer(gltf.scene);
+        // vytvoření AnimationAction
+        const action = animMixer.clipAction(gltf.animations[0]);
+        // přehrání animace
+        action.play();
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Aby se animace přehrávala, tak ještě musíme v tick funkci AnimationMixer aktualizovat pomocí metody update. Metodě update předáváme delta čas, takže k jeho získání potřebujeme Three.js hodiny.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Three.js hodin
+const clock = new THREE.Clock();
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // pokud se model načetl (animMixer je definován)
+    if (animMixer) {
+        // získání delta času
+        const deltaTime = clock.getDelta();
+        // aktualizace AnimationMixeru
+        animMixer.update(deltaTime);
+    }
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by se teď načtený model měl animovat.</p>
+    <div data-example-id="5" class="u-mb-6"></div>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Nyní již víte, jak si můžete do scény načíst vlastní model. V příští části si ukážeme pár tipů, jak můžeme naše načtené modely renderovat tak, aby vypadaly více realisticky.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>
