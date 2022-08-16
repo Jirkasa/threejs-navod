@@ -189,6 +189,13 @@ import * as dat from 'dat.gui';
     <p class="paragraph u-mb-2">Teď si můžeme vytvořit nový panel a přidat si do něj input pro měnění velikosti kamery. Jelikož chceme, aby kamera měla stejný poměr stran jako shadow mapa (čtverec), tak budeme chtít měnit obě strany zároveň. Rozměry stran ortografické kamery určujeme pomocí vlastností left, right, top a bottom. Definujeme vlastně vzdálenost jednotlivých stran od středu kamery. Všechny tyto vlastnosti tedy budeme měnit pomocí jednoho inputu. To můžeme udělat vytvořením pomocného objektu a reagováním na změnu inputu pomocí onChange metody. Následující ukázka to ukazuje. V onChange metodě měníme vlastnosti kamery: left, right, top a bottom. Poté aktualizujeme kameru zavoláním metody updateProjectionMatrix a také helper zavoláním metody update.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
+// vytvoření dat.GUI panelu
+const gui = new dat.GUI();
+
+const debugObject = {
+    size: directionalLight.shadow.camera.right
+}
+
 // přidání inputu pro změnu rozměrů kamery pro stíny
 gui.add(debugObject, "size")
 .min(0).max(10).step(0.01)

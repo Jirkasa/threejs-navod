@@ -128,7 +128,7 @@ gltfLoader.load(
         console.log(gltf);
 
         // přidání všech potomků načtené scény do scény
-        while (gltf.scene.children.length > 0) {
+        while (gltf.scene.children.length &gt; 0) {
             scene.add(gltf.scene.children[0]);
         }
     }
@@ -323,6 +323,6 @@ function tick() {
     <div data-example-id="5" class="u-mb-6"></div>
     <p class="paragraph u-mb-4">Pro tuto část je to vše. Nyní již víte, jak si můžete do scény načíst vlastní model. V příští části si ukážeme pár tipů, jak můžeme naše načtené modely renderovat tak, aby vypadaly více realisticky.</p>
     <div class="u-center-text">
-        <a href="#" class="button-primary">Pokračovat</a>
+        <a href="../realisticke-renderovani/" class="button-primary">Pokračovat</a>
     </div>
 <%- include("../../includes/tutorial-page-end.ejs") %>
