@@ -55,6 +55,11 @@ module.exports = {
                         sources: false
                     }
                 }, 'template-ejs-loader']
+            },
+            {
+                test: /\.glsl$/i,
+                exclude: /node_modules/,
+                use: "raw-loader"
             }
         ]
     },

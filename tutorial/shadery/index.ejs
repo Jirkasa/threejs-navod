@@ -1,0 +1,1150 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Shadery", activePage: "shadery" }) %>
+    <h1 class="heading-primary u-mb-6">Shadery</h1>
+    <p class="paragraph u-mb-4">Vše co se pomocí WebGL zobrazuje na canvas, je možné díky shaderům. Když používáme materiály, které nám Three.js nabízí, tak používáme shadery, které již někdo vytvořil a nemusíme si psát své vlastní. Pokud ale chceme udělat něco, co vestavěné Three.js materiály neumožňují (třeba vytvářet vlny), tak se často napsání vlastního shaderu nevyhneme. Proto je užitečné to umět. V této části se naučíme alespoň základy, aby jste měli představu, jak se shadery programují.</p>
+    <h2 class="heading-secondary u-mb-2">Co je Shader</h2>
+    <p class="paragraph u-mb-2">Shader je jeden z hlavních konceptů WebGL. Pokud bychom se chtěli naučit pracovat s nativním WebGL, tak se o něm budeme muset začít učit jako první. Jedná se o program napsaný v GLSL (OpenGL Shading Language), což je programovací jazyk pro psaní shaderů. Tento program se posílá do GPU a to podle něj pozicuje vertexy geometrie nebo vybarví každý viditelný pixel geometrie. Nazvat to jako pixel není úplně přesné, je to fragment. Pixel je část obrazovky, fragment je jakoby část geometrie, nevím jak to vysvětlit. Můžeme si to představit tak, že fragment je jakoby pixel pro geometrii. To ale samozřejmě není správně.</p>
+    <p class="paragraph u-mb-4">Do shaderu předáváme spoustu dat. Můžeme mu předávat souřadnice vertexů, transformace meshe, informace o kameře, barvy, textury, světla, a spoustu dalších věcí. Můžeme mu předávat jakákoliv data. GPU tato data zpracovává a řídí se instrukcemi shaderu.</p>
+    <h3 class="heading-tertiary u-mb-2">Typy shaderů</h3>
+    <p class="paragraph u-mb-4">Existují dva typy shaderů: vertex shader a fragment shader. Vertex shader má na starosti pozicování každého vertexu geometrie. Poté co se všechny vertexy pomocí vertex shaderu napozicují, tak GPU ví, které části geometrie jsou viditelné a může pokračovat na fragment shader. Fragment shader se postará o vybarvení každého viditelného pixelu geometrie.</p>
+    <h2 class="heading-secondary u-mb-2">Attributes, Uniforms a Varyings</h2>
+    <p class="paragraph u-mb-4">Do shaderů můžeme posílat spoustu dat. Říkáme jim attributy, uniforms nebo varyings. Jaký je v tom rozdíl se tu můžete dočíst.</p>
+    <h3 class="heading-tertiary u-mb-2">attributes</h3>
+    <p class="paragraph u-mb-4">Vertex shader se používá, jak jsem psal, pro napozicování každého vertexu geometrie. Některá data, která vertex shaderu předáváme, budou pro každý vertex jiná. Například pozice vertexu. Těmto datům se říká attributy. Už jste se s nimi setkali, když jsme si zkoušeli v části o geometrii vytvořit vlastní geometrii nebo když jsme nastavovali barvu vertexů v části o particles. Nyní tedy již víte, proč jsme to dělali způsobem, jakým jsme to dělali. Vytvářeli jsme attributy, které se pošlou ke zpracování do vertex shaderu.</p>
+    <h3 class="heading-tertiary u-mb-2">uniforms</h3>
+    <p class="paragraph u-mb-4">Některá data, která jsou pro každý vertex geometrie stejná, se nazývají uniforms. Může se jednat například o pozici kamery.</p>
+    <h3 class="heading-tertiary u-mb-2">varyings</h3>
+    <p class="paragraph u-mb-4">Do fragment shaderu nemůžeme posílat attributy. To můžeme dělat jen pro vertex shader. Můžeme ale posílat data z vertex shaderu do fragment shaderu. Těmto datům se říká varyings.</p>
+    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <p class="paragraph u-mb-2">Abychom si mohli zkusit napsat svoje vlastní shadery, tak je tu pro vás opět připraven startovní kód. Pomocí startovního kódu z části o Webpacku si tedy vytvořte nový projekt a do JavaScript souboru ve složce src si zkopírujte kód z následující ukázky. Tento kód jen vytváří scénu a OrbitControls ovládání, abychom se mohli po scéně pohybovat. Také provádí pár dalších běžných věcí, o kterých víte z předchozích částí.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Protože canvas roztahujeme po celé velikosti okna prohlížeče, tak si jako vždy zkopírujte následující CSS kód, pomocí kterého se zbavíme defaultních marginů a paddingů.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic.</p>
+    <h2 class="heading-secondary u-mb-2">Vytvoření vlastních shaderů</h2>
+    <p class="paragraph u-mb-2">Pro vytvoření vlastních shaderů můžeme použít <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/ShaderMaterial" target="_blank" class="link">ShaderMaterial</a> nebo <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/RawShaderMaterial" target="_blank" class="link">RawShaderMaterial</a>. Rozdíl mezi nimi je ten, že ShaderMaterial za nás v shaderech automaticky nastavuje některé věci. To je pro nás lepší, pokud již víme jak shadery fungují. Pokud se ale shadery teprve učíme, tak je lepší použít RawShaderMaterial a psát si shadery úplně od základu.</p>
+    <p class="paragraph u-mb-2">V našem příkladu si zkusíme vytvořit vlastní materiál pomocí RawShaderMaterialu. Následující ukázka ukazuje, jak to můžeme udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: '', // zde píšeme kód pro vertex shader
+    fragmentShader: '' // zde píšeme kód pro fragment shader
+});</code></pre>
+    <p class="paragraph u-mb-2">Jak vidíte v ukázce, kód pro shadery píšeme do řetězce ve vlastnosti vertexShader a fragmentShader. Pokud chceme psát na více řádků, můžeme použít template literály. Úplně nejlepší je ale shadery psát do samostatných souborů. To si později ukážeme.</p>
+    <p class="paragraph u-mb-2">Jak psát shadery si vysvětlíme později. Teď si jen zkopírujte následující kód a nezkoumejte jak to funguje.</p>
+    <pre class="code-box language-javascript u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: `
+    uniform mat4 projectionMatrix;
+    uniform mat4 viewMatrix;
+    uniform mat4 modelMatrix;
+
+    attribute vec3 position;
+
+    void main() {
+        gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+    }
+    `,
+    fragmentShader: `
+    precision mediump float;
+
+    void main() {
+        gl_FragColor = vec4(0, 1, 0, 1);
+    }
+    `
+});</code></pre>
+    <p class="paragraph u-mb-2">Abychom viděli že náš shader materiál funguje, tak si do scény přidáme kostku, které materiál nastavíme.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    material
+);
+// přidání kostky do scény
+scene.add(cube);</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění ukázky můžete vidět, že se vám vyrenderuje kostka, která bude mít zelenou barvu.</p>
+    <div data-example-id="1" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Jazyk GLSL</h2>
+    <p class="paragraph u-mb-4">Shadery píšeme v jazyku GLSL (GL Shading Language). Jeho syntaxe je blízká k jazyku C. Pokud chceme shadery psát, tak jej musíme umět. Proto si jej teď rozebereme. Jeho syntaxe není moc složitá. Pokud znáte JavaScript nebo jiný programovací jazyk, tak nám jen stačí popsat si pár věcí.</p>
+    <h3 class="heading-tertiary u-mb-2">Odsazování a středníky</h3>
+    <p class="paragraph u-mb-2">Odsazení v GLSL není důležité. Důležité jsou středníky. Každý středník ukončuje jeden příkaz.</p>
+    <pre class="code-box u-mb-4"><code>float a = 1.0;
+    float b = 2.0;</code></pre>
+    <h3 class="heading-tertiary u-mb-2">Datové typy</h3>
+    <p class="paragraph u-mb-2">GLSL je typovaný jazyk. Pro každou proměnnou musíme určit datový typ, který bude uchovávat.</p>
+    <pre class="code-box u-mb-2"><code>// proměnná uchovávající číslo s desetinnou částí
+float a = 3.0;
+// proměnná uchovávající celé číslo (bez desetinné části)
+int b = 1;
+// proměnná uchovávající boolean hodnotu (true|false)
+bool c = true;</code></pre>
+    <p class="paragraph u-mb-1">Základní datové typy, které GLSL obsahuje, jsou následující:</p>
+    <ul class="list u-mb-2">
+        <li><b>bool</b> - hodnota true nebo false</li>
+        <li><b>int</b> - celé číslo (bez desetinné části)</li>
+        <li><b>float</b> - číslo s desetinnou částí</li>
+    </ul>
+    <p class="paragraph u-mb-1">GLSL usnadňuje práci s vektory a maticemi. Vektor nebo matice je vždy složena z nějakého počtu základních datových typů. Pokud začíná na b, tak obsahuje boolean hodnoty, pokud začíná na i, tak obsahuje int hodnoty a pokud začíná na cokoliv jiného, tak obsahuje float hodnoty. Datové typy pro vektory a matice jsou následující:</p>
+    <ul class="list u-mb-2">
+        <li><b>bvec2, bvec3, bvec4</b> - 2, 3 a 4-komponentový boolean vektor</li>
+        <li><b>ivec2, ivec3, ivec4</b> - 2, 3 a 4-komponentový int vektor</li>
+        <li><b>vec2, vec3, vec4</b> - 2, 3 a 4-komponenty float vektor</li>
+        <li><b>mat2, mat3, mat4</b> - 2x2, 3x3 a 4x4 float matice</li>
+    </ul>
+    <p class="paragraph u-mb-1">Kromě zmíněných datových typů máme k dispozici ještě další 3 speciální:</p>
+    <ul class="list u-mb-2">
+        <li><b>sampler2D</b> - slouží v podstatě k uchování textury</li>
+        <li><b>samplerCube</b> - slouží v podstatě k uchování cube mapy</li>
+        <li><b>void</b> - slouží k identifikování funkcí (v GLSL si můžeme stejně jako v JavaScriptu vytvořit funkce), které nevracejí žádnou hodnotu</li>
+    </ul>
+    <p class="paragraph u-mb-2">Proměnné mohou v GLSL uchovávat jen jeden datový typ. Nefunguje to jako v JavaScriptu, že proměnná může jednou uchovávat třeba boolean hodnotu a později číslo. Je také například rozdíl mezi hodnotou 1 a hodnotu 1.0. Hodnota 1 je int a hodnota 1.0 je float.</p>
+    <pre class="code-box u-mb-4"><code>// toto je správně
+float a = 1.25;
+
+// toto je špatně
+// float b = 1;</code></pre>
+    <h3 class="heading-tertiary u-mb-2">Vektory</h3>
+    <p class="paragraph u-mb-2">Jak jsem již psal, GLSL nám poskytuje datové typy pro vektory. Je jich více a záleží na tom jestli chceme vektor o dvou, třech nebo čtyřech hodnotách. Následující ukázka vytváří vektor o dvou hodnotách. Můžete si všimnout, že nepoužíváme klíčové slovo new, jak to děláme v JavaScriptu.</p>
+    <pre class="code-box u-mb-2"><code>vec2 a = vec2(1.0, 2.0);</code></pre>
+    <p class="paragraph u-mb-2">Po vytvoření vektoru o dvou hodnotách (vec2) máme k dispozici hodnoty "x" a "y". Je to podobné jako <a href="https://threejs.org/docs/index.html?q=vector#api/en/math/Vector2" target="_blank" class="link">Vector2</a> ve Three.js. Tyto hodnoty můžeme měnit stejným způsobem jako v JavaScriptu. Máme ale také například možnost měnit obě hodnoty zároveň. V následující ukázce je to ukázáno.</p>
+    <pre class="code-box u-mb-2"><code>vec2 a = vec2(1.0, 2.0);
+
+// změnění hodnoty "x"
+a.x = 3.0;
+// změnění hodnoty "y"
+a.y = 5.0;
+
+// změnění hodnot "x" i "y" (vynásobení dvěma)
+a *= 2;</code></pre>
+    <p class="paragraph u-mb-2">Pokud vytvoříme vektor o třech hodnotách (vec3), tak budeme mít kromě hodnot "x" a "y" také hodnotu "z". Stejně jako u <a href="https://threejs.org/docs/index.html?q=vector#api/en/math/Vector3" target="_blank" class="link">Vector3</a> ve Three.js. Pomocí vec3 se ale dají reprezentovat také barvy. Proto mají hodnoty xyz aliasy rgb, aby to pro barvy dávalo větší smysl.</p>
+    <pre class="code-box u-mb-2"><code>vec3 a = vec3(2.0, 3.0, 1.0);
+// vec3 obsahuje hodnoty "x", "y" a "z"
+a.z = 3.0;
+
+// vec3 se dá použít i pro barvu
+vec3 barva = vec3(1.0, 0.0, 0.0);
+// rgb jsou aliasy pro hodnoty xyz
+// - pro barvy to totiž dává větší smysl
+// - následující řádek mění hodnotu modrého kanálu barvy
+barva.b = 0.5;</code></pre>
+    <p class="paragraph u-mb-2">Pokud vytvoříme vektor o čtyřech hodnotách (vec4), tak máme k dispozici hodnoty "x", "y", "z" a "w". Stejně jako vec3, tak i vec4 můžeme použít pro reprezentaci barvy. Proto mají hodnoty xyzw aliasy rgba. Pomocí hodnoty a (alpha channel) můžeme navíc definovat i průhlednost barvy.</p>
+    <pre class="code-box u-mb-2"><code>vec4 a = vec4(1.0, 1.0, 0.5, 1.0);
+// vec4 obsahuje hodnoty "x", "y", "z" a "w"
+a.w = 2.0;
+
+// vec4 se dá použít i pro barvu s průhledností
+vec4 barva = vec4(0.0, 1.0, 0.0, 1.0);
+// rgba jsou aliasy pro hodnoty xyzw
+// - pro barvy to totiž dává větší smysl
+// - následující řádek mění průhlednost barvy
+barva.a = 0.5;</code></pre>
+    <p class="paragraph u-mb-2">Pokud chceme měnit více vlastností vektoru najednou, můžeme za tečku napsat hodnoty, které chceme měnit. V následující ukázce se hodnota přiřazuje vlastnostem "x" a "y" zároveň.</p>
+    <pre class="code-box u-mb-4"><code>vec3 a = vec3(2.0, 3.0, 1.0);
+
+// přiřazení vlastnostem "x" a "y" hodnotu 4.0
+a.xy = 4.0;</code></pre>
+    <h3 class="heading-tertiary u-mb-2">Funkce</h3>
+    <p class="paragraph u-mb-2">Stejně jako v JavaScriptu, tak i v GLSL si můžeme vytvářet funkce. Musíme ale specifikovat návratový datový typ a datové typy parametrů.</p>
+    <pre class="code-box u-mb-2"><code>float soucet(float a, float b) {
+    float vysledek = a + b;
+    return vysledek;
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud funkce nic nevrací, tak můžeme jako návratový typ nastavit void.</p>
+    <pre class="code-box u-mb-2"><code>void doSomething(bool a) {
+    // nějaký kód...
+}</code></pre>
+    <p class="paragraph u-mb-4">Kromě toho, že si můžeme vytvářet vlastní funkce, tak jich nám GLSL spoustu poskytuje. Máme například funkce: sin, cos, max, min, pow, exp, mod, clamp. A spoustu dalších, například: cross, dot, mix, step, smoothstep, length, distance, reflect, refract, normalize.</p>
+    <h2 class="heading-secondary u-mb-2">Psaní shaderů do samostatných souborů</h2>
+    <p class="paragraph u-mb-2">V našem příkladu máme shadery zapsané přímo v JavaScript kódu pomocí template literálů. Psát shadery tímto způsobem ale samozřejmě není moc komfortní a nemáme barevně zvýrazněnou syntaxy. Proto je lepší psát shadery do samostatných souborů. Jak to můžeme udělat si teď ukážeme.</p>
+    <p class="paragraph u-mb-2">Pro naše shadery si v našem projektu vytvoříme dva soubory. Jeden nazveme jako vertex.glsl a bude obsahovat kód vertex shaderu. Druhý nazveme jako fragment.glsl a bude obsahovat kód fragment shaderu. Vytvořte je ve složce src. Do souboru vertex.glsl vložíme kód pro vertex shader, který v našem příkladu používáme.</p>
+    <pre class="code-box u-mb-2"><code>uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+attribute vec3 position;
+
+void main() {
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+}</code></pre>
+    <p class="paragraph u-mb-2">Do souboru fragment.glsl vložíme kód pro náš fragment shader.</p>
+    <pre class="code-box u-mb-2"><code>precision mediump float;
+
+void main() {
+    gl_FragColor = vec4(0, 1, 0, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Teď budeme chtít obsah těchto souborů naimportovat jako řetězec do proměnných v našem JavaScript souboru. Můžeme to udělat následujícím způsobem, ale ještě to nebude fungovat. Budeme to muset nastavit v konfiguraci Webpacku.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// naimportování obsahu souboru vertex.glsl jako řetězce
+import vertexShader from './vertex.glsl';
+// naimportování obsahu souboru fragment.glsl jako řetězce
+import fragmentShader from './fragment.glsl';
+    
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po naimportování kódu pro shadery je můžeme použít namísto template literálů.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci zkusíte sestavit pomocí "npm run build" nebo máte rozběhnutý Dev Server, tak dostanete chybu. Webpack totiž neumí zpracovat glsl soubory, které si do JavaScriptu importujeme. Budeme si k tomu muset nakonfigurovat loader, který nám umožňí importovat soubory jako řetězec. Použijeme loader jménem <a href="https://v4.webpack.js.org/loaders/raw-loader/" target="_blank" class="link">raw-loader</a>. Nainstalujeme si jej přes NPM jako jakýkoliv jiný balíček:</p>
+    <pre class="code-box code-box--command u-mb-2"><code>npm install raw-loader --save-dev</code></pre>
+    <p class="paragraph u-mb-2">Po instalaci jej můžeme použít v naší Webpack konfiguraci v souboru webpack.common.js pro všechny soubory s koncovkou .glsl. Nebudu se pouštět do detailů, toto není tutoriál o Webpacku. Pokud byste se o něm ale chtěli dozvědět více, tak o něm mám také <a href="https://jirkasa.github.io/webpack-tahak/" target="_blank" class="link">webové stránky</a>.</p>
+    <pre class="code-box u-mb-2"><code>const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    entry: "./src/main.js",
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        clean: true
+    },
+    module: {
+        rules: [
+            {
+                test: /\.glsl$/i,
+                exclude: /node_modules/,
+                use: "raw-loader"
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/index.html"
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, "static").replace(/\\/g, "/"),
+                    to: path.resolve(__dirname, "dist", "static"),
+                    noErrorOnMissing: true
+                }
+            ]
+        })
+    ]
+}</code></pre>
+    <p class="paragraph u-mb-2">Teď by se již sestavení aplikace mělo podařit a náš příklad by měl fungovat úplně stejně jako dříve. Akorát teď pro shadery používáme samostatné soubory.</p>
+    <div data-example-id="2" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Psaní vertex shaderu</h2>
+    <p class="paragraph u-mb-2">Viděli jste jak kód pro shader vypadá, naučili jste se základní syntaxy jazyka GLSL a nakonfigurovali jsme si Webpack tak, abychom mohli shadery psát do samostatných souborů. Jsme tedy připraveni pustit se do samotného psaní shaderů. Začneme s vertex shaderem.</p>
+    <p class="paragraph u-mb-2">Rozebereme si náš kód pro vertex shader, abychom věděli jak funguje. Následující ukázka jej ukazuje ještě jednou, ale okomentovaný.</p>
+    <pre class="code-box u-mb-2"><code>// matice, které můžeme použít k transformaci vertexu
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+// atribut obsahující pozici vertexu
+attribute vec3 position;
+
+// funkce main se spouští pro každý vertex geometrie
+void main() {
+    // gl_Position je proměnná, které musíme přiřadit hodnotu,
+    // reprezentující pozici vertexu v clip space
+    // - pokud vynásobíme pozici vertexu s pozicí všech matic, tak dostaneme správnou pozici vertexu
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+}</code></pre>
+    <p class="paragraph u-mb-2">Jak můžete v kódu vidět, tak na začátku definujeme uniforms a atributy. Co to je jsem psal již výše. Uniforms jsou hodnoty, které jsou stejné pro všechny vertexy geometrie a attributy mohou obsahovat hodnoty rozdílné pro každý vertex. Atribut position obsahuje pozici vertexu, kterou ve funkci main používáme k určení pozice vertexu na obrazovce. Pozici vertexu na obrazovce určujeme tak, že jej převedeme na vec4 a vynásobíme se všemi maticemi, které jsme si definovali jako uniforms. Výsledek poté přiřadíme proměnné gl_Position, která je již definovaná a slouží k určení pozice vertexu na obrazovce. Nevím jak to funguje, ale vím že když to tak uděláme, tak dostaneme správnou pozici vertexu. Funkce main se spouští pro každý vertex geometrie a postupně tak určuje, kde se mají jednotlivé vertexy zobrazit. Proměnná gl_Position ve skutečnosti udává pozici vertexu v clip space, ale já ani v podstatě nevím co to je. Prostě to beru tak, že to udává pozici vertexu na obrazovce a můžete to tak brát také. Není to ale úplně správně.</p>
+    <p class="paragraph u-mb-2">Co to jsou matice, které v kódu používáme nevím. Jen vím, že slouží k transformaci pozice vertexu, dokud nedostaneme jeho finální pozici na obrazovce. K čemu jednotlivé matice slouží jsem popsal zde:</p>
+    <ul class="list u-mb-2">
+        <li><b>Model Matrix</b> - aplikuje transformace relativní k meshi (podle pozice, rotace, zvětšení/zmenšení)</li>
+        <li><b>View Matrix</b> - aplikuje transformace relativní ke kameře (podle pozice, rotace, field of view...)</li>
+        <li><b>Projection Matrix</b> - transformuje souřadnice do clip space souřadnic</li>
+    </ul>
+    <p class="paragraph u-mb-2">Pokud chceme v shaderu u pozice vertexů provést nějakou změnu, tak můžeme. Abychom to ale mohli snadno udělat, tak si musíme náš dosavadní kód pro určení pozice vertexu na obrazovce rozepsat na více kroků.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď si můžeme hrát se souřadnicemi vertexů prostřednictvím modelPosition a posunout je třeba směrem nahoru. Následující ukázka ukazuje, jak to udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // posunutí vertexu směrem nahoru
+    modelPosition.y += 1.0;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se kostka (její vertexy) posunula směrem nahoru.</p>
+    <div data-example-id="3" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Kromě atributu position, který nám Three.js pro kostku automaticky vytvořilo, můžeme pro vertexy definovat i vlastní atributy. Následující ukázka ukazuje, jak to můžeme udělat. Nejdříve vytvoříme <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays" target="_blank" class="link">typové pole</a>, poté jej naplníme náhodnými hodnotami, vytvoříme s jeho pomocí <a href="https://threejs.org/docs/index.html?q=buffer#api/en/core/BufferAttribute" target="_blank" class="link">BufferAttribute</a> a ten nastavíme geometrii kostky pomocí metody setAttribute.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření pole pro náhodné číslo pro každý vertex
+// - velikost nastavujeme podle počtu položek pro position atribut
+const randoms = new Float32Array(cube.geometry.attributes.position.count);
+
+// vygenerování náhodného čísla pro každý vertex
+for (let i = 0; i &lt; randoms.length; i++) {
+    randoms[i] = Math.random() * 0.2;
+}
+
+// vytvoření attributu (pro každý vertex je jedna hodnota)
+const randomsAttribute = new THREE.BufferAttribute(randoms, 1);
+// nastavení attributu pojmenovaného jako aRandom geometrii kostky
+cube.geometry.setAttribute("aRandom", randomsAttribute);</code></pre>
+    <p class="paragraph u-mb-2">V ukázce můžete vidět, že atribut pojmenováváme se znakem "a" na začátku. Je to tak dobré dělat, aby bylo jasné, že se jedná o atribut. Pokud bychom nastavovali třeba uniform, tak bychom na začátek připsali "u".</p>
+    <p class="paragraph u-mb-2">Teď můžeme v shaderu náš atribut použít stejným způsobem jako position atribut. Budeme s jeho pomocí určovat třeba pozici vertexu na ose X a Z. Následující ukázka kódu ukazuje, jak to můžeme udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+attribute float aRandom;
+
+void main() {
+    // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // posunutí vertexu směrem nahoru
+    modelPosition.y += 1.0;
+    // změnění pozice vertexu na ose X a Z
+    modelPosition.xz += aRandom;
+
+	vec4 viewPosition = viewMatrix * modelPosition;
+	vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}
+    </code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak uvidíte, že vertexy kostky jsou náhodně posunuté.</p>
+    <div data-example-id="4" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Psaní fragment shaderu</h2>
+    <p class="paragraph u-mb-2">Teď si projdeme náš kód pro fragment shader. Následující ukázka jej ukazuje okomentovaný.</p>
+    <pre class="code-box u-mb-2"><code>// nastavení preciznosti datového typu float
+precision mediump float;
+
+// tato funkce se spouští pro každý fragment
+void main() {
+    // nastavení barvy fragmentu na zelenou barvu
+    gl_FragColor = vec4(0, 1, 0, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Jak můžete v kódu vidět, tak na začátku definujeme preciznost datového typu float. Máme na výběr z těchto tří možností:</p>
+    <ul class="list u-mb-2">
+        <li><b>highp</b> - vysoká přesnost, ale může mít vliv na výkon a nemusí fungovat na všech zařízeních</li>
+        <li><b>mediump</b> - střední přesnost (to používáme asi nejčastěji)</li>
+        <li><b>lowp</b> - nízká přesnost, mohou kvůli tomu vznikat bugy</li>
+    </ul>
+    <p class="paragraph u-mb-2">Ve funkci main nastavujeme barvu fragmentu na zelenou přirazením hodnoty typu vec4 (již jsem psal že může uchovávat barvu) proměnné gl_FragColor. Tato proměnná již existuje a jejím přiřazením barvu fragmentu určujeme. Již jsem se někde na začátku této části pokoušel vysvětlit co je to fragment, ale moc mi to nešlo. Je to v podstatě jakoby pixel, ale pro geometrii. Což asi není úplně správně, ale můžeme to tak chápat. Pomocí fragment shaderu vybarvujeme jakoby jednotlivé pixely (správně fragmenty...) na obrazovce. Nevím jak to lépe popsat. Nerozumím tomu natolik, abych to byl schopen smysluplněji vysvětlit.</p>
+    <p class="paragraph u-mb-2">Můžeme si zkusit změnit barvu fragmentu třeba na červenou a klidně můžeme snížit i průhlednost.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    // nastavení barvy fragmentu na červenou
+    // barvu s poloviční průhledností
+    gl_FragColor = vec4(1, 0, 0, 0.5);
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud používáme průhlednost, tak u materiálu musíme nastavit vlastnost transparent na true.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se kostka vykreslí s červenou barvou a bude průhledná.</p>
+    <div data-example-id="5" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Varyings</h2>
+    <p class="paragraph u-mb-2">Do fragment shaderu nemůžeme posílat attributy. Můžeme ale posílat data z vertex shaderu do fragment shaderu. To si teď ukážeme. Abychom ale měli něco lepšího pro práci se shadery než naši rozbitou kostku, tak si náš kód nejprve trochu pročistíme. Smažte si v kódu vytvoření kostky a namísto něj tam zatím nechte jen materiál.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true
+});
+
+// // vytvoření kostky
+// const cube = new THREE.Mesh(
+//     new THREE.BoxGeometry(1, 1, 1),
+//     material
+// );
+// // přidání kostky do scény
+// scene.add(cube);
+
+
+// // vytvoření pole pro náhodné číslo pro každý vertex
+// // - velikost nastavujeme podle počtu položek pro position atribut
+// const randoms = new Float32Array(cube.geometry.attributes.position.count);
+
+// // vygenerování náhodného čísla pro každý vertex
+// for (let i = 0; i &lt; randoms.length; i++) {
+//     randoms[i] = Math.random() * 0.2;
+// }
+
+// // vytvoření attributu (pro každý vertex je jedna hodnota)
+// const randomsAttribute = new THREE.BufferAttribute(randoms, 1);
+// // nastavení attributu pojmenovaného jako aRandom geometrii kostky
+// cube.geometry.setAttribute("aRandom", randomsAttribute);</code></pre>
+    <p class="paragraph u-mb-2">Namísto kostky použijeme jen obyčejný plane, který ale bude mít hodně vertexů, abychom s nimi mohli v shaderech pracovat a zkoušet si různé věci.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření plochy
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1, 32, 32),
+    material
+);
+// přidání plochy do scény
+scene.add(plane);</code></pre>
+    <p class="paragraph u-mb-2">Pokud si na materiálu nastavíte vlastnost wireframe na true, tak si můžete ve scéně prohlédnout, z kolika vertexů se plane skládá.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true,
+    wireframe: true
+});
+
+/* ... */</code></pre>
+    <div data-example-id="6" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Nyní můžete z materiálu nastavení wireframe odstranit. Jen jsem vám tím chtěl ukázat, že náš plane obsahuje spoustu vertexů, se kterými můžeme pracovat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď si ještě pročistíme náš kód pro shadery. Vertex shader si upravte do následující podoby.</p>
+    <pre class="code-box u-mb-2"><code>uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+attribute vec3 position;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Fragment shader si také upravte do následující podoby.</p>
+    <pre class="code-box u-mb-2"><code>precision mediump float;
+
+void main() {
+    gl_FragColor = vec4(1, 1, 1, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak by se vám měl jen vyrenderovat plane v bílé barvě. S tím teď budeme pracovat.</p>
+    <div data-example-id="7" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Zkusíme si na plane vykreslit nějaký tvar. Použijeme k tomu funkci sinus. Již jsme ji použili v části o animaci. Když se podíváte na její graf, tak vidíte, že jak hodnota roste, tak nám výsledná hodnota tvoří takové vlny. Toho využijeme, a nakreslíme si na náš plane nějaký vzor.</p>
+    <img src="../../static/img/funkce-sinus.svg" alt="graf funkce sinus" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Aby to pro nás bylo jednodušší na pochopení, tak nejprve budeme ve vertex shaderu jen pohybovat vertexy a barvy přidáme až později. Následující ukázka ukazuje, jak můžeme ve vertex shaderu pomocí funkce sinus pohybovat vertexy na ose Z podle jejich pozice na ose X a Y.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // získání hodnoty podle pozice vertexu na ose X a Y
+    // - používáme dvě volání funkce sin (pro pozici na ose X a Y), které spolu vynásobíme
+    // - nemusíte moc zkoumat jak to funguje, prostě získáváme nějakou hodnotu podle pozice
+    //   vertexu na ose X a Y
+    float value = abs(sin(modelPosition.x * 12.0) * sin(modelPosition.y * 12.0));
+    // nastavení získané hodnoty pro pozici na ose Z
+    modelPosition.z = value;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak by jste měli vidět, že se na geometrii vytvořili takové vlny.</p>
+    <div data-example-id="8" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Teď když víme jak náš tvar vypadá, tak bychom jej mohli také nakreslit ve fragment shaderu. Abychom to mohli udělat, tak musíme nějak dostat vypočítané hodnoty z vertex shaderu do fragment shaderu. Použijeme k tomu varying. Ten vytváříme ve vertex shaderu a nastavujeme mu hodnotu. Poté jej můžeme použít ve fragment shaderu. Následující ukázka ukazuje, jak můžeme ve vertex shaderu varying vytvořit a přiřadit mu hodnotu. Je dobré varyings pojmenovávat se znakem "v" na začátku, aby bylo jasné, že se jedná o varying. To je ale na vás.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření varying
+varying float vValue;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // získání hodnoty podle pozice vertexu na ose X a Y
+    float value = abs(sin(modelPosition.x * 12.0) * sin(modelPosition.y * 12.0));
+    // nastavení získané hodnoty pro pozici na ose Z
+    modelPosition.z = value;
+
+    // uložení získané hodnoty do varying
+    vValue = value;
+
+	vec4 viewPosition = viewMatrix * modelPosition;
+	vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Teď můžeme náš vytvořený varying použít ve fragment shaderu. Nadeklarujeme si jej stejně jako ve vertex shaderu, akorát jej můžeme hned použít, protože již obsahuje hodnotu. Možná si ale říkáte, jakou hodnotu obsahuje. To záleží na pozici fragmentu vůči vertexům. Jedná se o interpolaci hodnot, které jsme vypočítali pro sousední vertexy. Prostě záleží na tom, kde se fragment nachází a podle toho se určí hodnota podle hodnot, které jsme u varyingu pro okolní vertexy spočítali. Nevím jak to lépe vysvětlit. Následující ukázka ukazuje, jak můžeme hodnotu varyingu použít pro nastavování modrého kanálu barvy. V podstatě tím tedy vzor kreslíme.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// nadeklarování varyingu
+varying float vValue;
+
+void main() {
+    // hodnotu varyingu používáme pro modrý kanál barvy
+    gl_FragColor = vec4(0, 0, vValue, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste vzor měli vidět i barevně.</p>
+    <div data-example-id="9" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Pokud by jste si chtěli prohlédnout jen nakreslený vzor bez pohybu vertexů, tak si pro to můžete ve vertex shaderu zakomentovat kód.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // získání hodnoty podle pozice vertexu na ose X a Y
+    float value = abs(sin(modelPosition.x * 12.0) * sin(modelPosition.y * 12.0));
+    // // nastavení získané hodnoty pro pozici na ose Z
+    // modelPosition.z = value;
+
+    // uložení získané hodnoty do varying
+    vValue = value;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Teď si můžete vzor prohlédnout jen jako vykreslený na geometrii.</p>
+    <div data-example-id="10" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Uniforms</h2>
+    <p class="paragraph u-mb-2">Pokud chceme mít stejné shadery s různými výsledky, tak můžeme použít uniforms. Ty slouží k uchování dat, která jsou pro každý vertex stejná. V našem kódu jsme je zatím používali pro matice, s jejichž pomocí jsme vertexy správně pozicovali na obrazovku (správně do clip space). Díky uniforms můžeme například vytvořit jeden materiál červený a druhý zelený s použitím jednoho shaderu. Také nám umožňují například provádět animaci.</p>
+    <p class="paragraph u-mb-2">Uniform můžeme do shaderu předat nastavením vlastnosti uniforms na materiálu, pro který shader používáme. V našem příkladu máme hodnotu 12, kterou používáme ve výpočtu hodnoty pro každý vertex. Prostě s ní v shaderu pracujeme. Namísto zapsání této hodnoty přímo v kódu pro shader, ji můžeme určovat pro materiál, který shader používá, vytvořením uniform. Jak to udělat ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true,
+    uniforms: {
+        uFrequency: {
+            value: 12
+        }
+    }
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">V předchozí ukázce kódu můžete vidět, že uniforms nastavujeme pomocí objektu, kde definujeme názvy uniforms jako klíče. Jejich hodnoty jsou objekty, které obsahují vlastnost value, určující hodnotu uniform. Dříve se ještě musel předávat datový typ pomocí vlastnosti type, ale ten se teď již určuje automaticky.</p>
+    <p class="paragraph u-mb-2">Uniform si můžeme v kódu pro shader deklarovat podle názvu, který jsme jí přiřadili, a použít. Následující ukázka to ukazuje a nahrazuje hodnotu 12.0, kterou jsme používali předtím. Také odkomentovává kód pro pozicování vertexu na ose Z, jelikož jsme si předtím chtěli prohlédnout jen samotný vzor bez pohybu vertexů.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+        
+// deklarování uniform
+uniform float uFrequency;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // získání hodnoty podle pozice vertexu na ose X a Y
+    float value = abs(sin(modelPosition.x * uFrequency) * sin(modelPosition.y * uFrequency));
+    // nastavení získané hodnoty pro pozici na ose Z
+    modelPosition.z = value;
+
+    // uložení získané hodnoty do varying
+    vValue = value;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak by měla fungovat úplně stejně jako předtím. Akorát teď máme možnost shader trochu modifikovat bez jeho přepisování a vytvářet více variací materiálu, používající stejný shader.</p>
+    <div data-example-id="11" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Můžeme si klidně hodnotu uniform zkusit změnit třeba na hodnotu 24.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true,
+    uniforms: {
+        uFrequency: {
+            value: 24
+        }
+    }
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace teď dostanete trochu jiný výsledek.</p>
+    <div data-example-id="12" class="u-mb-4"></div>
+    <h3 class="heading-tertiary u-mb-2">Animace</h3>
+    <p class="paragraph u-mb-2">Kromě toho, že nám uniforms umožňují shader různě nastavit, můžeme s jejich pomocí také provádět animaci. To si teď zkusíme. Budeme do shaderu předávat uběhnutý čas od startu aplikace a animovat s jeho pomocí náš vzor, který pomocí shaderu vytváříme. Začneme tím, že si pro uběhnutý čas vytvoříme na materiálu uniform.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materialu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    transparent: true,
+    uniforms: {
+        uFrequency: {
+            value: 24
+        },
+        uElapsedTime: {
+            value: 0
+        }
+    }
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Hodnotu uniform pro uběhnutý čas budeme muset aktualizovat v naší tick funkci. K uniforms máme u materiálu přístup pomocí vlastnosti uniforms a můžeme je tedy měnit. Následující ukázka ukazuje, jak to můžeme udělat. Pro získání uběhnutého času potřebujeme hodiny, proto si je před funkcí tick vytváříme a poté používáme.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření hodin
+const clock = new THREE.Clock();
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // aktualizace uniform pro uběhnutý čas
+    material.uniforms.uElapsedTime.value = clock.getElapsedTime();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Teď můžeme uběhnutý čas v shaderu použít a rozpohybovat tak náš vzor.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// uniform pro uběhnutý čas
+uniform float uElapsedTime;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // získání hodnoty podle pozice vertexu na ose X a Y
+    float value = abs(sin(modelPosition.x * uFrequency + uElapsedTime) * sin(modelPosition.y * uFrequency + uElapsedTime));
+    // nastavení získané hodnoty pro pozici na ose Z
+    modelPosition.z = value;
+
+    // uložení získané hodnoty do varying
+    vValue = value;
+
+	vec4 viewPosition = viewMatrix * modelPosition;
+	vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se vzor pohybuje.</p>
+    <div data-example-id="13" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Aplikování textury</h2>
+    <p class="paragraph u-mb-2">Teď si zkusíme pomocí shaderů aplikovat na geometrii texturu. Vytvoříme si k tomu nový projekt, abychom nemuseli předělávat ten stávající a lépe se v kódu orientovali. Pomocí startovního kódu z části o Webpacku si jej tedy vytvořte a do JavaScript souboru si zkopírujte následující kód. Ten jen vytváří kostku a nastavuje jí shader materiál.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// naimportování kódu pro shadery jako řetězce
+import vertexShader from './vertex.glsl';
+import fragmentShader from './fragment.glsl';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+
+// vytvoření shader materiálu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader
+});
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    material
+);
+// přidání kostky do scény
+scene.add(cube);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Protože canvas roztahujeme přes celou velikost okna prohlížeče, tak si jako vždy zkopírujte následující CSS styly.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-2">V kódu si importujeme kód ze souborů vertex.glsl a fragment.glsl. Musíme si je tedy ve složce src vytvořit. Do souboru vertex.glsl si zatím zkopírujte následující kód. S tímto kódem budete možná skoro vždy začínat, pokud budete shadery programovat.</p>
+    <pre class="code-box u-mb-2"><code>uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+attribute vec3 position;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+}</code></pre>
+    <p class="paragraph u-mb-2">Do souboru fragment.glsl si prozatím zkopírujte následující kód.</p>
+    <pre class="code-box u-mb-2"><code>precision mediump float;
+
+void main() {
+    gl_FragColor = vec4(0, 1, 0, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Aby se nám naše shadery do JavaScriptu naimportovali jako řetězce, tak k tomu potřebujeme raw-loader. Již jsme jej v této části nastavovali. Nainstalujeme jej následujícím příkazem:</p>
+    <pre class="code-box code-box--command u-mb-2"><code>npm install raw-loader --save-dev</code></pre>
+    <p class="paragraph u-mb-2">Po instalaci raw-loader nastavte v souboru s Webpack konfigurací jménem webpack.common.js. Následující ukázka ukazuje, jak to můžete udělat.</p>
+    <pre class="code-box u-mb-2"><code>const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+
+module.exports = {
+    entry: "./src/main.js",
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        clean: true
+    },
+    module: {
+        rules: [
+            {
+                test: /\.glsl$/i,
+                exclude: /node_modules/,
+                use: "raw-loader"
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/index.html"
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, "static").replace(/\\/g, "/"),
+                    to: path.resolve(__dirname, "dist", "static"),
+                    noErrorOnMissing: true
+                }
+            ]
+        })
+    ]
+}</code></pre>
+    <p class="paragraph u-mb-2">Nový projekt máme vytvořený a můžeme si tedy zkusit pomocí shaderu na geometrii aplikovat texturu. Proto si nějakou stáhněte a umístěte do složky static. Já budu používat <a href="https://polyhaven.com/a/brick_wall_001" target="_blank" class="link">tuto</a>. Stačí jen color (diffuse) textura, jiné typy si zkoušet aplikovat nebudeme. V JavaScriptu si ji načteme pomocí Texture Loaderu a nastavíme jako uniform, abychom ji mohli použít v shaderu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření TextureLoaderu
+const textureLoader = new THREE.TextureLoader();
+// načtení textury
+const texture = textureLoader.load("./static/brick_wall_001_diffuse_1k.jpg");
+
+// vytvoření shader materiálu
+const material = new THREE.RawShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    uniforms: {
+        uTexture: { // předání textury do shaderu jako uniform
+            value: texture
+        }
+    }
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po předání textury jako uniform ji můžeme použít ve fragment shaderu. Můžeme si ji jako uniform deklarovat se speciálním datovým typem sampler2D.</p>
+    <pre class="code-box u-mb-2"><code>precision mediump float;
+
+// uniform pro texturu
+uniform sampler2D uTexture;
+
+void main() {
+    gl_FragColor = vec4(0, 1, 0, 1);
+}</code></pre>
+    <p class="paragraph u-mb-2">Z části o texturách víte, že pokud chceme na geometrii aplikovat texturu, tak se geometrie musí dát nějakým způsobem rozložit na 2D plochu. Každá geometrie obsahuje UV souřadnice, které mapují jednotlivé vertexy na 2D plochu. Podle toho se určí, jak přesně se na geometrii textura aplikuje. UV souřadnice jsou attribute, máme k nim tedy přístup ve vertex shaderu. Budeme je ale potřebovat ve fragment shaderu, proto je tam můžeme předat pomocí varying. Následující ukázka ukazuje, jak to můžeme udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// attribute pro UV souřadnice
+attribute vec2 uv;
+
+// deklarace varying pro předání UV souřadnic do fragment shaderu
+varying vec2 vUv;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+
+    // předání UV souřadnic do fragment shaderu pomocí varying
+    vUv = uv;
+}</code></pre>
+    <p class="paragraph u-mb-2">Ve fragment shaderu můžeme UV souřadnice použít k získání barvy z textury. Pro každý fragment získáme z textury barvu podle UV souřadnic a tu pro něj použijeme. Jak jsem již psal, tak varyings hodnoty jsou pro fragmenty interpolací vypočítaných hodnot sousedních vertexů. U geometrie kostky je každá strana na 2D plochu plně rozprostřená. Pokud se tedy vykreslovaný fragment nachází třeba uprostřed strany kostky, tak bude mít UV souřadnice [0.5, 0.5], jelikož jeden roh strany má souřadnice [0, 0] a jeho protější roh má souřadnice [1, 1]. Lépe to možná pochopíte v následujícím obrázku.</p>
+    <img src="../../static/img/FragmentUVCoordinates.svg" alt="UV souřadnice pro fragment" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Pro získání barvy z textury podle UV souřadnic slouží funkce texture2D. Předáváme jí samler2D (naši texturu) a vec2 (UV souřadnice). Následující ukázka ukazuje, jak ji můžeme v našem příkladu použít.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// UV souřadnice
+varying vec2 vUv;
+
+void main() {
+    // použití barvy z textury pro fragment podle UV souřadnic
+    gl_FragColor = texture2D(uTexture, vUv);
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud si teď aplikaci spustíte, tak uvidíte, že se na kostku textura aplikovala.</p>
+    <div data-example-id="14" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Shader Material</h2>
+    <p class="paragraph u-mb-2">Abychom pochopili jak shadery fungují, tak jsme používali <a href="https://threejs.org/docs/index.html?q=shader#api/en/materials/RawShaderMaterial" target="_blank" class="link">RawShaderMaterial</a>. Pokud již ale chápeme jak shadery fungují, tak můžeme k usnadnění práce použít <a href="https://threejs.org/docs/index.html?q=shader#api/en/materials/ShaderMaterial" target="_blank" class="link">ShaderMaterial</a>. Ten za nás automaticky deklaruje attributy a uniforms, takže to nemusíme dělat sami. Také automaticky nastavuje precision.</p>
+    <p class="paragraph u-mb-2">Zkusíme si přepsat náš kód tak, aby používal namísto RawShaderMaterialu ShaderMaterial. Začneme v JavaScript kódu. Tam jen změněníme vytváření RawShaderMaterialu na vytváření ShaderMaterialu.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření shader materiálu
+const material = new THREE.ShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    uniforms: {
+        uTexture: { // předání textury do shaderu jako uniform
+            value: texture
+        }
+    }
+});
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Díky tomu že teď používáme ShaderMaterial, tak nemusíme ve vertex shaderu deklarovat attributy. Náš kód tedy bude o něco kratší. Následující ukázka jej ukazuje.</p>
+    <pre class="code-box u-mb-2"><code>varying vec2 vUv;
+
+void main() {
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectedPosition;
+
+    vUv = uv;
+}</code></pre>
+    <p class="paragraph u-mb-2">Ve fragment shaderu nemusíme určovat přesnost datového typu float. Stále ale musíme deklarovat uniform pro texturu, jelikož se jedná o naši vlastní uniform.</p>
+    <pre class="code-box u-mb-2"><code>uniform sampler2D uTexture;
+
+varying vec2 vUv;
+
+void main() {
+    gl_FragColor = texture2D(uTexture, vUv);
+}</code></pre>
+    <p class="paragraph u-mb-2">Aplikace by měla po spuštění fungovat stejně jako dřív.</p>
+    <div data-example-id="15" class="u-mb-4"></div>
+    <h2 class="heading-secondary u-mb-2">Kreslení vzorů</h2>
+    <p class="paragraph u-mb-2">Díky tomu, že máme ve fragment shaderu přístup k UV souřadnicím, tak můžeme na geometrii kreslit různé vzory. Mohli bychom na to sice použít texturu a v některých případech by to možná bylo i výkonnější, ale takto nad tím můžeme mít větší kontrolu. Navíc to může být celkem zábava. Vše co máme jsou naše matematické dovednosti a UV souřadnice.</p>
+    <p class="paragraph u-mb-2">Zkuste si ve vašem kódu zakomentovat získávání barvy z textury a namísto toho použijte kód z následující ukázky.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+void main() {
+    // // použití barvy z textury pro fragment podle UV souřadnic
+    // gl_FragColor = texture2D(uTexture, vUv);
+
+    float strength = mod(uUv.y * 10.0, 1.0);
+    gl_FragColor = vec4(vec3(strength), 1.0);
+}</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste na kostce měli vidět vykreslený vzor.</p>
+    <div data-example-id="16" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Jak vidíte, tak si můžete s UV souřadnicemi různě hrát a vytvářet různé zajímavé vzory. Následující ukázka ukazuje další příklad vytvoření vzoru.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+void main() {
+    // // použití barvy z textury pro fragment podle UV souřadnic
+    // gl_FragColor = texture2D(uTexture, vUv);
+
+    // float strength = mod(vUv.y * 10.0, 1.0);
+    // gl_FragColor = vec4(vec3(strength), 1.0);
+
+    float barX = step(0.4, mod(vUv.x * 10.0, 1.0));
+    barX *= step(0.8, mod(vUv.y * 10.0, 1.0));
+    float barY = step(0.4, mod(vUv.y * 10.0, 1.0));
+    barY *= step(0.8, mod(vUv.x * 10.0, 1.0));
+    float strength = barX + barY;
+    gl_FragColor = vec4(vec3(strength), 1.0);
+}</code></pre>
+    <div data-example-id="17" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">V GLSL můžeme používat třeba i podmínky if, stejně jako v JavaScriptu. Je ale dobré se jim spíš vyhnout a snažit se použít vestavěné funkce, pokud to jde. Je to lepší pro výkon. Zde jsem popsal pár funkcí, které by se vám při vytváření vzorů třeba mohli hodit:</p>
+    <ul class="list u-mb-4">
+        <li><b>step</b> - Jako parametr bere limit a hodnotu. Vrací 0.0 když je hodnota pod limitem a 1.0 když je nad limitem.</li>
+        <li><b>mod</b> - Provádí modulo operaci (zbytek po dělení) mezi dvěma předanými čísly.</li>
+        <li><b>abs</b> - Vrací absolutní hodnotu předaného čísla.</li>
+        <li><b>min</b> - Vrátí menší ze dvou předaných hodnot.</li>
+        <li><b>max</b> - Vrátí větší ze dvou předaných hodnot.</li>
+    </ul>
+    <h2 class="heading-secondary u-mb-2">Rozšiřování Three.js materiálů</h2>
+    <p class="paragraph u-mb-2">Pokud chceme rozšířit Three.js materiály a přepsat některé části jejich shaderů, tak můžeme. Máme dvě možnosti jak to udělat. První je ta, že můžeme materiál znovu kompletně vytvořit tak, že si vezmeme ze zdrojáku kód shaderů, umístíme jej do vlastních souborů a některé jeho části přepíšeme. Jenže shadery některých materiálů mohou být dost komplexní a nemusejí se skládat jen ze souboru pro vertex shader a fragment shader, jak jsme to měli v této části mi. Na shadery vestavěných Three.js materiálů se můžete podívat ve zdrojovém kódu v repozitáři na GitHubu nebo ve složce node_modules. Najdete je ve složce src/renderers/shaders. Následující ukázka například ukazuje shadery pro MeshBasicMaterial.</p>
+    <pre class="code-box language-javascript u-mb-2"><code>export const vertex = /* glsl */`
+#include &lt;common&gt;
+#include &lt;uv_pars_vertex&gt;
+#include &lt;uv2_pars_vertex&gt;
+#include &lt;envmap_pars_vertex&gt;
+#include &lt;color_pars_vertex&gt;
+#include &lt;fog_pars_vertex&gt;
+#include &lt;morphtarget_pars_vertex&gt;
+#include &lt;skinning_pars_vertex&gt;
+#include &lt;logdepthbuf_pars_vertex&gt;
+#include &lt;clipping_planes_pars_vertex&gt;
+
+void main() {
+
+    #include &lt;uv_vertex&gt;
+    #include &lt;uv2_vertex&gt;
+    #include &lt;color_vertex&gt;
+    #include &lt;morphcolor_vertex&gt;
+
+    #if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )
+
+        #include &lt;beginnormal_vertex&gt;
+        #include &lt;morphnormal_vertex&gt;
+        #include &lt;skinbase_vertex&gt;
+        #include &lt;skinnormal_vertex&gt;
+        #include &lt;defaultnormal_vertex&gt;
+
+    #endif
+
+    #include &lt;begin_vertex&gt;
+    #include &lt;morphtarget_vertex&gt;
+    #include &lt;skinning_vertex&gt;
+    #include &lt;project_vertex&gt;
+    #include &lt;logdepthbuf_vertex&gt;
+    #include &lt;clipping_planes_vertex&gt;
+
+    #include &lt;worldpos_vertex&gt;
+    #include &lt;envmap_vertex&gt;
+    #include &lt;fog_vertex&gt;
+
+}
+`;
+
+export const fragment = /* glsl */`
+uniform vec3 diffuse;
+uniform float opacity;
+
+#ifndef FLAT_SHADED
+
+    varying vec3 vNormal;
+
+#endif
+
+#include &lt;common&gt;
+#include &lt;dithering_pars_fragment&gt;
+#include &lt;color_pars_fragment&gt;
+#include &lt;uv_pars_fragment&gt;
+#include &lt;uv2_pars_fragment&gt;
+#include &lt;map_pars_fragment&gt;
+#include &lt;alphamap_pars_fragment&gt;
+#include &lt;alphatest_pars_fragment&gt;
+#include &lt;aomap_pars_fragment&gt;
+#include &lt;lightmap_pars_fragment&gt;
+#include &lt;envmap_common_pars_fragment&gt;
+#include &lt;envmap_pars_fragment&gt;
+#include &lt;cube_uv_reflection_fragment&gt;
+#include &lt;fog_pars_fragment&gt;
+#include &lt;specularmap_pars_fragment&gt;
+#include &lt;logdepthbuf_pars_fragment&gt;
+#include &lt;clipping_planes_pars_fragment&gt;
+
+void main() {
+
+    #include &lt;clipping_planes_fragment&gt;
+
+    vec4 diffuseColor = vec4( diffuse, opacity );
+
+    #include &lt;logdepthbuf_fragment&gt;
+    #include &lt;map_fragment&gt;
+    #include &lt;color_fragment&gt;
+    #include &lt;alphamap_fragment&gt;
+    #include &lt;alphatest_fragment&gt;
+    #include &lt;specularmap_fragment&gt;
+
+    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+
+    // accumulation (baked indirect lighting only)
+    #ifdef USE_LIGHTMAP
+
+        vec4 lightMapTexel = texture2D( lightMap, vUv2 );
+        reflectedLight.indirectDiffuse += lightMapTexel.rgb * lightMapIntensity * RECIPROCAL_PI;
+
+    #else
+
+        reflectedLight.indirectDiffuse += vec3( 1.0 );
+
+    #endif
+
+    // modulation
+    #include &lt;aomap_fragment&gt;
+
+    reflectedLight.indirectDiffuse *= diffuseColor.rgb;
+
+    vec3 outgoingLight = reflectedLight.indirectDiffuse;
+
+    #include &lt;envmap_fragment&gt;
+
+    #include &lt;output_fragment&gt;
+    #include &lt;tonemapping_fragment&gt;
+    #include &lt;encodings_fragment&gt;
+    #include &lt;fog_fragment&gt;
+    #include &lt;premultiplied_alpha_fragment&gt;
+    #include &lt;dithering_fragment&gt;
+
+}
+`;</code></pre>
+    <p class="paragraph u-mb-2">Jak v ukázce vidíte, tak Three.js shadery používají ve svém kódu příkazy #include, pomocí kterých si do svého kódu přidávají kód z jiných souborů. Toto je specifické pro vestavěné Three.js shadery. U těch vlastních bychom to tak nemohli udělat. Museli bychom si pro dělení glsl kódu nainstalovat a nakonfigurovat loader (například <a href="https://github.com/glslify/glslify-loader" target="_blank" class="link">glslify-loader</a>). Z tohoto důvodu je lepší použít hook, která nás nechává vložit do shaderů náš vlastní kód nebo některé části shaderů přepsat bez toho, aniž bychom si museli kopírovat celý kód shaderu ze zdrojového kódu. Materiálu, který chceme modifikovat, můžeme přiřadit funkci pod vlastnost jménem onBeforeCompile. Tato funkce se automaticky zavolá, než se materiál zkompiluje a předá se do ní shader, který můžeme modifikovat.</p>
+    <p class="paragraph u-mb-2">V našem příkladu si můžeme třeba zkusit vytvořit MeshBasicMaterial, nastavit mu červenou barvu, ale v shaderu ji nepoužít a přepsat ji před zkompilováním shaderů na zelenou. Následující ukázka kódu ukazuje, jak bychom to mohli udělat.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// // vytvoření shader materiálu
+// const material = new THREE.ShaderMaterial({
+//     vertexShader: vertexShader,
+//     fragmentShader: fragmentShader,
+//     uniforms: {
+//         uTexture: { // předání textury do shaderu jako uniform
+//             value: texture
+//         }
+//     }
+// });
+
+// vytvoření MeshBasicMaterialu
+const material = new THREE.MeshBasicMaterial({
+    color: 0xff0000
+});
+// modifikování materiálu
+// - předaná funkce se spustí před zkompilováním materiálu
+// - můžeme v ní kód pro shadery modifikovat
+material.onBeforeCompile = (shader) => {
+    // nahrazení části kódu za jiný
+    shader.fragmentShader = shader.fragmentShader.replace(
+        "vec4 diffuseColor = vec4( diffuse, opacity );",
+        `
+        vec4 diffuseColor = vec4(0, 1, 0, opacity);
+        `
+    )
+}
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se kostka vybarvila na zeleno, i když jsme při vytváření materiálu specifikovali červenou barvu.</p>
+    <div data-example-id="18" class="u-mb-6"></div>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Byla to docela dlouhá část a vyzkoušeli jste si alespoň základy programování shaderů. Víte co to shadery jsou, k čemu slouží a umíte si nějaké jednodušší i naprogramovat. Umožňují nám vytvořit v podstatě cokoliv. Zde je například <a href="https://threejs.org/examples/webgl_shaders_ocean.html" target="_blank" class="link">voda vytvořená pomocí shaderů</a>. Můžeme ji ve Three.js klidně použít. Jedná se o třídu, která dědí od třídy Mesh. Můžeme ji naimportovat z /examples/jsm/objects/Water.js. Shadery nám umožňují vytvářet zajímavé věci, ale jak jste viděli, zrovna jednoduché to není. Pokud jste shadery moc nepochopili, tak to chápu a nevadí to. Můžete ve Three.js tvořit skvělé věci i bez toho, aniž by jste je uměli programovat. Já shaderům také moc nerozumím, jak jste asi při čtení této části zjistili. V podstatě umím jen to, o čem jsem tu psal.</p>
+    <div class="u-center-text">
+        <a href="#" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>
