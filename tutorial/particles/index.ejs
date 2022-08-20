@@ -234,7 +234,7 @@ const material = new THREE.PointsMaterial({
     <p class="paragraph u-mb-2">Po spuštění aplikace by se vám měli vygenerovat částice různých barev.</p>
     <div data-example-id="7" class="u-mb-4"></div>
     <h2 class="heading-secondary u-mb-2">Animace</h2>
-    <p class="paragraph u-mb-2">Pokud chceme particles animovat, tak existuje více způsobů jak to udělat. Protože třída Points dědí od třídy Object3D, tak můžeme třeba provádět transformace se všemi particles najednou. Následující ukázka ukazuje, jak můžeme všechny particles točit dokola. Používáme k tomu hodiny k získání uplynulého čásu od startu aplikace.</p>
+    <p class="paragraph u-mb-2">Pokud chceme particles animovat, tak existuje více způsobů jak to udělat. Protože třída Points dědí od třídy Object3D, tak můžeme třeba provádět transformace se všemi particles najednou. Následující ukázka ukazuje, jak můžeme všechny particles točit dokola. Používáme k tomu hodiny k získání uplynulého času od startu aplikace.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
 // vytvoření hodin
@@ -263,7 +263,7 @@ particlesGeometry.attributes.position.array
 particlesGeometry.attributes.position.needsUpdate = true;</code></pre>
     <p class="paragraph u-mb-2">Měnit atribut každý snímek je ale špatný nápad. Je to špatné pro výkon. Proto to tu nebudu ukazovat a ani nedoporučuji to dělat.</p>
     <p class="paragraph u-mb-6">Pokud chceme s jednotlivým částicemi provádět animaci, tak si k tomu budeme muset vytvořit vlastní shader. Ty se naučíme programovat až v části o shaderech.</p>
-    <p class="paragraph u-mb-4">Pro tuto část je to vše. Nyní již víte jak si můžete vytvořit particles. Akorát jste se je ještě nenaučili animovat. To si necháme až na později.</p>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Nyní již víte, jak si můžete vytvořit particles. Akorát jste se je ještě nenaučili animovat. To si necháme až na později.</p>
     <div class="u-center-text">
         <a href="../raycasting/" class="button-primary">Pokračovat</a>
     </div>
