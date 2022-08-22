@@ -1,0 +1,80 @@
+import InteractiveExample from "../../InteractiveExample";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+
+let scene;
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+let controls;
+let effectComposer;
+
+const iExample = new InteractiveExample(2, camera);
+
+iExample.onInit = () => {
+    scene = new THREE.Scene();
+
+    camera.position.z = 3;
+    scene.add(camera);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    directionalLight.position.set(0.5, 1.5, 0.3);
+    scene.add(directionalLight);
+
+
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const environmentMapTexture = cubeTextureLoader.load([
+        '../../static/environment-map/px.png',
+        '../../static/environment-map/nx.png',
+        '../../static/environment-map/py.png',
+        '../../static/environment-map/ny.png',
+        '../../static/environment-map/pz.png',
+        '../../static/environment-map/nz.png',
+    ]);
+    scene.environment = environmentMapTexture;
+    scene.background = environmentMapTexture;
+
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load(
+        "../../static/other/DeskModel/glTFBinary/Desk.glb",
+        (gltf) => {
+            scene.add(gltf.scene);
+        }
+    );
+
+    
+    effectComposer = new EffectComposer(iExample.renderer);
+    effectComposer.setSize(iExample.canvasContainer.clientWidth, iExample.canvasContainer.clientHeight);
+    effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const renderPass = new RenderPass(scene, camera);
+    effectComposer.addPass(renderPass);
+}
+
+iExample.onResize = (newWidth, newHeight) => {
+    if (effectComposer) {
+        effectComposer.setSize(newWidth, newHeight);
+        effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    }
+}
+
+iExample.onPlay = () => {
+    camera.rotation.set(0, 0, 0);
+    controls = new OrbitControls(camera, iExample.canvasContainer);
+    controls.enableDamping = true;
+}
+
+iExample.onReset = () => {
+    if (controls) {
+        controls.reset();
+        controls.dispose();
+        controls = null;
+    }
+}
+
+iExample.onTick = () => {
+    controls.update();
+    effectComposer.render();
+}
