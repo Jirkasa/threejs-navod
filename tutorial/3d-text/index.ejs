@@ -1,0 +1,315 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "3D Text", activePage: "3d-text" }) %>
+    <h1 class="heading-primary u-mb-6">3D Text</h1>
+    <p class="paragraph u-mb-4">Předchozí 3 části na vás možná kvůli shaderům mohli být trochu moc. Pokud jste shaderům moc neporozumněli, tak to chápu. V této části se podíváme na něco jednoduššího. Zkusíme si ve scéně vytvořit 3D text.</p>
+    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <p class="paragraph u-mb-2">Je tu pro vás připraven startovní kód. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód vytváří scénu a přidává do ní světla. Také vytváří OrbitControls ovládání, abychom se po scéně mohli pohybovat.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 180;
+scene.add(camera);
+
+// přidání AmbientLight světla
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+
+// přidání DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre>
+    <p class="paragraph u-mb-2">Protože canvas roztahujeme přes celou velikost okna prohlížeče, tak si ještě zkopírujte následující CSS styly. Zbavíme se tím defaultních marginů a paddingů.</p>
+    <pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre>
+    <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic.</p>
+    <h2 class="heading-secondary u-mb-2">Načtení fontu</h2>
+    <p class="paragraph u-mb-2">Abychom mohli vytvořit 3D text, tak si na to nejdříve musíme načíst font. Použijeme k tomu třídu <a href="https://threejs.org/docs/index.html?q=fontloader#examples/en/loaders/FontLoader" target="_blank" class="link">FontLoader</a>, která nám umožňuje načítat fonty v JSON formátu. Do JSON formátu můžeme fonty převést pomocí <a href="https://gero3.github.io/facetype.js/" target="_blank" class="link">tohoto online převaděče</a>. Já jsem to již udělal za vás a font, který použijeme, si můžete stáhnout <a href="../../static/other/Rubik_Regular.json" download class="link">zde</a>. Vložte si jej ve vašem projektu do složky static.</p>
+    <p class="paragraph u-mb-2">Třídu FontLoader si musíme naimportovat zvlášť. Následující ukázka ukazuje, jak to můžeme udělat.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po naimportování třídy FontLoader si můžeme vytvořit její instanci a pomocí metody load načíst náš font. Jako parametr jí předáváme cestu k fontu, který chceme načíst, a funkci, která se zavolá po načtení fontu. Také můžeme předat funkci, která se zavolá při pokroku načítání a funkci, která se zavolá když dojde k chybě. To ale v našem příkladu dělat nebudeme.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // tato funkce se zavolá s načteným
+        // fontem po jeho načtení
+    }
+);</code></pre>
+    <h2 class="heading-secondary u-mb-2">Vytvoření geometrie pro text</h2>
+    <p class="paragraph u-mb-2">Po načtení fontu jej můžeme použít pro vytvoření 3D textu. Slouží k tomu třída <a href="https://threejs.org/docs/index.html?q=textgeometry#examples/en/geometries/TextGeometry" target="_blank" class="link">TextGeometry</a>. Umožňuje nám vytvořit geometrii představující text, kterou potom můžeme použít stejně jako jakoukoliv jinou geometrii. Následující ukázka ukazuje, jak si ji můžeme naimportovat.</p>
+    <pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Při vytváření TextGeometry předáváme jako parametr text, který chceme aby se jako geometrie vytvořil, a objekt s různými nastaveními. Co různá nastavení znamenají se můžete dočíst v dokumentaci, nebudu je tu rozebírat. Jen tu zmíním, že vlastnost font slouží k nastavení fontu, který se má použít, a vlastnost size určuje velikost textu. V našem příkladu můžeme geometrii pro text vytvořit po načtení fontu, jak ukazuje následující ukázka. Pokud by jste se chtěli dozvědět co jednotlivá nastavení, která používáme, znamenají, tak můžete v dokumentaci. Jako text nastavujeme text "3D Text", můžete si tam ale třeba zkusit napsat vlastní jméno.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // vytvoření geometrie pro text
+        const geometry = new TextGeometry( '3D Text', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 4,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 4,
+            bevelOffset: 0,
+            bevelSegments: 3
+        });
+    }
+);</code></pre>
+    <p class="paragraph u-mb-2">Po vytvoření geometrie pro text ji můžeme použít jako jakoukoliv jinou geometrii. Takže si můžeme vytvořit <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank" class="link">Mesh</a> a přidat jej do scény.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // vytvoření geometrie pro text
+        const geometry = new TextGeometry( '3D Text', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 4,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 4,
+            bevelOffset: 0,
+            bevelSegments: 3
+        });
+
+        // vytvoření meshe pro text
+        const text = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({
+                color: 0x78E8FA,
+                roughness: 0.2,
+                metalness: 0.2,
+            })
+        );
+        // přidání textu do scény
+        scene.add(text);
+    }
+);</code></pre>
+    <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak si můžete váš text prohlédnout.</p>
+    <div data-example-id="1" class="u-mb-2"></div>
+    <p class="paragraph u-mb-4">S textem buďte opatrní. Může do scény přidat spoustu polygonů a mít tedy vliv na výkon. Počet polygonů můžete snižovat/zvyšovat pomocí vlastností curveSegments a bevelSegments. Můžete se o nich dočíst v dokumentaci.</p>
+    <h2 class="heading-secondary u-mb-2">Vycentrování textu</h2>
+    <p class="paragraph u-mb-2">Text v našem příkladu není vycentrován do středu scény. Pokud si do scény přidáte <a href="https://threejs.org/docs/?q=axe#api/en/helpers/AxesHelper" target="_blank" class="link">AxesHelper</a>, který jsme si ukázali v části o transformaci objektů, tak uvidíte, že ve středu scény se nachází levá část textu.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+// vytvoření AxesHelperu
+const axesHelper = new THREE.AxesHelper(40);
+// přidání AxesHelperu do scény
+scene.add(axesHelper);</code></pre>
+    <div data-example-id="2" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">Využijeme toho, že chceme text vycentrovat a naučíme se při tom i o boundingu. Jedná se o informaci spojenou s geometrií, která říká, jaký prostor geometrie zabírá. Může to být box nebo sphere (koule), obsahující celý objekt. Three.js to používá k provádění frustum cullingu. Testuje podle toho jestli se objekt nachází na obrazovce a podle toho jej renderuje nebo ne. Testovat box nebo sphere, která se nachází kolem geometrie je totiž mnohem jednodušší. Je to tedy taková optimalizace aby se nemuselo renderovat něco, co uživatel stejně nevidí.</p>
+    <p class="paragraph u-mb-2">Defaultně Three.js používá sphere bounding. Pokud ale chceme, tak si můžeme pro geometrii spočítat i box bounding. To v našem příkladu uděláme. Můžeme to udělat pomocí metody computeBoundingBox. Po spočítání bounding boxu k němu budeme mít přístup pomocí vlastnosti boudingBox.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // vytvoření geometrie pro text
+        const geometry = new TextGeometry( '3D Text', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 4,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 4,
+            bevelOffset: 0,
+            bevelSegments: 3
+        });
+
+        // spočítání bounding boxu
+        geometry.computeBoundingBox();
+
+        // teď máme k bounding boxu přístup
+        // pomocí vlastnosti boundingBox:
+        // geometry.boundingBox
+
+        // vytvoření meshe pro text
+        const text = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({
+                color: 0x78E8FA,
+                roughness: 0.2,
+                metalness: 0.2,
+            })
+        );
+        // přidání textu do scény
+        scene.add(text);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Vlastnost boundingBox je instancí třídy <a href="https://threejs.org/docs/index.html#api/en/math/Box3" target="_blank" class="link">Box3</a>. Obsahuje vlastnosti min a max, které jsou instancí třídy Vector3 a určují, kde se box nachází. Hodnota min je souřadnicí jednoho rohu kostky a hodnota max je souřadnicí jeho protějšího rohu kostky. Nevím jak to v textu vysvětlit. Proto jsem vytvořil obrázek.</p>
+    <img src="../../static/img/BoundingBox.svg" alt="bounding box" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Souřadnice min bounding boxu pro náš text bude zhruba ve středu scény. Nebude tam ale přesně kvůli tomu, že ještě nastavujeme u textu bevel (prostě zakulacení hran textu nebo tak nějak). Souřadnice max bude někde na pravé horní straně textu směrem k nám. Můžeme tedy geometrii posunout o polovinu souřadnice max na všech osách. Uděláme to pomocí metody translate, jak ukazuje následující ukázka.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // vytvoření geometrie pro text
+        const geometry = new TextGeometry( '3D Text', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 4,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 4,
+            bevelOffset: 0,
+            bevelSegments: 3
+        });
+
+        // spočítání bounding boxu
+        geometry.computeBoundingBox();
+
+        // posunutí geometrie podle bounding boxu
+        geometry.translate(
+            -geometry.boundingBox.max.x * 0.5,
+            -geometry.boundingBox.max.y * 0.5,
+            -geometry.boundingBox.max.z * 0.5,
+        );
+
+        // vytvoření meshe pro text
+        const text = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({
+                color: 0x78E8FA,
+                roughness: 0.2,
+                metalness: 0.2,
+            })
+        );
+        // přidání textu do scény
+        scene.add(text);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Po spuštění aplikace můžete vidět, že se nám text vycentroval do středu scény. Není to přesné, protože jak jsem psal, souřadnice min bounding boxu neleží ve středu scény. Ale je to zhruba vycentrované.</p>
+    <div data-example-id="3" class="u-mb-2"></div>
+    <p class="paragraph u-mb-2">I když jsme si vyzkoušeli geometrii pro náš text vycentrovat pomocí bounding boxu sami, tak je tu jednodušší cesta. Můžeme použít metodu <a href="https://threejs.org/docs/index.html?q=buffergeometry#api/en/core/BufferGeometry.center" target="_blank" class="link">center</a>, která slouží k vycentrování geometrie podle bounding boxu. Chtěl jsem vám ale ukázat tuto složitější cestu, aby jste se o boundingu dozvěděli. Následující ukázka použití metody center ukazuje.</p>
+    <pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření FontLoaderu
+const fontLoader = new FontLoader();
+// načtení fontu
+fontLoader.load(
+    "./static/Rubik_Regular.json",
+    (font) => {
+        // vytvoření geometrie pro text
+        const geometry = new TextGeometry( '3D Text', {
+            font: font,
+            size: 80,
+            height: 5,
+            curveSegments: 4,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 4,
+            bevelOffset: 0,
+            bevelSegments: 3
+        });
+
+        // vycentrování geometrie podle bounding boxu
+        geometry.center();
+
+        // vytvoření meshe pro text
+        const text = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({
+                color: 0x78E8FA,
+                roughness: 0.2,
+                metalness: 0.2,
+            })
+        );
+        // přidání textu do scény
+        scene.add(text);
+    }
+);
+
+/* ... */</code></pre>
+    <p class="paragraph u-mb-2">Když si aplikaci spustíte, tak uvidíte, že se vám text také vycentroval.</p>
+    <div data-example-id="4" class="u-mb-6"></div>
+    <p class="paragraph u-mb-4">Pro tuto část je to vše. Naučili jste se tu, jak můžete vytvořit 3D text a přidat jej do scény. Kromě toho jste se také naučili o boundingu, když jsme text centrovali. V příští části si ukážeme, jak můžeme ve Three.js lépe řídit načítání.</p>
+    <div class="u-center-text">
+        <a href="../nacitani/" class="button-primary">Pokračovat</a>
+    </div>
+<%- include("../../includes/tutorial-page-end.ejs") %>
