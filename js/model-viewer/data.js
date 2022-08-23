@@ -44,17 +44,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -113,17 +113,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -159,12 +159,12 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 1
@@ -201,17 +201,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -247,12 +247,12 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 1,
@@ -266,17 +266,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -401,17 +401,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -562,17 +562,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -585,17 +585,17 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty with scratches",
                 folderName: "dirty-with-scratches",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 2
@@ -611,11 +611,11 @@ const modelsData = [
                 parts: [
                     {
                         name: "BedFrame",
-                        types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                        types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
                     },
                     {
                         name: "BedMattress",
-                        types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                        types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
                     }
                 ]
             },
@@ -625,11 +625,11 @@ const modelsData = [
                 parts: [
                     {
                         name: "BedFrame",
-                        types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                        types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
                     },
                     {
                         name: "BedMattress",
-                        types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                        types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
                     }
                 ]
             }
@@ -668,12 +668,12 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 1,
@@ -687,12 +687,12 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion"]
             }
         ],
         defaultTextureVariation: 1,

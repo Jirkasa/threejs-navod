@@ -47,10 +47,11 @@ class ResourceManager {
             this._fbxLoader.load(`${this._modelsData[modelIndex].srcFolder}/${this._modelsData[modelIndex].modelName}.fbx`, (fbx) => {
                 // traverse loaded model
                 fbx.traverse(child => {
-                    // set all meshes to cast and receive shadow
+                    // set all meshes to cast and receive shadow and add second UV set for ambient occlusion
                     if (child instanceof THREE.Mesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        child.geometry.setAttribute("uv2",new THREE.Float32BufferAttribute(child.geometry.attributes.uv.array, 2));
                     }
                 });
 
