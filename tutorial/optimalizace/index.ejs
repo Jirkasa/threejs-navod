@@ -1,0 +1,210 @@
+<%- include("../../includes/tutorial-page-start.ejs", { title: "Optimalizace", activePage: "optimalizace" }) %>
+    <h1 class="heading-primary u-mb-6">Optimalizace</h1>
+    <p class="paragraph u-mb-4">Došli jste na poslední část tohoto tutoriálu o Three.js. Dozvíte se tu, jak můžete měřit výkonnost své aplikace a pár tipů jak ji můžete optimalizovat.</p>
+    <h2 class="heading-secondary u-mb-2">Měření FPS</h2>
+    <p class="paragraph u-mb-2">K měření FPS (snímků za sekundu) a třeba také alokované paměti můžeme použít knihovnu <a href="https://github.com/mrdoob/stats.js/" target="_blank" class="link">stats.js</a>. Je velmi jednoduchá na použití a efektivní. Jak ji nainstalovat máte napsáno v README souboru na GitHubu, ale je to stejné jako jakýkoliv jiný NPM balíček.</p>
+    <pre class="code-box code-box--command u-mb-2"><code>npm install stats.js --save</code></pre>
+    <p class="paragraph u-mb-2">Použití je velmi jednoduché. V podstatě jen vytvoříme okno podobně jako v dat.GUI a přidáme do něj věci, které chceme monitorovat. Monitorujeme kód, který se nachází mezi voláním metody begin a end. V následující ukázce si to můžete prohlédnout v kódu.</p>
+    <pre class="code-box u-mb-4"><code>/* ... */
+
+
+// vytvoření nového okna (podobně jako v dat.GUI)
+const stats = new Stats();
+// zobrazení panelu pro FPS
+// - máme tyto možnosti:
+//   0 - FPS (snímky za sekundu)
+//   1 - milisekundy potřebné pro vyrenderování snímku
+//   2 - MegaByty alokované paměti
+//     - (musíme spustit prohlížeč Chrome s --enable-precise-memory-info, jinak jsou výsledky omezené a méně užitečné)
+//   3 - podpora pro uživatelsky definovaný panel
+stats.showPanel(0);
+// přidání okna s panely na stránku
+document.body.appendChild(stats.dom);
+
+function tick() {
+    // začátek monitorování kódu
+    stats.begin();
+
+    // zde se nachází monitorovaný kód
+    renderer.render(scene, camera);
+
+    // ukončení monitorování kódu
+    stats.end();
+}
+
+renderer.setAnimationLoop(tick);</code></pre>
+    <h2 class="heading-secondary u-mb-2">Draw cally</h2>
+    <p class="paragraph u-mb-2">O draw callech jsme se v tutoriálu neučili, protože když používáme Three.js, tak se o ně vůbec nemusíme starat. Draw cally jsou jednoduše řečeno příkazy, které CPU posílá do GPU aby nakreslilo na obrazovku geometrii. Já sám vlastně ani nijak více nevím co to draw cally jsou, ale vím, že když jich máme méně, tak je to lepší pro výkon.</p>
+    <p class="paragraph u-mb-2">K měření draw callů existuje rozšíření <a href="https://chrome.google.com/webstore/detail/spectorjs/denbgaamihkadbghdceggmchnflmhpmk" target="_blank" class="link">spector.js</a>. Můžete si jej přidat do prohlížeče a použít jej na stránce, na které renderujete na cavnas. Můžete jej použít tak, že si jej otevřete a kliknete na takový červený kruh, jak ukazuje následující obrázek. Tím si změříme draw cally pro jeden snímek.</p>
+    <img src="../../static/img/MeasureDrawCallsWithSpectorJS.png" alt="Změření počtu draw callů pro jeden snímek pomocí spector.js" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-2">Po změření se vám otevře nová stránka. Může to chvíli trvat, záleží na tom kolik toho renderujete. Na stránce můžete vidět spoustu informací, které spector.js rozšíření zachytilo. V levé části můžete graficky vidět, jak WebGL postupovalo, když vykreslovalo naši scénu. Jsou to vlastně draw cally.</p>
+    <img src="../../static/img/SpectorJSInfoAboutDrawCalls.png" alt="Informace o draw callech s použitím spector.js" class="centered-image u-mb-2">
+    <p class="paragraph u-mb-4">Určitě stojí za to se toto rozšíření naučit používat. Můžeme díky němu snadněji přijít na to, jak můžeme počet draw callů snížit. Na předchozím obrázku třeba vidíte, že pro každý objekt se provádí draw call. Nejdříve se nakreslí lednice, poté její spodní dveře, poté horní dveře, a tak dále. Pokud bychom geometrii sloučili do jedné, tak bychom tím počet draw callů snížili.</p>
+    <h2 class="heading-secondary u-mb-2">Informace rendereru</h2>
+    <p class="paragraph u-mb-2">Renderer obsahuje pár informací, které si můžeme vypsat do konzole. Můžeme to udělat vypsáním vlastnosti rendereru jménem info.</p>
+    <pre class="code-box u-mb-2"><code>console.log(renderer.info);</code></pre>
+    <p class="paragraph u-mb-2">Vlastnost info je JavaScript objekt, který uchovává vlastnosti jako je počet vyrenderovaných trojúhelníků, počet geometrií a textur v paměti, a tak podobně. Občas se nám mohou tyto informace při optimalizaci hodit.</p>
+    <img src="../../static/img/logged-renderer-info.png" alt="vypsání informací rendereru do konzole" class="centered-image u-mb-4">
+    <h2 class="heading-secondary u-mb-2">Disposing</h2>
+    <p class="paragraph u-mb-2">Jedním z důležitých aspektů pro zlepšení výkonu a zabránění úniku paměti v našich aplikacích je <a href="https://threejs.org/docs/index.html#manual/en/introduction/How-to-dispose-of-objects" target="_blank" class="link">disposing</a>. Jedná se o manuální likvidaci objektů, které již nepotřebujeme. Musíme to dělat, protože některé věci nejsou ve Three.js automaticky sbírány <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_Management#garbage_collection" target="_blank" class="link">Garbage Collectorem</a>. Pokud bychom to nedělali a u objektů, které již nepotřebujeme disposing neprováděli, tak by v naší aplikaci docházelo k únikům paměti. Jinými slovy, objekty by stále v paměti existovali i když bychom je již nepotřebovali.</p>
+    <p class="paragraph u-mb-2">Následující ukázka ukazuje špatný způsob zbavování se nepotřebného objektu, jelikož u geometrií musíme ve Three.js provádět disposing.</p>
+    <pre class="code-box u-mb-2"><code>// vytvoření geometrie
+let geometry = new THREE.BoxGeometry(1, 1, 1);
+
+/* ... nějak budeme geometrii používat ... */
+
+// geometrii již nepotřebujeme, nastavíme
+// proměnnou geometry na null
+// TO JE ŠPATNĚ, u geometrií musíme provádět disposing
+geometry = null;
+
+// vytvořená geometrie je stále v paměti
+// (není sesbírána Garbage Collectorem)</code></pre>
+    <p class="paragraph u-mb-2">U geometrií musíme pro jejich uvolnění z paměti zavolat metodu dispose. Následující ukázka ukazuje správný způsob zbavení se nepotřebné geometrie.</p>
+    <pre class="code-box u-mb-2"><code>// vytvoření geometrie
+let geometry = new THREE.BoxGeometry(1, 1, 1);
+
+/* ... nějak budeme geometrii používat ... */
+
+// geometrii již nepotřebujeme, zbavíme se jí
+geometry.dispose();
+
+// po zavolání metody dispose již klidně můžeme
+// nastavit proměnnou geometry na null
+geometry = null;</code></pre>
+    <p class="paragraph u-mb-2">Možná si říkáte, u čeho všeho je vlastně nutné disposing provádět. Sepsal jsem tu pro vás seznam, ale určitě to není všechno. Vždy se musíte podívat do dokumentace, jestli náhodou třída, jejíž instance se chcete zbavit, neimplementuje metodu dispose. U všeho co má metodu dispose je disposing potřeba provést.</p>
+    <ul class="list u-mb-2">
+        <li>Geometrie</li>
+        <li>Materiály</li>
+        <li>Textury</li>
+        <li>Render Targety</li>
+        <li>a další... (třeba OrbitControls, TrackballControls...)</li>
+    </ul>
+    <p class="paragraph u-mb-4">Pokud někdy budete mít problémy s únikem paměti, tak si můžete do konzole zkusit lognout vlastnost info rendereru, jak jsem již zmiňoval. Obsahuje informace o tom, kolik například geometrií a textur je v paměti uloženo.</p>
+    <h2 class="heading-secondary u-mb-2">Světla</h2>
+    <p class="paragraph u-mb-2">V části o světlech jsem již psal, že světla nás mohou stát hodně výkonu. Některé jednodušší mohou mít nízký vliv na výkon, ale některé celkem velký. Rozdělil jsem je do těchto tří kategorií:</p>
+    <p class="paragraph"><b>Minimální vliv na výkon:</b></p>
+    <ul class="list u-mb-2">
+        <li>AmbientLight</li>
+        <li>HemisphereLight</li>
+    </ul>
+    <p class="paragraph"><b>Střední vliv na výkon:</b></p>
+    <ul class="list u-mb-2">
+        <li>DirectionalLight</li>
+        <li>PointLight</li>
+    </ul>
+    <p class="paragraph"><b>Velký vliv na výkon:</b></p>
+    <ul class="list u-mb-2">
+        <li>SpotLight</li>
+        <li>RectAreaLight</li>
+    </ul>
+    <p class="paragraph u-mb-4">Kromě toho, že bychom měli omezit používání světel, která mají vliv na výkon, tak bychom se také měli vyhnout přidávání a odstraňování světel ze scény. Při těchto operacích musejí být totiž materiály, které světla podporují rekompilovány.</p>
+    <h2 class="heading-secondary u-mb-2">Stíny</h2>
+    <p class="paragraph u-mb-2">Pokud ve své aplikaci používáte stíny, tak by jste měli optimalizovat shadow mapy, aby perfektně pokryly scénu jen tam, kde to dává smysl. Jak to udělat jsme si ukazovali v části o stínech. Také můžete optimalizovat velikost shadow mapy. Menší je lepší pro výkon.</p>
+    <p class="paragraph u-mb-2">S nastavováním vlastností castShadow a receiveShadow bychom to neměli přehánět. Měli bychom je nastavovat rozumně, neaplikovat je na každý objekt.</p>
+    <p class="paragraph u-mb-2">Shadow mapy se aktualizují před každým renderováním. Pokud chceme, tak můžeme nastavit aby se automaticky neaktualizovali a můžeme je aktualizovat ručně jen v případě potřeby. Následující ukázka ukazuje, jak to můžeme udělat. To nám v některých případech může pomoct zvýšit výkon naší aplikace.</p>
+    <pre class="code-box u-mb-2"><code>// vypnutí automatického aktualizování
+// shadow map před renderováním
+renderer.shadowMap.autoUpdate = false;
+
+// teď můžeme shadow mapy aktualizovat ručně
+// nastavováním vlastnosti needsUpdate
+renderer.shadowMap.needsUpdate = true;</code></pre>
+    <p class="paragraph u-mb-4">V části o stínech jsem také zmiňoval, že můžeme stíny vypékat do textur. Může se to hodit pro nějaké statické objekty které se nepohybují a můžeme tím tak zvýšit výkon naší aplikace.</p>
+    <h2 class="heading-secondary u-mb-2">Textury</h2>
+    <p class="paragraph u-mb-4">Textury zaberou hodně místa v paměti GPU, obzvlášť s mipmapami. Proto bychom se měli snažit co nejvíce snížit jejich rozlišení. Samozřejmě se zachováním decentní kvality. Také bychom se měli snažit o to, aby textury nezabírali moc místa, jelikož mohou mít velký vliv na rychlost načítání naší aplikace. Nechceme aby uživatel musel čekat dlouhou dobu než se mu načte stránka. Proto je často dobré použít nástroje jako je <a href="https://tinypng.com/" target="_blank" class="link">TinyPNG</a> a provést na texturách kompresy.</p>
+    <h2 class="heading-secondary u-mb-2">Slučování geometrie</h2>
+    <p class="paragraph u-mb-2">Pokud máme v naší aplikaci více geometrií, které jsou statické a nemají se pohybovat, tak je můžeme sloučit do jedné geometrie. Snížíme tím počet draw callů. Mohli bychom to udělat v nějakém 3D modelovacím programu, ale Three.js nám na to poskytuje třídu jménem <a href="https://threejs.org/docs/index.html?q=buffergeometryutils#examples/en/utils/BufferGeometryUtils" target="_blank" class="link">BufferGeometryUtils</a>. Následující ukázka ukazuje, jak si ji můžeme naimportovat.</p>
+    <pre class="code-box u-mb-2"><code>import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils';</code></pre>
+    <p class="paragraph u-mb-2">Po naimportování můžeme třídu BufferGeometryUtils použít. Poskytuje nám statickou metodu jménem mergeBufferGeometries, které předáme pole geometrií a vrátí se nám sloučená geometrie.</p>
+    <pre class="code-box u-mb-4"><code>// pole geometrií
+const geometries = [
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.SphereGeometry(0.5, 12, 8),
+    new THREE.ConeGeometry(0.5, 1, 12)
+];
+
+// sloučení geometrií do jedné
+const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+// teď můžeme sloučenou geometrii použít jako jakoukoliv
+// jinou geometrii a vytvořit podle ní třeba mesh
+// (díky tomu že bude jen jeden mesh, tak bude i méně draw callů)</code></pre>
+    <h2 class="heading-secondary u-mb-2">Materiály</h2>
+    <p class="paragraph u-mb-4">Je důležité si uvědomit, že jeden materiál můžeme klidně použít na více meshů. Není potřeba vytvářet pro každý mesh nový. Také bychom se měli snažit použít levnější materiály, pokud se to pro naši aplikaci hodí nebo je to možné. Některé materiály jako je MeshStandardMaterial a MeshPhysicalMaterial potřebují více zdrojů než třeba MeshPhongMaterial nebo MeshLambertMaterial.</p>
+    <h2 class="heading-secondary u-mb-2">Instanced Mesh</h2>
+    <p class="paragraph u-mb-2">Pokud nemůžeme sloučit geometrie dohromady protože nad nimi potřebujeme mít kontrolu, ale jedná se o geometrie, které jsou stejné a mají stejný materiál, tak můžeme použít <a href="https://threejs.org/docs/index.html?q=InstancedMesh#api/en/objects/InstancedMesh" target="_blank" class="link">IntancedMesh</a>. Jedná se o speciální verzi třídy <a href="https://threejs.org/docs/index.html?q=mesh#api/en/objects/Mesh" target="_blank" class="link">Mesh</a>, která podporuje instanced rendering. Jedná se o způsob, jak provádět stejné příkazy ke kreslení mnohokrát za sebou, přičemž každý příkaz produkuje mírně odlišný výsledek. Prostě díky tomu můžeme snížit počet draw callů a zvýšit tak výkon naší aplikace.</p>
+    <p class="paragraph u-mb-2">InstancedMesh je jako mesh, ale vytváříme jen jeden. Vytváříme jen jeden InstancedMesh a pro každou instanci tohoto meshe poskytujeme transformační matici. Ta musí být instancí třídy <a href="https://threejs.org/docs/index.html?q=Matrix#api/en/math/Matrix4" target="_blank" class="link">Matrix4</a> a s pomocí jejích metod můžeme u meshů provádět transformace. Myslím že v následující ukázce kódu to pochopíte lépe. Při vytváření InstancedMeshe předáváme geometrii a materiál, který mají instance mít a jejich počet.</p>
+    <pre class="code-box u-mb-2"><code>const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({
+    color: 0xFAB278
+});
+
+// vytvoření InstancedMeshe s 30 instancemi
+const mesh = new THREE.InstancedMesh(geometry, material, 30);
+
+// pro každou instanci meshe vytvoříme transformační matici
+for (let i = 0; i &lt; 30; i++) {
+    // vytvoření matice
+    let matrix = new THREE.Matrix4();
+
+    // pomocí metod matice můžeme mesh různě transformovat
+    // (nastavovat mu pozici, rotaci, atd.)
+    matrix.setPosition(new THREE.Vector3(
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20
+    ));
+
+    // nastavení matice pro instanci meshe na indexu i
+    mesh.setMatrixAt(i, matrix);
+}</code></pre>
+    <p class="paragraph u-mb-2">Pokud chceme často měnit matice instancí meshe, třeba při každém snímku, tak je dobré u vlastnosti instanceMatrix zavolat metodu setUsage a předat jí hodnotu THREE.DynamicDrawUsage. Není to povinné, ale je to lepší pro správu paměti a takové věci. Nevím přesně co se tím optimalizuje, ale vím že je to lepší zapnout, když matice často měníme.</p>
+    <pre class="code-box language-javascript u-mb-4"><code>mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);</code></pre>
+    <h2 class="heading-secondary u-mb-2">3D modely</h2>
+    <p class="paragraph u-mb-4">Myslím že tohle je vám asi jasné, ale i tak jsem to tady chtěl zmínit. Čím méně polygonů model má, tím lepší je to pro výkon, protože se může renderovat méně trojúhelníků. Proto bychom se měli snažit, aby naše modely neměli moc polygonů. Pokud potřebujeme detaily, tak můžeme použít normal mapy.</p>
+    <h2 class="heading-secondary u-mb-2">Frustum Culling</h2>
+    <p class="paragraph u-mb-4">V části o 3D textu jsem se zmiňoval, že Three.js provádí frustum culling. Three.js testuje jestli se objekt nachází na obrazovce a podle toho jej renderuje nebo ne. Není to tedy něco co máme na starosti mi, ale můžeme třeba snížit field of view kamery a na obrazovce se tak vyrenderuje méně objektů. Pokud bychom měli potíže s výkonem, tak by to možná mohlo trochu pomoct. Také můžeme třeba změnit kam až kamera dohlédne. To může také zvýšit výkon naší aplikace.</p>
+    <h2 class="heading-secondary u-mb-2">Pixel ratio</h2>
+    <p class="paragraph u-mb-2">Není podle mě dobré používat defaultní pixel ratio, které je v prohlížeči nastaveno. Je dobré jej omezit na hodnotu 2, větší pixel ratio není potřeba. Nedíváme se na displej z 5 centimetrů. Čím větší máme pixel ratio, tím více času zabere GPU renderování. Následující ukázka ukazuje, jak můžeme pixel ratio omezit.</p>
+    <pre class="code-box u-mb-4"><code>// omezení pixel ratio na hodnotu 2
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));</code></pre>
+    <h2 class="heading-secondary u-mb-2">Antialiasing</h2>
+    <p class="paragraph u-mb-2">Defaultní antialiasing, který můžeme na rendereru zapnout je výkonný, ale samozřejmě méně výkonný než žádný antialiasing. Pro obrazovky s pixel ratio 2 nebo vyšším jej můžeme klidně vypnout, protože na nich uživatel vyrenderované schody stejně neuvidí. Záleží na vás, ale můžeme tím o něco zvýšit výkon naší aplikace.</p>
+    <pre class="code-box u-mb-4"><code>const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas"),
+    antialias: window.devicePixelRatio &lt; 2
+});</code></pre>
+    <h2 class="heading-secondary u-mb-2">Preference výkonu</h2>
+    <p class="paragraph u-mb-2">Některá zařízení mohou být schopná přepínat mezi různými GPU nebo různými módy použití GPU. Můžeme jim k tomu dát nápovědu při vytváření rendereru nastavením vlastnosti powerPreference. Máme na výběr z těchto tří možností:</p>
+    <ul class="list u-mb-2">
+        <li><b>"high-performance"</b> - vysoký výkon</li>
+        <li><b>"default"</b> - toto je defaultní</li>
+        <li><b>"low-performance"</b> - nízký výkon</li>
+    </ul>
+    <pre class="code-box u-mb-2"><code>const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas"),
+    powerPreference: "high-performance"
+});</code></pre>
+    <p class="paragraph u-mb-4">Nenastavujte vlastnost powerPreference na "high-performance" pro všechno. Výkon vaší aplikace to nevylepší, jen to některým zařízením dá radu, které GPU nebo jaký mód použití GPU se má použít. Pokud nemáte problém s výkonem, nenastavujte to.</p>
+    <h2 class="heading-secondary u-mb-2">Post-processing</h2>
+    <p class="paragraph u-mb-4">V části o post-processingu jsem psal, že pro každý pass musí proběhnout renderování. Post-processing tedy může mít vliv na výkon. Pokud máme například 4 passy, rozměry canvasu 1920x1080 a pixel ratio 2, tak je to 33 177 600 (1920 * 2 * 1080 * 2 * 4) pixelů k vyrenderování. Měli bychom se tedy snažit naše post-processing efekty sloučit do jednoho passu, pokud to jde.</p>
+    <h2 class="heading-secondary u-mb-2">Shadery</h2>
+    <p class="paragraph u-mb-2">Na závěr bych tu chtěl ještě zmínit pár tipů pro optimalizaci týkající se shaderů.</p>
+    <p class="paragraph u-mb-2">U shaderů můžeme nastavovat přesnost datové typu float. Máme na výběr ze tří možností: lowp, mediump a highp. Možnost lowp je nejvýkonnější, ale má nejnižší přesnost a může vést k bugům. Pokud bychom se ji rozhodli použít, tak musíme naši aplikaci otestovat. Jak nastavit přesnost datového typu float u RawShaderMaterialu víte. Následující ukázka ukazuje, jak ji můžeme nastavit pro ShaderMaterial.</p>
+    <pre class="code-box u-mb-2"><code>const material = new THREE.ShaderMaterial({
+    /* ... */
+    precision: "lowp"
+});</code></pre>
+    <p class="paragraph u-mb-2">V našich kódech pro Shadery bychom se měli snažit vyhnout if podmínkám a použít namísto nich vestavěné funkce. Je to výkonnější</p>
+    <p class="paragraph u-mb-2">Uniforms nám umožňují měnit hodnoty pomocí JavaScriptu a vytvářet třeba více variací materiálu používající stejný shader. Mohou nás ale stát nějaký výkon. Pokud se hodnota nemá měnit, tak si můžeme v shaderech definovat konstantu, jak ukazuje následující ukázka.</p>
+    <pre class="code-box language-glsl u-mb-2"><code>#define FREQUENCY 2.5</code></pre>
+    <p class="paragraph u-mb-2">U ShaderMaterialu to můžeme udělat pomocí vlastnosti defines.</p>
+    <pre class="code-box u-mb-6"><code>const material = new THREE.ShaderMaterial({
+    /* ... */
+    defines: {
+        FREQUENCY: 2.5
+    }
+});</code></pre>
+    <p class="paragraph u-mb-2">To jsou všechny tipy pro optimalizaci, o kterých jsem se v této poslední části chtěl zmínit. Zároveň je to konec celého tutoriálu. Doufám že vám pomohl se Three.js naučit a jste připraveni pomocí Three.js vytvářet spoustu zajímavých věcí. Pokud si někdy budete chtít něco připomenout, tak se na tento web můžete kdykoliv vrátit. Není důležité si zapamatovat, ale pochopit.</p>
+<%- include("../../includes/tutorial-page-end.ejs") %>

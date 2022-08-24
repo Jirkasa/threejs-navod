@@ -724,12 +724,12 @@ const modelsData = [
             {
                 name: "clean",
                 folderName: "clean",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion", "Alpha", "Emissive"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "Alpha", "Emissive"]
             },
             {
                 name: "dirty",
                 folderName: "dirty",
-                types: ["BaseColor", "Metallic", "Roughness", "Normal", "AmbientOcclusion", "Alpha", "Emissive"]
+                types: ["BaseColor", "Metallic", "Roughness", "Normal", "Alpha", "Emissive"]
             }
         ],
         defaultTextureVariation: 1,
