@@ -111,7 +111,7 @@ iExample.onInit = () => {
 
 iExample.onPlay = () => {
     camera.rotation.set(0, 0, 0);
-    controls = new OrbitControls(camera, iExample.canvasContainer);
+    controls = new OrbitControls(camera, iExample.canvas);
     controls.enableDamping = true;
     if (!loaded) overlay.style.display = "block";
 }
