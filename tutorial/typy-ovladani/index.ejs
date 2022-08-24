@@ -3,7 +3,7 @@
     <p class="paragraph u-mb-2">V této části si ukážeme, jak můžeme s canvasem provádět interakci. Myslím si že by jste byli schopni si pro interakci s canvasem něco naprogramovat. Mohli byste si například vytvořit event listener na stisknutí kláves a třeba pomocí nich na scéně posouvat nějaký objekt. Three.js nám ale pro interakci se scénou poskytuje pár užitečných typů ovládání. Takže si je v této části projdeme, abyste o nich věděli a v případě potřeby je mohli použít.</p>
     <p class="paragraph u-mb-2">Tato ovládání nejsou součástí THREE objektu, který si do našeho JavaScriptu importujeme, jelikož je všichni uživatelé nepotřebují. Budeme si je tedy vždy muset naimportovat samostatně. Odkud něco naimportovat se vždy můžete dočíst v <a href="https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene" target="_blank" class="link">dokumentaci</a> v části source, když si tam rozkliknete nějakou třídu.</p>
     <img src="../../static/img/documentation-source-info.png" alt="část source ve Three.js dokumentaci" class="centered-image u-mb-4">
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom měli nějakou scénu na které si můžeme různé typy ovládání vyzkoušet, tak si ji vytvoříme. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru vložte kód, který ukazuje následující ukázka. Tento kód jen vytváří scénu, kameru, renderer a přidává do scény pár objektů. Také nastavuje animační smyčku aby se scéna renderovala každý frame a přidává event listener pro změnu velikosti okna prohlížeče protože canvas roztahujeme po celé jeho velikosti. O animační smyčce jste se dozvěděli v části o animaci a o měnění velikosti canvasu v minulé části, takže to není nic nového.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -109,7 +109,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Teď máme vše připraveno na to, abychom si mohli vyzkoušet různé typy ovládání, které nám Three.js nabízí. Pokud si aplikaci spustíte v prohlížeči, tak uvidíte vyrenderovanou scénu.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Arcball Controls</h2>
+    <h2 id="arcball-controls" class="heading-secondary u-mb-2">Arcball Controls</h2>
     <p class="paragraph u-mb-2">Prvním typem ovládání, které si ukážeme, je <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/ArcballControls" target="_blank" class="link">ArcballControls</a>. Toto ovládání nám umožňuje pohybovat kamerou kolem takové virtuální koule pomocí levého tlačítka, posouvat kamerou horizontálně nebo vertikálně pomocí pravého tlačítka a přibližovat se nebo se oddalovat pomocí kolečka myši. Také to funguje na mobilu pomocí různých gest. Více si o tom můžete přečíst v dokumentaci. Nebudu to tu rozebírat protože je to stejně zbytečné. Mnohem lépe pochopíte jak to funguje, když si ovládání zkusíte v ukázce sami. ArcballControls ovládání není vůbec složité na implementaci. Stačí jen zavolat konstruktor a vše je připraveno. Nejdříve si ale musíme ArcballControls naimportovat. Již jsem psal výše že ovládání nejsou součástí objektu THREE, který si do našeho JavaScript souboru importujeme. Následující ukázka ukazuje jak to udělat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -124,7 +124,7 @@ const controls = new ArcballControls(camera, canvas, scene);</code></pre>
     <p class="paragraph u-mb-2">To je vše co jsme museli pro implementaci ArcballControls ovládání udělat. Teď si můžete aplikaci v prohlížeči spustit a ovládání si vyzkoušet.</p>
     <div data-example-id="2" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">ArcballControls ovládání si můžeme ještě různě nastavit a vypnout například pohyb kamery horizontálně a vertikálně. Tím už se ale zabývat nebudeme. Co všechno můžete pro ArcballControls nastavovat najdete v dokumentaci, takže si myslím že si s tím poradíte sami.</p>
-    <h2 class="heading-secondary u-mb-2">Drag Controls</h2>
+    <h2 id="drag-controls" class="heading-secondary u-mb-2">Drag Controls</h2>
     <p class="paragraph u-mb-2">Jako druhý typ ovládání si ukážeme <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/DragControls" target="_blank" class="link">DragControls</a>. Pomocí tohoto ovládání můžeme po scéně pohybovat objekty kliknutím a tažením. Opět se nebudu pouštět do detailnějšího vysvětlování, v ukázce to pochopíte lépe. Následující ukázka ukazuje, jak si můžete DragControls naimportovat. Než se do toho ale pustíte, tak si odstraňte ArcballControls ovládání, pokud jste si jej zkoušeli.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -139,7 +139,7 @@ const controls = new DragControls([cube, cone, sphere, torus], camera, canvas);<
     <p class="paragraph u-mb-2">Po spuštění aplikace budete moci objekty ve scéně posouvat pomocí myši.</p>
     <div data-example-id="3" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">V dokumentaci si o DragControls můžete přečíst víc, pro ukázku to stačilo.</p>
-    <h2 class="heading-secondary u-mb-2">First Person Controls</h2>
+    <h2 id="first-person-controls" class="heading-secondary u-mb-2">First Person Controls</h2>
     <p class="paragraph u-mb-2">Jako další typ ovládání si ukážeme <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/FirstPersonControls" target="_blank" class="link">FirstPersonControls</a>. Smažte si v kódu předchozí ovládání (pokud jste si jej zkoušeli) a můžeme se do toho pustit. Možná si můžete myslet že když se toto ovládání jmenuje FirstPersonControls, tak se třeba hodí k ovládání hráče ve first person střílečce. Není tomu tak, je to spíš alternativní implementace FlyControls ovládání, které si zachvíli ukážeme. Následující ukázka ukazuje, jak můžeme FirstPersonControls ovládání naimportovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -171,7 +171,7 @@ function tick() {
     <p class="paragraph u-mb-2">Po spuštění aplikace si teď budete moci FirstPersonControls ovládání vyzkoušet. Pohybem myši se můžete rozhlížet a pomocí kláves W a S (nebo tlačítky myši) se můžete pohybovat dopředu a dozadu.</p>
     <div data-example-id="4" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">O různých nastaveních FirstPersonControls ovládání si můžete přečíst v dokumentaci.</p>
-    <h2 class="heading-secondary u-mb-2">Fly Controls</h2>
+    <h2 id="fly-controls" class="heading-secondary u-mb-2">Fly Controls</h2>
     <p class="paragraph u-mb-2">Další typ ovládání, který si ukážeme, je <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/FlyControls" target="_blank" class="link">FlyControls</a>. Toto ovládání nám umožňuje jakoby létat po scéně. Umožňuje nám kamerou libovolně pohybovat a otáčet s ní. Jak to přesně funguje si potom můžete zkusit sami až si ji přidáte do svého kódu. Smažte si předchozí ovládání a můžete si FlyControls naimportovat, jak ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -203,7 +203,7 @@ function tick() {
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete FlyControls zkusit. Ovládá se to stejně jako FirstPersonControls, ale můžete se teď jakoby točit na strany pomocí kláves Q a E.</p>
     <div data-example-id="5" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Více si o FlyControls můžete přečíst v dokumentaci, kdyby jste jej někdy potřebovali.</p>
-    <h2 class="heading-secondary u-mb-2">Orbit Controls</h2>
+    <h2 id="orbit-controls" class="heading-secondary u-mb-2">Orbit Controls</h2>
     <p class="paragraph u-mb-2">Jako další typ ovládání si ukážeme <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/OrbitControls" target="_blank" class="link">OrbitControls</a>. Toto ovládání jsem se rozhodl použít ve svém <a href="../../3d-modely/" class="link">prohlížeči 3D modelů</a>, který se na tomto webu nachází. Umožňuje nám se jakoby točit kolem určitého bodu. Nevím jak bych to v textu vysvětlil, potom si můžete zkusit sami jak to funguje. Smažte si v kódu předchozí ovládání a můžeme si OrbitControls naimportovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -218,7 +218,7 @@ const controls = new OrbitControls(camera, canvas);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete OrbitControls ovládání vyzkoušet. Pomocí levého tlačítka se točíte, pomocí pravého se posouváte a kolečkem myši se přibližujete nebo oddalujete.</p>
     <div data-example-id="6" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Pokud chcete, tak se samozřejmě můžete o OrbitControls ovládání dozvědět více v dokumentaci. Pro základní ukázku to stačilo.</p>
-    <h2 class="heading-secondary u-mb-2">Pointer Lock Controls</h2>
+    <h2 id="pointer-lock-controls" class="heading-secondary u-mb-2">Pointer Lock Controls</h2>
     <p class="paragraph u-mb-2">Jako další typ ovládání je na řadě <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/PointerLockControls" target="_blank" class="link">PointerLockControls</a>. Je perfektní volbou pokud byste se rozhodli vytvořit first person hru. Funguje to tak, že vám zmizí kurzor a pomocí myši se můžete rozhlížet. Můžete to znát z různých first person stříleček. Následující ukázka ukazuje, jak si můžete FirstPersonControls naimportovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -244,7 +244,7 @@ canvas.addEventListener("click", () => {
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete na canvas kliknout a měli byste být schopni se rozhlížet po scéně.</p>
     <div data-example-id="7" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Více informací o PointerLockControls ovládání najdete v dokumentaci.</p>
-    <h2 class="heading-secondary u-mb-2">Trackball Controls</h2>
+    <h2 id="trackball-controls" class="heading-secondary u-mb-2">Trackball Controls</h2>
     <p class="paragraph u-mb-2">Jako další si ukážeme <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/TrackballControls" target="_blank" class="link">TrackballControls</a>. Tento typ ovládání je hodně podobný OrbitControls ovládání. Narozdíl od něj ale nazajišťuje aby se kamera jakoby nenaklonila na stranu a můžeme se otočit vzhůru nohama. Můžeme pohybovat kamerou jakoby nahoru nebo dolů do nekonečna. Smažte si předchozí ovládání a můžeme si TrackballControls vyzkoušet. Takto jej naimportujeme:</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -271,7 +271,7 @@ function tick() {
     <p class="paragraph u-mb-2">Po spuštění aplikaci si TrackballControls můžete zkusit. Ovládá se to podobně jako OrbitControls. Pomocí levého tlačítka se točíte, pomocí pravého se posouváte a kolečkem myši se přibližujete nebo oddalujete.</p>
     <div data-example-id="8" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Více si o TrackballControls můžete zjistit v dokumentaci.</p>
-    <h2 class="heading-secondary u-mb-2">Transform Controls</h2>
+    <h2 id="transform-controls" class="heading-secondary u-mb-2">Transform Controls</h2>
     <p class="paragraph u-mb-6">Jako poslední typ ovládání tu zmíním <a href="https://threejs.org/docs/index.html?q=controls#examples/en/controls/TransformControls" target="_blank" class="link">TransformControls</a>. Pomocí tohoto ovládání můžeme transformovat objekty ve scéně podobně jako v Unity, Unreal Enginu, Blenderu a podobných aplikacích. U tohoto ovládání jsem se tu rozhodl ukázku nedát, ale můžete si jej vyzkoušet v <a href="https://threejs.org/examples/#misc_controls_transform" target="_blank" class="link">tomto příkladu</a> na který odkazuje dokumentace. Kód k němu najdete <a href="https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_transform.html" target="_blank" class="link">zde</a>. Myslím že podle dokumentace a tohoto příkladu byste mohli přijít na to jak TransformControls použít, pokud byste jej potřebovali.</p>
     <p class="paragraph u-mb-4">Toto byl jen takový stručný popis typů ovládání, které nám Three.js poskytuje. Nebylo mým cílem vám ukázat u každého ovládání všechna možná nastavení, to by tato část byla hodně dlouhá. Navíc to vůbec není potřeba vědět. Důležité je akorát vědět co nám Three.js nabízí za možnosti ovládání a pokud budeme chtít, tak se vždy dle potřeby můžeme podívat do dokumentace pro detailnější nastavení daného typu ovládání. Programování není o tom si všechno nacpat do hlavy. Je to o tom věci pochopit. Syntaxy si většinou můžete během chvilky najít na internetu, pokud víte co chcete udělat.</p>
     <div class="u-center-text">

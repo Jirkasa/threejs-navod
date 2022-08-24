@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Raycasting", activePage: "raycasting" }) %>
     <h1 class="heading-primary u-mb-6">Raycasting</h1>
     <p class="paragraph u-mb-4">V této části se dozvíte co je to raycasting, k čemu slouží a jak jej provádět.</p>
-    <h2 class="heading-secondary u-mb-2">Co je to raycasting</h2>
+    <h2 id="co-je-to-raycasting" class="heading-secondary u-mb-2">Co je to raycasting</h2>
     <p class="paragraph u-mb-2">Raycasting je vytváření paprsku ve specifickém směru a zjištování, které objekty protíná. Můžeme to například použít pro právádění těchto operací:</p>
     <ul class="list u-mb-2">
         <li>zjištování, jestli naproti hráči není stěna</li>
@@ -10,7 +10,7 @@
         <li>a tak dále...</li>
     </ul>
     <p class="paragraph u-mb-4">K provádění raycastingu ve Three.js používáme třídu <a href="https://threejs.org/docs/?q=raycaster#api/en/core/Raycaster" target="_blank" class="link">Raycaster</a>. V této části se ji tedy naučíme používat.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli raycasting vyzkoušet, tak je tu pro vás připravený startovní kód. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte následující kód. Ten jen vytváří scénu se třemi objekty, na kterých si budeme raycasting zkoušet.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -87,7 +87,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak by jste měli vidět 3 objekty vedle sebe: kouli, kostku a dodecahedron (prostě ten tvar).</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Použití Raycasteru</h2>
+    <h2 id="pouziti-raycasteru" class="heading-secondary u-mb-2">Použití Raycasteru</h2>
     <p class="paragraph u-mb-2">K provádění raycastingu ve Three.js používáme třídu <a href="https://threejs.org/docs/index.html?q=raycaster#api/en/core/Raycaster" target="_blank" class="link">Raycaster</a>. Následující ukázka ukazuje, jak si můžeme vytvořit její instanci.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -207,7 +207,7 @@ function tick() {
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace můžete vidět, že se objekty obarvují na oranžovo podle toho, jestli protínají paprsek.</p>
     <div data-example-id="4" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Raycasting z pozice myši</h2>
+    <h2 id="raycasting-z-pozice-mysi" class="heading-secondary u-mb-2">Raycasting z pozice myši</h2>
     <p class="paragraph u-mb-2">Pokud chceme raycasting provádět z pozice myši, tak můžeme. Musíme jen nastavit paprsek tak, aby směřoval od kamery podle toho, kde se myš nachází. Ve skutečnosti je to jednodušší než se to může zdát. Stačí jen na raycasteru zavolat metodu setFromCamera a předat jí souřadnice myši na canvasu a kameru. Souřadnice myši ale musejí být od -1 do 1 na obou osách. Musíme tedy jen provést jednoduchou matematiku a převést souřadnice myši na canvasu do tohoto intervalu.</p>
     <p class="paragraph u-mb-2">V našem příkladu si přidáme na canvas event listener pro pohyb myši a při jejím pohybu budeme měnit směr paprsku raycasteru.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

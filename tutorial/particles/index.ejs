@@ -1,9 +1,9 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Particles", activePage: "particles" }) %>
     <h1 class="heading-primary u-mb-6">Particles</h1>
     <p class="paragraph u-mb-4">Tato část je o particles. Dozvíte se tu co to vůbec je, pokud to ještě nevíte, a zkusíme si je vytvořit.</p>
-    <h2 class="heading-secondary u-mb-2">Co jsou particles</h2>
+    <h2 id="co-jsou-particles" class="heading-secondary u-mb-2">Co jsou particles</h2>
     <p class="paragraph u-mb-4">Particles slouží k vytváření efektů jako je třeba oheň, kouř, a podobné věci. Jedná se o spoustu částic, které jsou zobrazeny jako plocha (plane) vždy směřující na kameru. Možná to tak nemusí být vždy a může být více způsobů jak particles vytvořit, ale takto to v této části budeme dělat mi. Částic klidně můžeme mít i tisíce a výkon naší aplikace bude stále rozumný.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli particles zkusit vytvořit, tak je tu pro vás opět připravený startovní kód. Ten jen vytváří scénu a OrbitControls ovládání, abychom se mohli po scéně pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -63,7 +63,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-4">Po spuštění aplikace zatím nic neuvidíte.</p>
-    <h2 class="heading-secondary u-mb-2">Vytvoření particles</h2>
+    <h2 id="vytvoreni-particles" class="heading-secondary u-mb-2">Vytvoření particles</h2>
     <p class="paragraph u-mb-2">Particles vytváříme stejným způsobem jako meshe. Potřebujeme k tomu geometrii a materiál. Poté akorát vytvoříme namísto meshe instanci třídy Points. Začneme s tím, že si vytvoříme geometrii. Můžeme si vytvořit svoji vlastní, způsobem jaký jsme si ukazovali v části o geometrii. Nebudu tu popisovat jak to funguje, jelikož mi to moc nešlo ani v části o geometrii. Zde máte kód, který si můžete zkopírovat. Podle komentářů by jste mohli alespoň trochu pochopit jak to funguje. Prostě vytváříme geometrii, které nastavujeme vertexy na náhodné místo.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -105,7 +105,7 @@ const particles = new THREE.Points(
 scene.add(particles);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete particles prohlédnout. Zatím uvidíte jen modré čtverce (planes), které vždy směřují ke kameře.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Přidání textury</h2>
+    <h2 id="pridani-textury" class="heading-secondary u-mb-2">Přidání textury</h2>
     <p class="paragraph u-mb-2">Většinou nechceme aby naše particles vypadali jako čtverce. Proto si teď na tyto čtverce aplikujeme texturu. Přesněji řečeno spíš alpha mapu. Můžete si ji stáhnout <a href="../../static/img/textures/particles/star_particle.png" download class="link">zde</a> a umístit do složky static vašeho projektu. Tuto texturu jsem vzal z <a href="https://kenney.nl/assets/particle-pack" target="_blank" class="link">tohoto particles balíčku</a>, který obsahuje spoustu particles, které můžeme použít ve vlastních projektech.</p>
     <p class="paragraph u-mb-2">Až si texturu stáhnete a umístíte do složky static, tak si ji můžeme načíst pomocí Texture Loaderu a použít jako alpha mapu pro materiál jejím předáním vlastnosti alphaMap. Také musíme na materiálu zapnout, že je průhledný nastavením vlastnosti transparent na true.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -133,7 +133,7 @@ const material = new THREE.PointsMaterial({
         <li>změnit blending mód</li>
     </ul>
     <p class="paragraph u-mb-4">Všechna tato řešení si zkusíme. Poté bude jen na vás, které se rozhodnete použít. Záleží na konkrétním projektu. První tři nemají moc vliv na výkon, ale to poslední, které je rozšířením předposledního již může mít vliv na výkon.</p>
-    <h3 class="heading-tertiary u-mb-2">Nastavení alpha testu</h3>
+    <h3 id="nastaveni-alpha-testu" class="heading-tertiary u-mb-2">Nastavení alpha testu</h3>
     <p class="paragraph u-mb-2">Jako první si ukážeme nastavení alpha testu. Pro materiál můžeme nastavit vlastnost alphaTest, která určuje, kdy se materiál nevykreslí, když bude hodnota průhlednosti pod definovanou hodnotou. Defaultní hodnota je 0, takže se vždy vykreslí. Můžeme tedy tuto hodnotu trochu zvyšit a černé části by se neměli vůbec renderovat. Vím že to zní trochu divně, když alpha mapa slouží k tomu, aby se něco nevykreslilo, ale je to tak. Ono to jakoby funguje tak, že GPU renderuje objekt a vidí že v některé části objektu má být průhlednost, takže přebarví tou průhledností i již vyrenderované částice.</p>
     <p class="paragraph u-mb-2">Následující ukázka ukazuje, jak můžeme pro materiál alphaTest nastavit. Stačí nastavit jen nějakou velmi malou hodnotu.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -149,7 +149,7 @@ const material = new THREE.PointsMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak můžete vidět, že úplně perfektně to nefunguje. V alpha mapě totiž může být něco, co není úplně černé, projde to testem a může se to vyrenderovat. Takže částice třeba může svými hranami zakrývat ostatní částice.</p>
     <div data-example-id="3" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Deaktivace depth testingu</h3>
+    <h3 id="deaktivace-depth-testingu" class="heading-tertiary u-mb-2">Deaktivace depth testingu</h3>
     <p class="paragraph u-mb-2">Další možnost jak se zbavit problému s průhledností, je deaktivovat depth testing. To funguje, ale jen s particles stejné barvy a když na scéně nejsou žádné objekty. Prostě úplně vypneme testování hloubky. Toto řešení podle mě asi nepoužijete skoro nikdy.</p>
     <p class="paragraph u-mb-2">Depth testing u materiálu vypneme nastavením vlastnosti depthTest na false.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -165,7 +165,7 @@ const material = new THREE.PointsMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">V našem příkladu se particles zobrazí správně, ale pokud by na scéně byly nějaké další objekty nebo částice neměli stejnou barvu, tak by to nefungovalo.</p>
     <div data-example-id="4" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Vypnutí zápisu do depth bufferu</h3>
+    <h3 id="vypnuti-zapisu-do-depth-bufferu" class="heading-tertiary u-mb-2">Vypnutí zápisu do depth bufferu</h3>
     <p class="paragraph u-mb-2">Třetí řešení pro problém s průhledností je vypnout zápis do depth bufferu. Depth Buffer si můžeme představit jako takovou černobílou texturu, do které si WebGL kreslí aby si zapamatovalo, co se nachází na jaké vzdálenosti. Když WebGL něco kreslí, tak se dívá do depth bufferu jestli se to má zobrazit před nebo za nakreslenými věcmi. Pokud pro particles zápis do depth bufferu vypneme, tak se do něj nebudou zapisovat ale budou testovány. Někdy s tím můžeme mít problém, ale většinou je to dobré řešení.</p>
     <p class="paragraph u-mb-2">Depth testing můžeme u materiálu vypnout nastavením vlastnosti depthWrite na false.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -181,7 +181,7 @@ const material = new THREE.PointsMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by se particles měli zobrazit správně.</p>
     <div data-example-id="5" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Změna blending módu</h3>
+    <h3 id="zmena-blending-modu" class="heading-tertiary u-mb-2">Změna blending módu</h3>
     <p class="paragraph u-mb-2">Poslední řešení pro náš problém s průhledností si ukážeme změnu blending módu. To narozdíl od předchozích tří již může mít vliv na výkon. Jedná se v podstatě spíš o rozšíření předchozího řešení, protože také nastavujeme vlastnost depthWrite na false. Kromě toho ale měníme vlastnost blending na THREE.AdditiveBlending, což jakoby znásobí dvě překrývající se částice. Takže tím to jakoby můžeme ještě zlepšit. Funguje to podobně jako vrstvy v grafických programech.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -198,7 +198,7 @@ const material = new THREE.PointsMaterial({
     <p class="paragraph u-mb-2">Teď byste měli v našem příkladu vidět, že když se částice překrývají, tak se jejich barvy jakoby znásobí.</p>
 
     <div data-example-id="6" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Měnění barev částic</h2>
+    <h2 id="meneni-barev-castic" class="heading-secondary u-mb-2">Měnění barev částic</h2>
     <p class="paragraph u-mb-2">Momentálně máme v našem příkladu všechny částice obarvené pouze jednou barvou. Teď si ukážeme, jak můžeme mít částice různých barev. U geometrie můžeme nastavit atribut color, který určuje barvu vertexů. Nastavujeme jej stejným způsobem jako position atribut. Nejdříve vytvoříme pole hodnot, které potom předáme pro vytvoření BufferAttributu a ten nakonec nastavíme geometrii pomocí metody setAttribute. Myslím že v následující ukázce to pochopíte lépe než v textu. V ukázce pro vertexy nastavujeme barvy náhodně. Kód z ukázky si můžete zkopírovat a umístit hned za nastavení position atributu.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -233,7 +233,7 @@ const material = new THREE.PointsMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by se vám měli vygenerovat částice různých barev.</p>
     <div data-example-id="7" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Animace</h2>
+    <h2 id="animace" class="heading-secondary u-mb-2">Animace</h2>
     <p class="paragraph u-mb-2">Pokud chceme particles animovat, tak existuje více způsobů jak to udělat. Protože třída Points dědí od třídy Object3D, tak můžeme třeba provádět transformace se všemi particles najednou. Následující ukázka ukazuje, jak můžeme všechny particles točit dokola. Používáme k tomu hodiny k získání uplynulého času od startu aplikace.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 

@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "První scéna", activePage: "prvni-scena" }) %>
     <h1 class="heading-primary u-mb-6">První scéna</h1>
     <p class="paragraph u-mb-4">V této části si s pomocí Three.js vytvoříme jednoduchou 3D scénu. Vytvoříme si model kostky, umístíme ji do scény a tu vykreslíme na canvas. Nebudeme zabíhat do žádných velkých detailů, cílem této části je hlavně to, abyste si zkusili jak se s Three.js pracuje a začali jej používat. Do detailnějšího vysvětlení různých věcí týkající se Three.js se pustíme až v dalších částech.</p>
-    <h2 class="heading-secondary u-mb-2">Instalace Three.js</h2>
+    <h2 id="instalace-threejs" class="heading-secondary u-mb-2">Instalace Three.js</h2>
     <p class="paragraph u-mb-2">Než začneme Three.js používat, tak si jej samozřejmě musíme nainstalovat. Máme více možností jak to udělat. Nejlepší je pravděpodobně nainstalovat si jej přes NPM a použít nějaký sestavovací nástroj jako je Webpack. To ale není tak jednoduché a proto to necháme až na další část. V této části si Three.js stáhneme ručně a na naši webovou stránku jej přidáme prostřednictvím script tagu.</p>
     <p class="paragraph u-mb-4">Three.js můžeme stáhnout z <a href="https://threejs.org/" target="_blank" class="link">oficiálních stránek</a>. V menu v sekci Code je tam možnost download.</p>
     <img src="../../static/img/DownloadThreeJS.png" alt="Stažení Three.js" class="centered-image u-mb-4">
@@ -18,7 +18,7 @@
     &lt;script src="./three.min.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-    <h2 class="heading-secondary u-mb-2">Vyrenderování kostky</h2>
+    <h2 id="vyrenderovani-kostky" class="heading-secondary u-mb-2">Vyrenderování kostky</h2>
     <p class="paragraph u-mb-2">Three.js jsme si přidali na naši webovou stránku a můžeme jej tedy začít používat. Vytvoříme si nový JavaScript soubor a připojíme si jej na stránku. Musíme jej ale připojit až po knihovně Three.js abychom ji mohli v našem kódu používat. Můžete jej nazvat třeba jako main.js. A rovnou také můžeme na stránce vytvořit canvas, do kterého budeme renderovat. Nastavíme mu nějakou velikost a id, pomocí kterého jej v JavaScriptu získáme.</p>
     <pre class="code-box u-mb-2"><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="cs"&gt;
@@ -92,16 +92,16 @@ camera.position.y = 1;
 
 /* ... */</code></pre>
     <div data-example-id="2" class="u-mb-6"></div>
-    <h2 class="heading-secondary u-mb-2">Co je potřeba k vytvoření základní scény</h2>
+    <h2 id="co-je-potreba-k-vytvoreni-zakladni-sceny" class="heading-secondary u-mb-2">Co je potřeba k vytvoření základní scény</h2>
     <p class="paragraph u-mb-4">V předchozím příkladu, ve kterém jsme renderovali kostku, jste mohli vidět že k vytvoření a vykreslení základní scény je potřeba scéna, nějaké objekty (meshe), kamera a renderer. Na závěr této části bych u těchto věcí chtěl ještě krátce popsat k čemu slouží.</p>
-    <h3 class="heading-tertiary u-mb-2">Scéna</h3>
+    <h3 id="scena" class="heading-tertiary u-mb-2">Scéna</h3>
     <p class="paragraph u-mb-2">Scéna představuje takový container, do kterého přidáváme objekty, světla, načtené 3D modely a tak podobně. V určitém okamžiku ji předáme rendereru k vyrenderování a vykreslí se nám na canvas.</p>
     <pre class="code-box u-mb-4"><code>// vytvoření scény
 const scene = new THREE.Scene();
 
 // přidání objektů do scény
 scene.add(box1, light);</code></pre>
-    <h3 class="heading-tertiary u-mb-2">Mesh</h3>
+    <h3 id="mesh" class="heading-tertiary u-mb-2">Mesh</h3>
     <p class="paragraph u-mb-2">Mesh je kombinace geometrie (tvaru) a materiálu (jak to vypadá). Při jeho vytváření mu předáme jakou geometrii představuje a jaký se má na geometrii aplikovat materiál. Po vytvoření meshe jej můžeme přidat do scény, kterou potom můžeme vyrenderovat na canvas pomocí rendereru.</p>
     <pre class="code-box u-mb-4"><code>// vytvoření geometrie
 const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -112,14 +112,14 @@ const material = new THREE.MeshBasicMaterial({
 
 // vytvoření meshe podle geometrie a materiálu
 const cube = new THREE.Mesh(geometry, material);</code></pre>
-    <h3 class="heading-tertiary u-mb-2">Kamera</h3>
+    <h3 id="kamera" class="heading-tertiary u-mb-2">Kamera</h3>
     <p class="paragraph u-mb-2">Kamera slouží jako bod, ze kterého se díváme na scénu. Můžeme si ji představit stejně jako fotoaparát, který používáme když něco fotíme. Můžeme mít i více kamer a přepínat se mezi nimi, ale to se tak často nedělá, protože můžeme jednoduše změnit pozici kamery. Existuje více typů kamer, později se na ně podíváme v samostatné části. V našem příkladu při renderování kostky jsme používali perspektivní kameru. To znamená, že objekty vzadu budou malé a ty vepředu větší, stejně jako v reálném světě.</p>
     <pre class="code-box u-mb-4"><code>// vytvoření kamery
 const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight);
 
 // přidání kamery do scény
 scene.add(camera);</code></pre>
-    <h3 class="heading-tertiary u-mb-2">Renderer</h3>
+    <h3 id="renderer" class="heading-tertiary u-mb-2">Renderer</h3>
     <p class="paragraph u-mb-2">Renderer slouží k vykreslení (vyrenderování) scény na canvas z výhledu kamery. Jak jsem psal, tak existuje i více typů rendererů, ale ten nejpoužívanější je WebGLRenderer. O ostatních v podstatě ani nemusíte vědět, pokud nebudete chtít pracovat s 3D grafikou třeba prostřednictvím CSS nebo SVG. Po vytvoření rendereru můžeme použít metodu render, které předáme scénu a kameru z jejíhož výhledu chceme scénu vykreslit. Po zavolání této metody se nám scéna vykreslí na canvas.</p>
     <pre class="code-box u-mb-6"><code>// vytvoření rendereru
 const renderer = new THREE.WebGLRenderer({

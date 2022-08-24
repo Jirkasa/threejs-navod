@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Realistické renderování", activePage: "realisticke-renderovani" }) %>
     <h1 class="heading-primary u-mb-6">Realistické renderování</h1>
     <p class="paragraph u-mb-4">V této části se podíváme na pár tipů, jak můžeme své modely pomocí Three.js renderovat realističtěji.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Je tu pro vás připraven startovní kód, který vytváří scénu, přidává do ní DirectionalLight světlo a načítá 3D model. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a kód si zkopírujte do JavaScript souboru.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -79,7 +79,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět 3D model lavice, u kterého se budeme snažit, abychom ho vyrenderovali co nejrealističtěji.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Realistická světla</h2>
+    <h2 id="realisticka-svetla" class="heading-secondary u-mb-2">Realistická světla</h2>
     <p class="paragraph u-mb-2">Defaultně světla nepoužívají fyzikálně správný režim osvětlení. Pokud chceme fyzikálně správný režim osvětlení zapnout, tak to můžeme udělat pomocí vlastnosti physicallyCorrectLights na rendereru.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -195,7 +195,7 @@ gltfLoader.load(
 );
 
 /* ... */</code></pre>
-    <h2 class="heading-secondary u-mb-2">Output Encoding</h2>
+    <h2 id="output-encoding" class="heading-secondary u-mb-2">Output Encoding</h2>
     <p class="paragraph u-mb-2">Renderer má vlastnost outputEncoding, kterou vám nebudu schopný popsat, protože jí moc nerozumím. Ale vím, že když ji nastavíme na THREE.sRGBEncoding, tak to bude většinou vypadat dobře. Co je to sRGB si můžete přečíst <a href="https://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/#gamma-vs-srgb" target="_blank" class="link">zde</a>. Vím že je to v podstatě takový standard, ale jak to funguje skoro vůbec nevím.</p>
     <p class="paragraph u-mb-2">Do našeho dat.GUI panelu si můžeme přidat input pro přepínání mezi lineárním encodingem (ten je defaultní) a sRGB encodingem. Jelikož select input vrací vždy řetězec, tak je potřeba jej po změně inputu převést na číslo, jak ukazuje ukázka.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -225,7 +225,7 @@ gui.add(renderer, "outputEncoding", {
     renderer.outputEncoding = Number(renderer.outputEncoding);
 });</code></pre>
     <p class="paragraph u-mb-4">Encoding můžeme nastavovat i u textur pomocí vlastnosti encoding. To za nás již zajišťuje GLTFLoader a stačí jen přepnout output encoding na rendereru. Pokud by jste to ale u textur někdy potřebovali změnit sami, tak můžete. V podstatě to jde aplikovat na všechno, kde se používají barvy. Ne u všech textur je ale dobré encoding přepnout na sRGB. Například u normal mapy chceme mít přesné hodnoty, proto u ní ponecháme defaultní lineární encoding.</p>
-    <h2 class="heading-secondary u-mb-2">Tone Mapping</h2>
+    <h2 id="tone-mapping" class="heading-secondary u-mb-2">Tone Mapping</h2>
     <p class="paragraph u-mb-2">Tone Mapping je technika, která se používá ve zpracování obrazu a počítačové grafice k mapování jedné sady barev na druhou, aby se přiblížil vzhled obrazů s vysokým dynamickým rozsahem na médiu, které má omezenější dynamický rozsah. Tuto větu jsem zkopíroval z Wikipedie a sám nevím jak Tone Mapping vlastně funguje. Nemůžu to tu tedy ani vysvětlovat. Ukážeme si ale, jak jej můžeme změnit pomocí vlastnosti toneMapping na rendereru. Máme na výběr z následujících hodnot:</p>
     <ul class="list u-mb-2">
         <li>THREE.NoToneMapping (defaultní)</li>
@@ -293,7 +293,7 @@ gui.add(renderer, "toneMapping", {
 
 gui.add(renderer, "toneMappingExposure")
 .min(0).max(5).step(0.01);</code></pre>
-    <h2 class="heading-secondary u-mb-2">Stíny</h2>
+    <h2 id="stiny" class="heading-secondary u-mb-2">Stíny</h2>
     <p class="paragraph u-mb-2">Pro realistické renderování chceme mít stíny. Ty jsme již rozebírali v samostatné části a měli by jste je být tedy schopni nastavit (samozřejmě si to pamatovat nemusíte, ale návod k tomu máte). Zde si to tedy jen zopakujeme a nebudeme zabíhat moc do detailu. Pro zapnutí stínů nejdříve musíme na rendereru zapnout vytváření shadow map.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -463,7 +463,7 @@ directionalLight.shadow.camera.bottom = -1.2;
 directionalLight.shadow.camera.updateProjectionMatrix();</code></pre>
     <p class="paragraph u-mb-2">S nastavováním stínů jsme hotovi.</p>
     <div data-example-id="12" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Anti-Aliasing</h2>
+    <h2 id="anti-aliasing" class="heading-secondary u-mb-2">Anti-Aliasing</h2>
     <p class="paragraph u-mb-2">V části o měnění velikosti canvasu jsem se zmiňoval o tom, že podle toho jakou máte hustotu pixelů, můžete na hranách objektů vidět vyrenderované schody (pixely). Ukazuje je následující obrázek.</p>
     <img src="../../static/img/rendered-stairs.png" alt="vyrenderované schody na hranách objektů" class="centered-image u-mb-2">
     <p class="paragraph u-mb-2">Kromě vyšší hustoty pixelů se dá vyrenderování schodů předejít zapnutím anti-aliasingu. Ten slouží k tomu, aby se vyhladili hrany objektů a schody se nerenderovali. Jeho zapnutí je jednoduché, jen při vytváření rendereru nastavíme možnost antialias na true. Pokud bychom ale tuto možnost chtěli později změnit, tak již nemůžeme, museli bychom vytvořit nový renderer.</p>

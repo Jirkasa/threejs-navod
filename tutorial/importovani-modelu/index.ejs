@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Importování modelů", activePage: "importovani-modelu" }) %>
     <h1 class="heading-primary u-mb-6">Importování modelů</h1>
     <p class="paragraph u-mb-4">V této části si ukážeme, jak můžeme do Three.js naimportovat 3D modely, které jsme si mohli vytvořit v nějakém 3D modelovacím programu jako je Blender. To potřebujeme dost často, jelikož vytvářet nějaké komplexní geometrie v kódu moc nejde.</p>
-    <h2 class="heading-secondary u-mb-2">Formáty pro 3D modely</h2>
+    <h2 id="formaty-pro-3d-modely" class="heading-secondary u-mb-2">Formáty pro 3D modely</h2>
     <p class="paragraph u-mb-2">Pro ukládání 3D modelů existuje spoustu formátů. Při výběrů formátu bereme v potaz ukládaná data, velikost souboru, kompresy, a tak podobně. Populární formáty jsou následující:</p>
     <ul class="list u-mb-2">
         <li>OBJ</li>
@@ -14,7 +14,7 @@
         <li>a další...</li>
     </ul>
     <p class="paragraph u-mb-4">My se v této části budeme zabývat načítáním 3D modelů uložených v GLTF formátu. Pro ostatní formáty je to ale podobné (možná i stejné).</p>
-    <h3 class="heading-tertiary u-mb-2">GLTF</h3>
+    <h3 id="gltf" class="heading-tertiary u-mb-2">GLTF</h3>
     <p class="paragraph u-mb-2">GLTF je zkratka pro GL Transmission Format. Tento formát byl vytvořen skupinou Khronos Group, která vyvíjí OpenGL, WebGL, atd. Podporuje různé typy dat jako je geometrie, materiály, kamery, světla, animace, skeletony, a podobně. Můžeme tedy GLTF soubor načíst a do scény se nám kromě samotné geometrie mohou automaticky přidat třeba i materiály a světla.</p>
     <p class="paragraph u-mb-2">U GLTF formátu máme více způsobů jak data ukládat. Můžeme všechno umístit do jednoho souboru, nebo můžeme mít více souborů, které budeme referencovat z jednoho hlavního souboru. Také třeba máme možnost využít kompresy. Máme v podstatě 4 možnosti:</p>
     <ul class="list u-mb-4">
@@ -31,7 +31,7 @@
     <p class="paragraph u-mb-4">Na buffer data (typicky geometrii) můžeme aplikovat Draco kompresy. Díky tomu máme možnost načíst nějaký složitý model rychleji. Tento algoritmus vyvíjí Google a není exkluzivní pro GLTF. Stali se ale populárními ve stejný čas. Načtení GLTF souboru s Draco komresí je trochu složitější, ale později si to ukážeme.</p>
     <h4 class="heading-quaternary">glTF Embedded</h4>
     <p class="paragraph u-mb-4">Poslední způsob, jak ukládat data v GLTF, je použít jen jeden .gltf soubor, který v sobě bude mít uloženo všechno. Nejedná se o binární soubor, takže data jako textury tam budou uloženy v Base64 kódování. Jedná se o kódování, které převádí binární data na posloupnosti tisknutelných znaků, takže je můžeme uložit v textu.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli vyzkoušet načítání 3D modelů, tak je tu pro vás přichystaný startovní kód. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód jen vytváří scénu a nastavuje další základní věci, na které jste asi již zvyklí z minulých částí.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -90,7 +90,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-4">Po spuštění aplikace by jste zatím neměli vidět nic. Později si do scény načteme objekt.</p>
-    <h2 class="heading-secondary u-mb-2">Načítání 3D modelů</h2>
+    <h2 id="nacitani-3d-modely" class="heading-secondary u-mb-2">Načítání 3D modelů</h2>
     <p class="paragraph u-mb-2">Abychom si mohli vyzkoušet načíst 3D model, tak musíme nějaký mít. Připravil jsem pro vás zazipovaný soubor, který si můžete <a href="../../static/other/DeskModel.zip" download class="link">stáhnout zde</a>, rozbalit si jej a umístit do složky static ve vašem projektu. Jedná se o 4 složky obsahující model uložený v GLTF formátu. U každé složky je model uložen jinou cestou. V jedné máme samostatné soubory pro textury a geometrii, v druhé ukládáme model binárně, ve třetí používáme Draco kompresy a v poslední používáme jen jeden .gltf soubor, který obsahuje všechno.</p>
     <p class="paragraph u-mb-2">Pro načtení 3D modelů potřebujeme Loader. Existuje více typů loaderů pro různé formáty. Můžete je najít v dokumentaci, ale ne všechny tam jsou. Občas se musíte podívat do zdrojového kódu v node_modules složce, nebo v <a href="https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders" target="_blank" class="link">repozitáři na GitHubu</a>. Například <a href="https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/FBXLoader.js" target="_blank" class="link">FBXLoader</a>, který jsem použil pro svůj <a href="../../3d-modely/" class="link">prohlížeč 3D modelů</a> jsem v dokumentaci nenašel. Protože máme modely uložené v GLTF formátu, tak použijeme <a href="https://threejs.org/docs/index.html?q=loader#examples/en/loaders/GLTFLoader" target="_blank" class="link">GLTFLoader</a>. Jelikož není součástí THREE proměnné, kterou si do našeho JavaScript souboru importujeme, tak si jej musíme naimportovat zvlášť. Odkud jej naimportovat je napsáno v dokumentaci v části source (nebo se můžete podívat do zdrojáku). Následující ukázka ukazuje, jak to udělat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -181,7 +181,7 @@ gltfLoader.load(
 );
 
 /* ... */</code></pre>
-    <h2 class="heading-secondary u-mb-2">Načítání GLTF souboru s Draco kompresí</h2>
+    <h2 id="nacitani-gltf-souboru-s-draco-kompresi" class="heading-secondary u-mb-2">Načítání GLTF souboru s Draco kompresí</h2>
     <p class="paragraph u-mb-2">Pokud si nyní zkusíte načíst GLTF soubor ve složce glTFDraco, tak dostanete chybu, kterou ukazuje následující obrázek. Tento soubor totiž používá Draco kompresy.</p>
     <img src="../../static/img/NoDracoLoaderError.png" alt="chyba - nebyl předán Draco Loader" class="centered-image u-mb-2">
     <p class="paragraph u-mb-2">Abychom mohli GLTF soubor používající Draco kompresy načíst, tak k tomu potřebujeme <a href="https://threejs.org/docs/#examples/en/loaders/DRACOLoader" target="_blank" class="link">DracoLoader</a>. Následujícím způsobem si jej můžeme naimportovat.</p>
@@ -224,7 +224,7 @@ gltfLoader.load(
 /* ... */</code></pre>
     <div data-example-id="3" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Je potřeba zmínit, že Draco komprese není vždy výhrou. Geometrie sice zabere méně místa a stáhne se rychleji, ale uživatel také musí stáhnout Decoder. Také samozřejmě zabere nějaký čas a zdroje počítače dekódovat zkompresovaný soubor. U našeho modelu není geometrie nijak komplexní a má jen pár vertexů. V tomto případě by tedy bylo lepší Draco kompresy nepoužít. Hodně místa v našem modelu zaberou hlavně textury.</p>
-    <h2 class="heading-secondary u-mb-2">Načítání animací</h2>
+    <h2 id="nacitani-animaci" class="heading-secondary u-mb-2">Načítání animací</h2>
     <p class="paragraph u-mb-2">GLTF soubory mohou obsahovat kromě samotných 3D modelů i animace. Ty si teď zkusíme na načteném modelu zprovoznit. Budeme k tomu ale potřebovat objekt, který animace obsahuje. Stáhnul jsem pro vás 3D model s animací z <a href="https://www.mixamo.com/" target="_blank" class="link">Mixamo</a> a převedl na .glb soubor. Mixamo obsahuje spoustu animací, které můžete zdarma použít ve svých projektech. Tento soubor můžete stáhnout <a href="../../static/other/DancingAnimation.glb" download target="_blank" class="link">zde</a> a vložit si jej do složky static.</p>
     <p class="paragraph u-mb-2">Můžeme začít tím, že si výsledek načtení GLTF souboru zatím jen logneme do konzole. Upravte si tedy volání load metody do následující podoby.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "3D Text", activePage: "3d-text" }) %>
     <h1 class="heading-primary u-mb-6">3D Text</h1>
     <p class="paragraph u-mb-4">Předchozí 3 části na vás možná kvůli shaderům mohli být trochu moc. Pokud jste shaderům moc neporozumněli, tak to chápu. V této části se podíváme na něco jednoduššího. Zkusíme si ve scéně vytvořit 3D text.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Je tu pro vás připraven startovní kód. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód vytváří scénu a přidává do ní světla. Také vytváří OrbitControls ovládání, abychom se po scéně mohli pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -69,7 +69,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic.</p>
-    <h2 class="heading-secondary u-mb-2">Načtení fontu</h2>
+    <h2 id="nacteni-fontu" class="heading-secondary u-mb-2">Načtení fontu</h2>
     <p class="paragraph u-mb-2">Abychom mohli vytvořit 3D text, tak si na to nejdříve musíme načíst font. Použijeme k tomu třídu <a href="https://threejs.org/docs/index.html?q=fontloader#examples/en/loaders/FontLoader" target="_blank" class="link">FontLoader</a>, která nám umožňuje načítat fonty v JSON formátu. Do JSON formátu můžeme fonty převést pomocí <a href="https://gero3.github.io/facetype.js/" target="_blank" class="link">tohoto online převaděče</a>. Já jsem to již udělal za vás a font, který použijeme, si můžete stáhnout <a href="../../static/other/Rubik_Regular.json" download class="link">zde</a>. Vložte si jej ve vašem projektu do složky static.</p>
     <p class="paragraph u-mb-2">Třídu FontLoader si musíme naimportovat zvlášť. Následující ukázka ukazuje, jak to můžeme udělat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -91,7 +91,7 @@ fontLoader.load(
         // fontem po jeho načtení
     }
 );</code></pre>
-    <h2 class="heading-secondary u-mb-2">Vytvoření geometrie pro text</h2>
+    <h2 id="vytvoreni-geometrie-pro-text" class="heading-secondary u-mb-2">Vytvoření geometrie pro text</h2>
     <p class="paragraph u-mb-2">Po načtení fontu jej můžeme použít pro vytvoření 3D textu. Slouží k tomu třída <a href="https://threejs.org/docs/index.html?q=textgeometry#examples/en/geometries/TextGeometry" target="_blank" class="link">TextGeometry</a>. Umožňuje nám vytvořit geometrii představující text, kterou potom můžeme použít stejně jako jakoukoliv jinou geometrii. Následující ukázka ukazuje, jak si ji můžeme naimportovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -161,7 +161,7 @@ fontLoader.load(
     <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak si můžete váš text prohlédnout.</p>
     <div data-example-id="1" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">S textem buďte opatrní. Může do scény přidat spoustu polygonů a mít tedy vliv na výkon. Počet polygonů můžete snižovat/zvyšovat pomocí vlastností curveSegments a bevelSegments. Můžete se o nich dočíst v dokumentaci.</p>
-    <h2 class="heading-secondary u-mb-2">Vycentrování textu</h2>
+    <h2 id="vycentrovani-textu" class="heading-secondary u-mb-2">Vycentrování textu</h2>
     <p class="paragraph u-mb-2">Text v našem příkladu není vycentrován do středu scény. Pokud si do scény přidáte <a href="https://threejs.org/docs/?q=axe#api/en/helpers/AxesHelper" target="_blank" class="link">AxesHelper</a>, který jsme si ukázali v části o transformaci objektů, tak uvidíte, že ve středu scény se nachází levá část textu.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 

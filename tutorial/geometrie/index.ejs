@@ -1,9 +1,9 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Geometrie", activePage: "geometrie" }) %>
     <h1 class="heading-primary u-mb-6">Geometrie</h1>
     <p class="paragraph u-mb-4">V této části si vysvětlíme co je to geometrie a jaké nám Three.js poskytuje typy geometrií. S geometrií jsme se v tutoriálu již setkali. Vytvářeli jsme například kostku, kouly a kužel. K vytvoření těchto objektů jsme použili specifické typy geometrií, které nám Three.js nabízí. V této části se na geometrii podíváme více do detailu.</p>
-    <h2 class="heading-secondary u-mb-2">Co je geometrie</h2>
+    <h2 id="co-je-geometrie" class="heading-secondary u-mb-2">Co je geometrie</h2>
     <p class="paragraph u-mb-4">Ve Three.js geometrie slouží k vytvoření tvaru, který potom můžeme použít pro meshe. Jedná se o kombinaci vertexů (bodů v 3D prostoru) a polygonů (třech bodů spojených do trojúhelníku). Mesh je kombinace geometrie a materiálu a představuje tedy objekt, který můžeme vidět ve scéně. Kromě meshů ale můžeme geometrii použít také třeba pro particles k uchování lokace jednotlivých částic. Také bych chtěl zmínit, že kromě toho že geometrie uchovává tvar pomocí vertexů a polygonů, tak může ukládat i data jako jsou UV souřadnice, normály, nebo třeba barvy vertexů. Když to shrnu, tak geometrie slouží jako tvar, na který potom můžeme aplikovat materiál (vytvořit mesh) a umístit jej do scény. Použitím geometrie pro particles se budeme zabývat až v jiné části.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli zkusit vytvořit různé typy geometrií, které nám Three.js nabízí, tak k tomu potřebujeme scénu, ve které si je po vytvoření můžeme prohlédnout. Pomocí startovního kódu z části o Webpack si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód, který ukazuje následující ukázka. Tento kód vytváří scénu a přidává do ní zatím jen světla. Světla potřebujeme, jelikož budeme používat jiný typ materiálu než který jsme doposud používali. Tento materiál potřebuje světlo aby byl vidět. Světlem se budeme zabývat v jiné části, nemusíte zkoumat jak to funguje, stačí když chápete že jej přidáváme do scény. Také vytváříme animační smyčku, roztahujeme canvas přes celé okno a vytváříme OrbitControls ovládání, abychom se mohli po scéně pohybovat. U OrbitControls ještě nastavujeme možnost enableDamping na true, abychom měli takový tlumený pohyb při posunutí kamery.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -74,9 +74,9 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-4">Pokud si aplikaci spustíte, tak by jste zatím neměli vidět nic. Postupně si scénu zaplníme různými typy geometrií.</p>
-    <h2 class="heading-secondary u-mb-2">Typy geometrií</h2>
+    <h2 id="typy-geometrii" class="heading-secondary u-mb-2">Typy geometrií</h2>
     <p class="paragraph u-mb-4">Pokud bychom chtěli, tak bychom si mohli vytvořit svoji vlastní geometrii úplně od základu. Three.js nám ale pro některé tvary nabízí třídy, pomocí kterých si můžeme geometrii vytvořit jednodušeji. Všechny si je tu postupně projdeme a vyzkoušíme si s jejich pomocí vytvořit geometrie. Tyto třídy dědí od třídy <a href="https://threejs.org/docs/index.html?q=geometry#api/en/core/BufferGeometry" target="_blank" class="link">BufferGeometry</a>, která nám umožňuje vytvořit si vlastní geometrii úplně od základu. To si později také ukážeme.</p>
-    <h3 class="heading-tertiary u-mb-2">Box Geometry</h3>
+    <h3 id="box-geometry" class="heading-tertiary u-mb-2">Box Geometry</h3>
     <p class="paragraph u-mb-2">První geometrií, kterou si ukážeme, je <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/BoxGeometry" target="_blank" class="link">BoxGeometry</a>. Často jsme ji v tutoriálu již použili. Umožňuje nám vytvořit krychly nebo kvádr. Jako parametr při jejím vytváření předáváme šířku, výšku a hloubku krychle/kvádru. Také můžeme předat pár dalších parametrů o kterých si můžete přečíst v dokumentaci. Také si je tam můžete vyzkoušet, je tam dost dobrá interaktivních ukázka, takže mi přijde zbytečné o nich zde psát.</p>
     <p class="paragraph u-mb-2">Následující kód si můžete zkopírovat do svého kódu a ve scéně by se vám měla vytvořit kostka.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
@@ -86,7 +86,7 @@ const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 const box = new THREE.Mesh(boxGeometry, material);
 scene.add(box);</code></pre>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Capsule Geometry</h3>
+    <h3 id="capsule-geometry" class="heading-tertiary u-mb-2">Capsule Geometry</h3>
     <p class="paragraph u-mb-2">Druhou geometrií, kterou si ukážeme, je <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/CapsuleGeometry" target="_blank" class="link">CapsuleGeometry</a>. Slouží k vytvoření takové jakoby kapsle nebo tobolky. Jako parametr předáváme poloměr kapsle, výšku, počet segmentů na krajích kapsle a počet radiálních segmentů. Nevím jak to popsat, v dokumentaci máte interaktivní ukázku, na které si můžete jednotlivé parametry vyzkoušet.</p>
     <p class="paragraph u-mb-2">Vložením následujícího kódu do našeho kódu si můžeme do scény kapsly přidat.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
@@ -97,7 +97,7 @@ const capsule = new THREE.Mesh(capsuleGeometry, material);
 capsule.position.x = 1.5;
 scene.add(capsule);</code></pre>
     <div data-example-id="2" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Circle Geometry</h3>
+    <h3 id="circle-geometry" class="heading-tertiary u-mb-2">Circle Geometry</h3>
     <p class="paragraph u-mb-2">Jako další geometrii si ukážeme <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/CircleGeometry" target="_blank" class="link">CircleGeometry</a>. Slouží k vytvoření kruhu. Jako parametr předáváme radius a počet segmentů. O dalších parametrech, které můžeme předat si můžete přečíst v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -107,7 +107,7 @@ const circle = new THREE.Mesh(circleGeometry, material);
 circle.position.x = 3;
 scene.add(circle);</code></pre>
     <div data-example-id="3" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Cone Geometry</h3>
+    <h3 id="cone-geometry" class="heading-tertiary u-mb-2">Cone Geometry</h3>
     <p class="paragraph u-mb-2">Dalším typem geometrie je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/ConeGeometry" target="_blank" class="link">ConeGeometry</a>. Slouží k vytvoření kužele. Jako parametr předáváme poloměr podstavy kužele, výšku, počet radiálních segmentů a můžeme předat ještě spoustu dalších parametrů. O těch si můžete přečíst v dokumentaci a vyzkoušet si je tam na interaktivní ukázce.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -117,7 +117,7 @@ const cone = new THREE.Mesh(coneGeometry, material);
 cone.position.x = 4.5;
 scene.add(cone);</code></pre>
     <div data-example-id="4" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Cylinder Geometry</h3>
+    <h3 id="cylinder-geometry" class="heading-tertiary u-mb-2">Cylinder Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrii, kterou si ukážeme, je <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/CylinderGeometry" target="_blank" class="link">CylinderGeometry</a>. Slouží k vytvoření válce. Jako parametr předáváme poloměr horní části válce, poloměr dolní části válce, výšku, počet radiálních segmentů a spoustu dalších parametrů, které můžete prozkoumat v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -127,7 +127,7 @@ const cylinder = new THREE.Mesh(cylinderGeometry, material);
 cylinder.position.x = 6;
 scene.add(cylinder);</code></pre>
     <div data-example-id="5" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Dodecahedron Geometry</h3>
+    <h3 id="dodecahedron-geometry" class="heading-tertiary u-mb-2">Dodecahedron Geometry</h3>
     <p class="paragraph u-mb-2">Další je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/DodecahedronGeometry" target="_blank" class="link">DodecahedronGeometry</a>. Nevím jak tento tvar popsat, podívejte se do dokumentace na interaktivní ukázku. Jako parametr předáváme poloměr a úroveň detailu.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -137,7 +137,7 @@ const dodecahedron = new THREE.Mesh(dodecahedronGeometry, material);
 dodecahedron.position.x = 7.5;
 scene.add(dodecahedron);</code></pre>
     <div data-example-id="6" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Icosahedron Geometry</h3>
+    <h3 id="icosahedron-geometry" class="heading-tertiary u-mb-2">Icosahedron Geometry</h3>
     <p class="paragraph u-mb-2">Jako další geometrii si ukážeme <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/IcosahedronGeometry" target="_blank" class="link">IcosahedronGeometry</a>. Tato geometrie je podobná té předchozí a také nevím jak ji popsat. Takže se podívejte na ukázku v dokumentaci. Jako parametr předáváme poloměr a úroveň detailu.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -147,7 +147,7 @@ const icosahedron = new THREE.Mesh(icosahedronGeometry, material);
 icosahedron.position.x = 9;
 scene.add(icosahedron);</code></pre>
     <div data-example-id="7" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Lathe Geometry</h3>
+    <h3 id="lathe-geometry" class="heading-tertiary u-mb-2">Lathe Geometry</h3>
     <p class="paragraph u-mb-2">Teď si ukážeme geometrii jménem <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/LatheGeometry" target="_blank" class="link">LatheGeometry</a>. Tato geometrie slouží k tvorbě symetrických tvarů jako jsou třeba vázy. Jako parametr předáváme pole instancí třídy Vector2, počet segmentů a dva další parametry o který se můžete dozvědět v dokumentaci. Každý Vector2 určuje jakoby pozici bodu od středu tvaru (vlastnost x - tato hodnota musí být větší než 0) a pozici bodu výškově (vlastnost y). Nevím jak lépe to vysvětlit, asi si to budete muset ozkoušet a přijít na to sami.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -165,7 +165,7 @@ const lathe = new THREE.Mesh(latheGeometry, material);
 lathe.position.x = 10.5;
 scene.add(lathe);</code></pre>
     <div data-example-id="8" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Octahedron Geometry</h3>
+    <h3 id="octahedron-geometry" class="heading-tertiary u-mb-2">Octahedron Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrií je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/OctahedronGeometry" target="_blank" class="link">OctahedronGeometry</a>. Nevím jak tento tvar popsat, takže se opět budete muset podívat na interaktivní ukázku v dokumentaci. Jako parametr předáváme poloměr a úroveň detailu.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -175,7 +175,7 @@ const octahedron = new THREE.Mesh(octahedronGeometry, material);
 octahedron.position.x = 12;
 scene.add(octahedron);</code></pre>
     <div data-example-id="9" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Plane Geometry</h3>
+    <h3 id="plane-geometry" class="heading-tertiary u-mb-2">Plane Geometry</h3>
     <p class="paragraph u-mb-2">Jako další geometrii si ukážeme <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/PlaneGeometry" target="_blank" class="link">PlaneGeometry</a>. Jedná se o jednoduchou čtvercovou/obdelníkovou plochu. Jako parametr předáváme šířku plochy, výšku a dva další parametry o kterých si můžete přečíst v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -185,7 +185,7 @@ const plane = new THREE.Mesh(planeGeometry, material);
 plane.position.x = 13.5;
 scene.add(plane);</code></pre>
     <div data-example-id="10" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Polyhedron Geometry</h3>
+    <h3 id="polyhedron-geometry" class="heading-tertiary u-mb-2">Polyhedron Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrií je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/PolyhedronGeometry" target="_blank" class="link">PolyhedronGeometry</a>. Ta je trochu těžší na pochopení. Funguje to tak, že jako první parametr předáváme pole se souřadnicemi vertexů, jako druhý pole s polygony (vždy po trojicích indexů k vertexům), jako třetí poloměr a jako poslední úroveň detailu (na kolik úrovní geometrii rozdělit). Vertexy se naprojektují na kouli a poté rozdělí podle definovaného úrovně detailu. Z tohoto popisu pravděpodobně nic moc nechápete, možná se spíš podívejte do dokumentace. Hrozně špatně se to vysvětluje a navíc nevím jestli jsem to pochopil správně.</p>
     <p class="paragraph u-mb-2">Třída PolyhedronGeometry je také použita geometriemi DodecahedronGeometry, IcosahedronGeometry, OctahedronGeometry a TetrahedronGeometry. Následující kód jsem zkopíroval z dokumentace. Když si jej přidáte do svého kódu, tak by jste měli na scéně vidět stejný tvar jako u OctahedronGeometry.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
@@ -210,7 +210,7 @@ const polyhedron = new THREE.Mesh(polyhedronGeometry, material);
 polyhedron.position.x = 15;
 scene.add(polyhedron);</code></pre>
     <div data-example-id="11" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Ring Geometry</h3>
+    <h3 id="ring-geometry" class="heading-tertiary u-mb-2">Ring Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrií, kterou si ukážeme, je <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/RingGeometry" target="_blank" class="link">RingGeometry</a>. Slouží k vytvoření dvoudimenzionálního prstence. Jako parametr předáváme poloměr vnitřího kruhu, poloměr vnějšího kruhu, počet segmentů (jak moc bude prstenec kulatý) a pár dalších parametrů o kterých si můžete přečíst v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -220,7 +220,7 @@ const ring = new THREE.Mesh(ringGeometry, material);
 ring.position.x = 16.5;
 scene.add(ring);</code></pre>
     <div data-example-id="12" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Sphere Geometry</h3>
+    <h3 id="sphere-geometry" class="heading-tertiary u-mb-2">Sphere Geometry</h3>
     <p class="paragraph u-mb-2">Jako další geometrie je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/SphereGeometry" target="_blank" class="link">SphereGeometry</a>. Slouží k vytvoření koule. Jako parametr předáváme poloměr koule, počet šířkových segmentů, počet výškových segmentů a můžeme předat i spoustu dalších parametrů o kterých si můžete přečíst v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
         
@@ -230,7 +230,7 @@ const sphere = new THREE.Mesh(sphereGeometry, material);
 sphere.position.x = 18;
 scene.add(sphere);</code></pre>
     <div data-example-id="13" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Tetrahedron Geometry</h3>
+    <h3 id="tetrahedron-geometry" class="heading-tertiary u-mb-2">Tetrahedron Geometry</h3>
     <p class="paragraph u-mb-2">Jako další geometrii si ukážeme <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/TetrahedronGeometry" target="_blank" class="link">TetrahedronGeometry</a>. Nevím jak bych tento tvar popsal, takže se podívejte na interaktivní ukázku v dokumentaci. Jako parametr předáváme poloměr a úroveň detailu.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -240,7 +240,7 @@ const tetrahedron = new THREE.Mesh(tetrahedronGeometry, material);
 tetrahedron.position.x = 19.5;
 scene.add(tetrahedron);</code></pre>
     <div data-example-id="14" class="u-mb-4"></div>
-    <h2 class="heading-tertiary u-mb-2">Torus Geometry</h2>
+    <h3 id="torus-geometry" class="heading-tertiary u-mb-2">Torus Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrií, kterou si ukážeme, je <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/TorusGeometry" target="_blank" class="link">TorusGeometry</a>. Slouží k vytvoření tvaru torusu. Jako parametr předáváme poloměr torusu, poloměr trubky, počet radiálních segmentů pro trubku, počet radiálních segmentů a ještě jeden parametr o kterém se můžete dozvědět v dokumentaci.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
 
@@ -250,7 +250,7 @@ const torus = new THREE.Mesh(torusGeometry, material);
 torus.position.x = 21;
 scene.add(torus);</code></pre>
     <div data-example-id="15" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Torus Knot Geometry</h3>
+    <h3 id="torus-knot-geometry" class="heading-tertiary u-mb-2">Torus Knot Geometry</h3>
     <p class="paragraph u-mb-2">Další geometrie je na řadě <a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/TorusKnotGeometry" target="blank" class="link">TorusKnotGeometry</a>. Vůbec nevím jak tento tvar popsat, takže se podívejte na interaktivní ukázku do dokumentace. Parametry tu také nebudu popisovat, najdete je v dokumentaci.</p>
     <p class="paragraph u-mb-2">Po zkopírování následující kódu vám ve scéně přibyde nový tvar a můžete se na něj podívat.</p>
     <pre class="code-box u-mb-4"><code>/* ... */
@@ -261,7 +261,7 @@ const torusKnot = new THREE.Mesh(torusKnotGeometry, material);
 torusKnot.position.x = 22.5;
 scene.add(torusKnot);</code></pre>
     <div data-example-id="16" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Ostatní geometrie</h3>
+    <h3 id="ostatni-geometrie" class="heading-tertiary u-mb-2">Ostatní geometrie</h3>
     <p class="paragraph u-mb-2">Existuje ještě pár další geometrií, které jsme si zde neukázali. Bylo toho tolik, že již toho určitě musíte mít plné zuby. Možná stačilo ukázat jen pár základních geometrií, ale to už je jedno. Ono je to vlastně všechno podobné, jen je potřeba se vždy podívat do dokumentace, co máme pro danou geometrii předat za parametry. Třídy pro geometrii, které jsme si neukázali, jsou následující:</p>
     <ul class="list u-mb-4">
         <li><b><a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/EdgesGeometry" target="_blank" class="link">EdgesGeometry</a></b> - Může být použita jako helper pro zobrazení hran geometrie.</li>
@@ -270,7 +270,7 @@ scene.add(torusKnot);</code></pre>
         <li><b><a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/ShapeGeometry" target="_blank" class="link">ShapeGeometry</a></b> - Vytváří jednostrannou geometrii podle předaného tvaru cesty.</li>
         <li><b><a href="https://threejs.org/docs/index.html?q=geometry#api/en/geometries/TubeGeometry" target="_blank" class="link">TubeGeometry</a></b> - Vytváří trubkovou geometrii podle předané cesty.</li>
     </ul>
-    <h2 class="heading-secondary u-mb-2">Vlastní geometrie</h2>
+    <h2 id="vlastni-geometrie" class="heading-secondary u-mb-2">Vlastní geometrie</h2>
     <p class="paragraph u-mb-2">Pokud nám typy geometrií, které nám Three.js nabízí nestačí, tak si můžeme vytvořit svoji vlastní. Můžeme k tomu využít třídu <a href="https://threejs.org/docs/index.html?q=geometry#api/en/core/BufferGeometry" target="_blank" class="link">BufferGeometry</a>. Můžeme vytvořit její instanci a pomocí metody setAttribute nastavit atributy, které se pošlou při vykreslování do shaderu pro jejich zpracování. To vám začne dávat smysl až si začneme programovat své vlastní shadery. Teď to chápejte tak, že shader přijímá atributy, které mají nějaký název a při vykreslování s nimi pracuje.</p>
     <p class="paragraph u-mb-2">Abychom si zkusili vytvořit nějakou vlastní geometrii, tak si vytvoříme jen tak něco náhodně. Vytvoříme spoustu vertexů na náhodných pozicích pomocí for cyklu. Ty potom pomocí metody setAttribute nastavíme jako atribut jménem "position". Když nastavujeme atribut, tak musíme předat název atributu a instanci třídy <a href="https://threejs.org/docs/index.html?q=buffer#api/en/core/BufferAttribute" target="_blank" class="link">BufferAttribute</a>. Třída BufferAttribute ukládá data pro atributy spojené s BufferGeometry a umožňuje jejich efektivnější předávání do GPU. Při vytváření BufferAttributu předáváme typové pole a počet položek, které jsou spjaty s jedním vertexem. Neumím to moc vysvětlit, snad to alespoň trochu pochopíte, když se podíváte na následující okomentovanou ukázku. Jak jsem psal, tak vám to pravděpodobně bude jasnější až si budete vytvářet své vlastní shadery. V ukázce si můžete všimnout, že používáme třídu Float32Array. Jedná se o <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays" target="_blank" class="link">typové pole</a>. Typová pole mají fixní velikost a ukládají jen jeden datový typ. Jsou ale rychlejší než klasická pole.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

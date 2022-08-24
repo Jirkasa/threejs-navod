@@ -10,13 +10,13 @@
         <li><a href="https://threejs.org/examples/#webgl_postprocessing_masking" target="_blank" class="link">Masking</a></li>
         <li><a href="https://threejs.org/examples/#webgl_postprocessing_advanced" target="_blank" class="link">Advanced</a></li>
     </ul>
-    <h2 class="heading-secondary u-mb-2">Jak post-processing funguje</h2>
+    <h2 id="jak-post-processing-funguje" class="heading-secondary u-mb-2">Jak post-processing funguje</h2>
     <p class="paragraph u-mb-2">Pokud nepoužíváme žádné post-processing efekty, tak ve Three.js renderujeme scénu přímo na canvas. Když ale používáme efekty, tak nejdříve renderujeme do render targetu. Můžeme si to představit tak, jako bychom vyrenderovali scénu a výsledný obrázek umístili na texturu. Tuto texturu potom můžeme aplikovat na nějakou plochu pokrývající celý výhled kamery a provést renderování znovu. Můžeme tak na obrázek aplikovat různé speciální efekty (pomocí fragment shaderu pro plochu, na které je obrázek aplikován).</p>
     <p class="paragraph u-mb-2">Three.js nám nabízí pár tříd, které nám post-processing umožňují provádět. Funguje to tak, že vytvoříme <a href="https://threejs.org/docs/index.html?q=effectcomposer#examples/en/postprocessing/EffectComposer" target="_blank" class="link">EffectComposer</a> a přidáme do něj několik Pass objektů. Poté zavoláme metodu render a scéna se nám vyrenderuje namísto do canvasu do render targetu a aplikují se všechny specifikované passy (nevím jak to nazvat v češtině). Každý pass může být nějakým post-processing efektem jako je třeba přidání viněty, úprava sytosti barev, rozmazání, a tak podobně.</p>
     <p class="paragraph u-mb-2">Passy přidáváme do EffectComposeru pomocí metody addPass v pořadí, v jakém chceme aby se na obrázek aplikovali. Je dobré vědět jak EffectComposer postupuje, když passy aplikuje. Vytváří si na to dva render targety, protože pokud máme více passů, tak musíme z jednoho render targetu data číst a do druhého psát. Nemůžeme z jednoho render targetu číst a zároveň do něj psát. Scéna se tedy vyrenderuje do jednoho render targetu a pokud máme jen jeden pass, tak se poté vyrenderuje i s aplikovaným efektem přímo na canvas. Pokud ale máme třeba dva passy, tak se nejdříve vyrenderuje do prvního render targetu, poté do druhého render targetu a až poté na canvas. Pokud jich máme ještě více, tak se obrázek opakovaně renderuje z jednoho render targetu do druhého až se nakonec vyrenderuje na canvas. Na následujícím obrázku je to znázorněno.</p>
     <img src="../../static/img/PostProcessingRendering.png" alt="post-processing renderování" class="centered-image u-mb-2">
     <p class="paragraph u-mb-4">Důvod proč jsem vám tu vysvětloval jak EffectComposer uvnitř funguje je ten, aby jste pochopili, že pro každý pass musí proběhnout renderování. Pokud tedy máme například 5 passů, tak musí proběhnout 6 renderování. Může to mít vliv na výkon. Měli bychom se snažit efekty sjednotit do jednoho passu, pokud to jde.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli přidání post-processing efektů vyzkoušet, tak je tu pro vás připravený startovní kód. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód vytváří scénu, které nastavuje environment mapu jako pozadí a přidává do ní 3D model lavice. Environment mapu si můžete stáhnout <a href="../../static/other/environment-map.zip" download class="link">zde</a> a 3D model <a href="../../static/other/DeskModel/glTFBinary/Desk.glb" download class="link">zde</a>. Umístěte si je do složky static.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -112,7 +112,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace uvidíte ve scéně načtený model a scéna bude mít nastavené pozadí na evnironment mapu.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Vytvoření Effect Composeru</h2>
+    <h2 id="vytvoreni-effect-composeru" class="heading-secondary u-mb-2">Vytvoření Effect Composeru</h2>
     <p class="paragraph u-mb-2">Jak jsem již psal, tak přidávání post-processing efektů funguje tak, že vytvoříme <a href="https://threejs.org/docs/index.html?q=EffectComposer#examples/en/postprocessing/EffectComposer" target="_blank" class="link">EffectComposer</a>, přidáme do něj Pass objekty a namísto rendereru jej použijeme k vyrenderování scény. EffectComposer není součástí proměnné THREE, kterou si do našeho JavaScript souboru importujeme, protože ne každá aplikace post-processing potřebuje. Musíme si jej tedy naimportovat zvlášť. Následující ukázka ukazuje, jak to můžeme udělat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -170,7 +170,7 @@ function tick() {
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-4">Pokud si aplikaci spustíte, tak zatím renderování fungovat nebude. Žádným způsobem jsme totiž ještě EffectComposeru neřekli, aby naši scénu renderoval.</p>
-    <h2 class="heading-secondary u-mb-2">Přidání post-processing efektů</h2>
+    <h2 id="pridani-post-processing-efektu" class="heading-secondary u-mb-2">Přidání post-processing efektů</h2>
     <p class="paragraph u-mb-2">Post-processing efekty přidáváme tak, že do EffectComposeru přidáváme Pass objekty. Každý pass může na vyrenderovaný obrázek aplikovat nějaký efekt. První pass, který potřebujeme, je RenderPass. Ten sice nepřidává na obrázek žádný efekt ale postará se o to, aby se scéna vyrenderovala do render targetu. Následující ukázka ukazuje, jak si jej můžeme naimportovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -347,7 +347,7 @@ const VignetteShader = {
 export { VignetteShader };</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace můžete kolem obrazovky vinětu vidět.</p>
     <div data-example-id="7" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Vytváření vlastních efektů</h2>
+    <h2 id="vytvareni-vlastnich-efektu" class="heading-secondary u-mb-2">Vytváření vlastních efektů</h2>
     <p class="paragraph u-mb-2">I když nám Three.js nabízí různé post-processing efekty, tak nejsme limitováni jen na ně. Můžeme si klidně vytvořit vlastní post-processing efekty. Pokud jste si prohlédli zdrojový kód pro VignetteShader, který jsme používali, tak by vás možná mohlo napadnout, jak to udělat.</p>
     <p class="paragraph u-mb-2">Zkusíme si nějaký jednodušší post-processing efekt vytvořit. Dělá se to pomocí shaderů. Jak jsem již psal, tak post-processing funguje tak, že se vyrenderovaný obrázek aplikuje na plochu a znovu se vyrenderuje. Na tuto plochu tedy můžeme aplikovat nějaké shadery a obrázek tak upravit. Vytvoříme si objekt obsahující vlastnosti uniforms, vertexShader a fragmentShader. Vlastnost vertexShader bude obsahovat kód pro vertex shader, vlastnost fragmentShader bude obsahovat kód pro fragment shader a vlastnost uniforms bude obsahovat uniforms, které se v shaderech používají. Pomocí tohoto objektu poté vytvoříme ShaderPass a přidáme jej do EffectComposeru. Následující ukázka ukazuje objekt obsahující shadery, které pro náš efekt použijeme. Zkopírujte si jej do svého kódu.</p>
     <pre class="code-box language-javascript u-mb-2"><code>// vytvoření vlastního efektu
@@ -399,7 +399,7 @@ const myPass = new ShaderPass(MyShader);
 effectComposer.addPass(myPass);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete náš vytvořený efekt prohlédnout.</p>
     <div data-example-id="8" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Konfigurace render targetu</h2>
+    <h2 id="konfigurace-render-targetu" class="heading-secondary u-mb-2">Konfigurace render targetu</h2>
     <p class="paragraph u-mb-2">Když renderujeme scénu přes EffectComposer, tak ji renderujeme do render targetu. Pokud máme například pro náš renderer nastaven encoding na sRGB nebo zapnutý antialiasing, tak to nemá na renderování do render targetu vliv. Má to vliv jen na renderování na canvas. Proto si musíme render target nakonfigurovat, pokud chceme tyto vlastnosti mít nastavené i při renderování přes EffectComposer. Musíme si vytvořit instanci třídy <a href="https://threejs.org/docs/index.html?q=rendertarget#api/en/renderers/WebGLRenderTarget" target="_blank" class="link">WebGLRenderTarget</a>, nakonfigurovat ji a předat do EffectComposeru jako druhý parametr při jeho vytváření. Následující ukázka ukazuje, jak to můžeme udělat.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 

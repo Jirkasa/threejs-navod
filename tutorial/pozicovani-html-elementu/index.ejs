@@ -2,7 +2,7 @@
     <h1 class="heading-primary u-mb-6">Pozicování HTML elementů</h1>
     <p class="paragraph u-mb-2">V této části si ukážeme, jak můžeme na canvasu pozicovat HTML elementy pomocí CSS transform vlastnosti podle nějakých určených bodů ve scéně. Pokud nechápete co tím chci říct, tak se podívejte na následující ukázku.</p>
     <div data-example-id="5" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli zkusit pozicovat HTML elementy podle nějakého bodu ve scéně, tak musíme nějakou mít. Proto je tu pro vás připravený startovní kód, který scénu vytváří a přidává do ní alespoň kostku. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -81,7 +81,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace uvidíte ve scéně kostku.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Pozicování elementů na canvasu</h2>
+    <h2 id="pozicovani-elementu-na-canvasu" class="heading-secondary u-mb-2">Pozicování elementů na canvasu</h2>
     <p class="paragraph u-mb-2">Jak jsem již psal, tak si zkusíme na canvasu pozicovat HTML elementy podle nějakých bodů ve scéně. Nejdříve si elementy vytvoříme v HTML kódu, jak ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="cs"&gt;
@@ -196,7 +196,7 @@ function tick() {
     /* optimalizace vlastnosti transform */
     will-change: transform;
 }</code></pre>
-    <h2 class="heading-secondary u-mb-2">Skrývání elementů</h2>
+    <h2 id="skryvani-elementu" class="heading-secondary u-mb-2">Skrývání elementů</h2>
     <p class="paragraph u-mb-2">Pozicování elementů na canvasu bychom v našem příkladu mohli ještě vylepšit tak, že bychom skrývali elementy, jejichž body jsou kostkou zakryty. K tomu můžeme použít raycasting. Budeme vrhat paprsek z kamery podle pozice bodu na obrazovce a pokud paprsek před doražením k bodu kostku protne, tak element skryjeme. Nejdříve si ale body trochu posuneme, aby neleželi přímo na rozích kostky.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 

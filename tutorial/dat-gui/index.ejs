@@ -1,9 +1,9 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Dat.GUI", activePage: "dat-gui" }) %>
     <h1 class="heading-primary u-mb-6">Dat.GUI</h1>
     <p class="paragraph u-mb-4">Když ve Three.js něco vytváříme, tak často třeba ze začátku nevíme kam přesně na scéně umístit objekty, jaké jim nastavit hodnoty některých vlastností jejich materiálů, a tak podobně. Mohli bychom experimentovat s různými hodnotami přímo v kódu, ale to může být dost velká otrava. Proto je lepší pro tento účel použít nějakou knihovnu, která nám tyto hodnoty umožní dynamicky měnit přímo na stránce. Existuje na to více knihoven, ale mi se naučíme používat <a href="https://github.com/dataarts/dat.gui" target="_blank" class="link">dat.GUI</a>.</p>
-    <h2 class="heading-secondary u-mb-2">Co je dat.GUI</h2>
+    <h2 id="co-je-dat-gui" class="heading-secondary u-mb-2">Co je dat.GUI</h2>
     <p class="paragraph u-mb-4">Dat.GUI je knihovna pro vytváření grafického uživatelské rozhraní pro měnění hodnot proměnných v JavaScriptu. Umožňuje nám vytvořit si takový panel, který se zobrazí v pravé horní části stránky a umístit do něj inputy pro měnění některých hodnot v našem kódu. Už jste se s tím vlastně setkali u některých interaktivních ukázek, které se na tomto webu nacházejí. Hlavní účel dat.GUI je ale pro debugování a experimentování s hodnotami bez toho aniž bychom něco museli měnit v kódu. Je to pro nás tedy takový nástroj pro vývoj.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="stratovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom měli něco, na čem si můžeme dat.GUI vyzkoušet, tak je tu pro vás opět připraven startovní kód. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru vložte kód, který ukazuje následující ukázka. Tento kód jen vytváří scénu, přidává do ní pár objektů, zajišťuje aby se canvas roztáhl přes celé okno prohlížeče a spouští animační smyčku pro renderování scény každý frame.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -84,7 +84,7 @@ body {
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace byste měli vidět vyrenderovanou scénu. Na té si dat.GUI vyzkoušíme.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Instalace dat.GUI</h2>
+    <h2 id="instalace-dat-gui" class="heading-secondary u-mb-2">Instalace dat.GUI</h2>
     <p class="paragraph u-mb-2">Než můžeme dat.GUI použít, tak si jej samozřejmě musíme nainstalovat. Můžeme jej nainstalovat pomocí NPM jako jakýkoliv jiný balíček.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install dat.gui --save</code></pre>
     <p class="paragraph u-mb-2">Po instalaci si můžeme dat.GUI naimportovat do našeho JavaScript souboru. Následující ukázka ukazuje, jak to můžeme udělat.</p>
@@ -93,7 +93,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 
 /* ... */</code></pre>
-    <h2 class="heading-secondary u-mb-2">Použití dat.GUI</h2>
+    <h2 id="pouziti-dat-gui" class="heading-secondary u-mb-2">Použití dat.GUI</h2>
     <p class="paragraph u-mb-2">K použití dat.GUI si musíme nejdříve vytvořit panel, do kterého potom umístíme různé inputy pro měnění hodnot v kódu. Ten vytvoříme vytvořením instance třídy GUI.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -101,7 +101,7 @@ import * as dat from 'dat.gui';
 const gui = new dat.GUI();</code></pre>
     <p class="paragraph u-mb-2">Panel by se nám měl automaticky přidat na stránku. Po spuštění aplikace by jste měli v pravém horním rohu vidět zatím jen tlačítko s nápisem "close controls", jelikož v panelu ještě nemáme žádné inputy. Po kliknutí na tlačítko se vám text tlačítka změní na "open controls" a pokud bychom v panelu měli nějaké inputy, tak by se skryly. Celý panel (zatím jen tlačítko) můžete skrývat/odkrývat pomocí klávesy H.</p>
     <div data-example-id="2" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Číselný input</h3>
+    <h3 id="ciselny-input" class="heading-tertiary u-mb-2">Číselný input</h3>
     <p class="paragraph u-mb-2">Do panelu můžeme přidat inputy pro změnu hodnot v kódu pomocí metody add. Té jako parametr předáváme objekt u kterého chceme měnit hodnotu nějaké vlastnosti, řetězec představující název vlastnosti a volitelně můžeme nastavit také minimální a maximální nastavitelnou hodnotu a krok po kterém se bude hodnota měnit. Poslední tři parametry je ale lepší nastavovat zřetězením metod min, max a step, protože se to potom lépe čte.</p>
     <p class="paragraph u-mb-2">V naší scéně si třeba můžeme pomocí dat.GUI zkusit měnit pozici kostky na ose X. Následující ukázku ukazuje, jak pro tuto operaci přidáme do panelu input.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -111,7 +111,7 @@ gui.add(cube.position, "x").min(-4.5).max(4.5).step(0.01);</code></pre>
     <p class="paragraph u-mb-2">Nyní byste v panelu měli vidět vytvořený input, pomocí kterého můžete ve scéně posouvat kostku na ose X.</p>
     <div data-example-id="3" class="u-mb-2"></div>
     <p class="paragraph u-mb-4">Input, který jsme si teď ukázali, je input pro číselné hodnoty. Existuje ale více typů inputů pro různé typy hodnot. Postupně si některé ukážeme.</p>
-    <h3 class="heading-tertiary u-mb-2">Input pro barvu</h3>
+    <h3 id="input-pro-barvu" class="heading-tertiary u-mb-2">Input pro barvu</h3>
     <p class="paragraph u-mb-2">Pokud chceme pomocí dat.GUI měnit například barvu objektů, tak můžeme. Slouží k tomu input pro výběr barvy, který si můžeme do panelu přidat pomocí metody addColor. Jelikož jsou ale ve Three.js barvy reprezentovány pomocí třídy <a href="https://threejs.org/docs/index.html?q=color#api/en/math/Color" target="_blank" class="link">Color</a>, tak je jejich měnění přes dat.GUI o něco složitější. Pro změnu barvy si budeme muset vytvořit pomocný objekt, který bude ukládat hodnotu barvy a po změně inputu se hodnota z tohoto pomocného objektu aplikuje jako barva objektu. Uděláme to tak, že za metodu addColor zřetězíme metodu onChange, která nám umožňuje předat funkci, která se spustí po změně inputu. V této funkci tedy z pomocného objektu vezmeme hodnotu barvy a nastavíme ji jako barvu objektu. Myslím že v následující ukázce to pochopíte lépe.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -127,7 +127,7 @@ gui.addColor(debugObject, "cubeColor").onChange(() => {
 });</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by vám v panelu měl přibýt input pro změnu barvy, pomocí kterého můžete kostce měnit barvu.</p>
     <div data-example-id="4" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Checkbox input</h3>
+    <h3 id="checkbox-input" class="heading-tertiary u-mb-2">Checkbox input</h3>
     <p class="paragraph u-mb-2">Pokud chceme pomocí dat.GUI měnit boolean hodnoty (true|false), tak je to jednoduché. Pro vytvoření inputu, který nám umožňuje přepínat mezi true a false stačí metodě add předat objekt u kterého chceme měnit nějakou vlastnost obsahující true nebo false a název této vlastnosti. V našem příkladu bychom například mohli chtít měnit jestli je kostka viditelná nebo ne.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -135,7 +135,7 @@ gui.addColor(debugObject, "cubeColor").onChange(() => {
 gui.add(cube, "visible");</code></pre>
     <p class="paragraph u-mb-2">Teď byste pomocí checkbox inputu, který se vám v panelu zobrazí, měli být schopni nastavovat, jestli je kostka viditelná nebo ne.</p>
     <div data-example-id="5" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Select input</h3>
+    <h3 id="select-input" class="heading-tertiary u-mb-2">Select input</h3>
     <p class="paragraph u-mb-2">Pro výběr z několika možností si můžeme vytvořit select input. Vytvoříme jej tak, že metodě add předáme objekt u kterého chceme měnit nějakou vlastnosti, název této vlastnosti a jako třetí parametr pole hodnot, ze kterých můžeme vybírat. V našem příkladu můžeme třeba kouly posouvat na ose X dle výběru nějakých hodnot. Následující ukázka ukazuje, jak bychom to mohli udělat.</p>
     <pre class="code-box language-javascript u-mb-2"><code>/* ... */
 
@@ -143,7 +143,7 @@ gui.add(cube, "visible");</code></pre>
 gui.add(sphere.position, "x", [-1.5, 0, 1.5]);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete vybírat pozici koule ze tří možností.</p>
     <div data-example-id="6" class="u-mb-4"></div>
-    <h3 class="heading-tertiary u-mb-2">Pojmenovávání inputů</h3>
+    <h3 id="pojmenovavani-inputu" class="heading-tertiary u-mb-2">Pojmenovávání inputů</h3>
     <p class="paragraph u-mb-2">Jak jste si mohli všimnout, tak máme v našem panelu dva inputy stejně pojmenované. Pokud chceme, tak můžeme jejich název změnit zřetězením metody name, které předáme jaký by měl mít input název. V našem kódu si můžeme třeba změnit název inputu pro výběr pozice koule, jak ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 

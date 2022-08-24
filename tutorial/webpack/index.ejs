@@ -1,13 +1,13 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Webpack", activePage: "webpack" }) %>
     <h1 class="heading-primary u-mb-6">Webpack</h1>
     <p class="paragraph u-mb-4">Načítání Three.js knihovny přes script tag, jak jsme to dělali v minulé části, má pár omezení. První omezení je, že nemáme k dispozici všechny třídy, které pro práci s Three.js můžeme potřebovat. Pokud bychom je potřebovali, tak bychom si pro ně museli najít soubory v zazipovaném souboru, který jsme si stáhli a stejně jako samotné Three.js si je na stránku přidat přes script tag, což není moc komfortní. Je to tak proto, aby výsledný soubor knihovny nebyl zbytečně moc velký, když některé její části nepotřebujeme. Další omezení je, že z bezpečnostích důvodů by nám prohlížeč nedovolil načíst třeba textury, když bychom si html soubor jen tak otevřeli v prohlížeči. Pro práci s Three.js potřebujeme na svém počítači spustit webový server a stránku otevírat přes něj. Z těchto důvodů je lepší si Three.js nainstalovat přes NPM a použít nějaký sestavovací nástroj jako je Webpack. To v této části uděláme.</p>
-    <h2 class="heading-secondary u-mb-2">Co je NPM</h2>
+    <h2 id="co-je-npm" class="heading-secondary u-mb-2">Co je NPM</h2>
     <p class="paragraph u-mb-2">Pokud nevíte co je to NPM a ještě jste jej nikdy nepoužívali, tak bych vám chtěl jen krátce popsat co to je a jak si jej nainstalujete. NPM je zkratka pro Node Package Manager. Jedná se o takovou službu, která obsahuje obrovské množství balíčků (knihoven), které si můžeme nainstalovat zavoláním jednoho příkazu a začít používat. Balíčky si můžeme klidně vyhledávat na <a href="https://www.npmjs.com/" target="_blank" class="link">oficiálních stránkách NPM</a>.</p>
     <p class="paragraph u-mb-4">NPM se vám automaticky nainstaluje, když si nainstalujete NodeJS, což je prostředí pro psaní JavaScriptu na straně serveru. Umožňuje nám tedy programovat backend v JavaScriptu. NodeJS se zabývat nebudeme, stačí nám jen vědět, že jej potřebujeme nainstalovat aby se nám nainstalovalo NPM. NodeJS můžete stáhnout z <a href="https://nodejs.org/" target="_blank" class="link">oficiálních stránek</a>. Pokud potřebujete s instalací pomoct, tak určitě na internetu najdete spoustu tutoriálů, ale není to nic složitého.</p>
-    <h2 class="heading-secondary u-mb-2">Co je Webpack</h2>
+    <h2 id="co-je-webpack" class="heading-secondary u-mb-2">Co je Webpack</h2>
     <p class="paragraph u-mb-2">Webpack je nástroj, který slouží k sestavování webových aplikací. Je určen hlavně pro JavaScript, ale můžeme s jeho pomocí zpracovávat i jiné typy souborů. Funguje tak, že vezme různé soubory, zpracuje je a sloučí do menší skupiny souborů, které se použijí pro produkční užití.</p>
     <p class="paragraph u-mb-4">Webpack je velmi konfigurovatelný a jeho nastavování nemusí být nic jednoduchého. Kvůli tomu si myslím, že může hodně lidí odradit od toho aby se jej naučili a používali. Když jsem se jej zkoušel naučit poprvé, tak jsem od toho nakonec upustil a webové aplikace jsem si stále sestavoval ručně. Podruhé už se mi ale podařilo mu o něco víc porozumět a zjistil jsem, že v podstatě ani nemusím dopodrobna vědět jak všechno funguje. Je to také hodně o tom, umět si vygooglovat jak něco nakonfigurovat. Pokud byste se o webpacku chtěli dozvědět více, tak o něm mám <a href="https://jirkasa.github.io/webpack-tahak/" target="_blank" class="link">webové stránky</a>, na kterých se nachází menší tutoriál. Klidně si můžete tento tutoriál přečíst a potom se sem vrátit. Díky tomu pro vás bude tato část o něco jednodušší.</p>
-    <h2 class="heading-secondary u-mb-2">Instalace Three.js přes NPM</h2>
+    <h2 id="instalace-threejs-pres-npm" class="heading-secondary u-mb-2">Instalace Three.js přes NPM</h2>
     <p class="paragraph u-mb-2">K používání NPM bychom měli alespoň trochu umět pracovat s příkazovým řádkem. Používáme jej totiž přes příkazový řádek. Nemusíme toho umět moc, stačí nám umět přepnout se v příkazovém řádku do složky s naším projektem. Poté už můžeme psát jen příkazy týkající se NPM. Pro přepínání do složky se používá příkaz cd. Můžeme jej použít následujícím způsobem.</p>
     <pre class="code-box code-box--command u-mb-2"><code>cd D:\moje-slozka</code></pre>
     <p class="paragraph u-mb-2">Tento příkaz funguje v operačním systému Windows. V jiných operačních systémech to může být třeba jinak. Já nejsem na příkazový řádek žádný expert, takže to si budete muset kdyžtak zjistit jinde.</p>
@@ -16,7 +16,7 @@
     <p class="paragraph u-mb-2">Poté co se nám soubor package.json vytvoří, můžeme pro projekt nainstalovat nějaké balíčky. Nainstalujeme si Three.js. Provedeme to zavoláním následujícího příkazu.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install three --save</code></pre>
     <p class="paragraph u-mb-4">Po instalaci by vám ve složce projektu měla přibýt složka node_modules. Tato složka bude obsahovat všechny balíčky (knihovny), které pro projekt nainstalujeme. Možnost --save říká, že se má balíček připsat do souboru package.json. Pokud bychom tedy později složku node_modules smazali, tak můžeme jen napsat příkaz "npm install" bez žádných další parametrů a balíčky se nám znovu nainstalují. Výhoda je také ta, že kdybychom chtěli náš projekt třeba někomu poslat k otestování, tak mu složku node_modules, která může zabírat dost místa, ani nemusíme posílat. Poslali bychom mu jen soubor package.json a on by si balíčky nainstaloval pomocí příkazu "npm install".</p>
-    <h2 class="heading-secondary u-mb-2">Souborová struktura projektu</h2>
+    <h2 id="souborova-struktura-projektu" class="heading-secondary u-mb-2">Souborová struktura projektu</h2>
     <p class="paragraph u-mb-2">Než si do projektu přidáme Webpack a nakonfigurujeme si jej, tak si ujasníme jakou by měl náš projekt mít souborovou strukturu. Podle toho potom budeme Webpack konfigurovat. Uděláme to třeba tak, že budeme mít složku src, kde budeme psát veškerý náš kód a složku static, ve které budeme mít všechny ostatní soubory jako jsou textury, 3D modely a tak podobně. Ve složce src můžeme pro začátek vytvořit HTML soubor (index.html), CSS soubor (style.css) a JavaScript soubor (main.js). Do HTML souboru můžeme napsat základní HTML kostru a přidat tam canvas, kterému přiřadíme nějaké id. JavaScript a CSS soubor zde ale nepřipojujeme, to necháme na Webpacku.</p>
     <pre class="code-box u-mb-2"><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="cs"&gt;
@@ -33,10 +33,10 @@
     <p class="paragraph u-mb-2">Do JavaScript souboru zatím můžeme napsat třeba console.log, abychom viděli jestli jej nám Webpack k HTML souboru připojil až jej budeme konfigurovat.</p>
     <pre class="code-box u-mb-2"><code>console.log("připojeno");</code></pre>
     <p class="paragraph u-mb-4">To je pro zatím vše. Můžeme se pustit do konfigurace Webpacku.</p>
-    <h2 class="heading-secondary u-mb-2">Konfigurace Webpacku</h2>
+    <h2 id="konfigurace-webpacku" class="heading-secondary u-mb-2">Konfigurace Webpacku</h2>
     <p class="paragraph u-mb-2">Abychom mohli Webpack začít používat, tak si jej musíme nainstalovat. Uděláme to stejným způsobem jako při instalaci Three.js. V případě webpacku si ale potřebujeme nainstalovat dva balíčky. První má název "webpack" a ten představuje samotný Webpack. Druhý má název "webpack-cli" a ten představuje command line interface pro Webpack. Ten zajišťuje abychom mohli Webpack používat z příkazového řádku (nebo skriptu v package.json). Pokud chceme pomocí příkazu npm install nainstalovat více balíčků, tak je můžeme oddělit mezerou. A protože je Webpack nástroj, který potřebujeme k vývoji a ne pro produkční spuštění aplikace, tak použijeme namísto možnosti --save možnost --save-dev. Co se týče naší aplikace, tak je v podstatě jedno jestli použijeme --save nebo --save-dev, protože naši aplikaci pomocí Webpacku budeme jen sestavovat a nebudeme projekt posílat nikam na server, aby se tam automaticky nainstaloval. I tak ale používejte --save-dev, když instalujete něco co potřebujete jen pro vývoj.</p>
     <pre class="code-box code-box--command u-mb-4"><code>npm install webpack webpack-cli --save-dev</code></pre>
-    <h3 class="heading-tertiary u-mb-2">Konfigurační soubor</h3>
+    <h3 id="konfiguracni-soubor" class="heading-tertiary u-mb-2">Konfigurační soubor</h3>
     <p class="paragraph u-mb-2">Po instalaci můžeme začít s konfigurací Webpacku. K tomu potřebujeme konfigurační soubor. Vytvořte jej v kořenové složce projektu a pojmenujte jej třeba jako webpack.config.js. Konfigurační soubor musí vracet objekt, ve kterém Webpack konfigurujeme. Objekt exportujeme jako CommonJS module pomocí module.exports. Pokud používáte NodeJS, tak jste se s tím už pravděpodobně setkali. Pokud ale ne, tak je to stejné jako "export default" v ES6 modulech v klasickém JavaScriptu. A pokud jste nikdy nepoužívali moduly, tak nevadí, prostě to berte tak, že v konfiguračním souboru musíme k module.exports přiřadit objekt s konfigurací aby jej Webpack mohl použít.</p>
     <pre class="code-box u-mb-2"><code>module.exports = {
     // v tomto objektu Webpack konfigurujeme
@@ -77,7 +77,7 @@ module.exports = {
     <p class="paragraph u-mb-2">Skript, který předchozí ukázka ukazuje, spouští Webpack s konfiguračním souborem webpack.config.js v módu pro produkci. Skripty spouštíme pomocí příkazu "npm run název-skriptu". Náš skript tedy spustíme tímto způsobem:</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm run build</code></pre>
     <p class="paragraph u-mb-4">Po spuštění skriptu by se nám v kořenové složce projektu měla vytvořit složka dist s výsledným JavaScript souborem.</p>
-    <h3 class="heading-tertiary u-mb-2">Zpracování HTML souboru</h3>
+    <h3 id="zpracovani-html-souboru" class="heading-tertiary u-mb-2">Zpracování HTML souboru</h3>
     <p class="paragraph u-mb-2">Chceme samozřejmě aby se nám do dist složky umístil také HTML soubor. Webpack ale v základu rozumí jen JavaScriptu (a JSON souborům). Proto si na to budeme muset nainstalovat plugin a říct Webpacku aby jej použil. Použijeme plugin jménem html-webpack-plugin. Můžeme jej nainstalovat jako jakýkoliv jiný NPM balíček.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install html-webpack-plugin --save-dev</code></pre>
     <p class="paragraph u-mb-2">Po instalaci můžeme plugin použít. Pluginy nastavujeme tak, že je přidáváme do pole v části plugins. Plugin můžeme klidně použít více než jednou a proto vytváříme jeho instanci. V konstruktoru specifikujeme pomocí vlastnosti template cestu k HTML souboru, který se má zpracovat. Co se jak nastavuje si vždycky najdete v dokumentaci daného pluginu.</p>
@@ -97,7 +97,7 @@ module.exports = {
     ]
 }</code></pre>
     <p class="paragraph u-mb-4">Pokud si teď Webpack spustíte příkazem "npm run build", tak by se vám ve složce dist měl již vytvořit i HTML soubor. Tento soubor bude navíc i minifikovaný, což je lepší pro produkční užití. Když si jej otevřete v prohlížeči, měli byste v konzoli vidět, že se vám vypsalo "připojeno". Webpack tedy na stránku automaticky připojil vstupní JavaScript soubor.</p>
-    <h3 class="heading-tertiary u-mb-2">Zpracování CSS stylů</h3>
+    <h3 id="zpracovani-css-stylu" class="heading-tertiary u-mb-2">Zpracování CSS stylů</h3>
     <p class="paragraph u-mb-2">Teď už nám zbývá zpracovat jen CSS styly a zkopírovat do dist složky složku static. Začneme s CSS styly. Kromě JS modulů můžeme pro Webpack v JavaScriptu importovat i jiné soubory jako jsou CSS styly, obrázky a podobně. Když na ně Webpack narazí, tak je také zpracuje. Naimportujeme si tedy do našeho JavaScript souboru i CSS soubor.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 console.log("připojeno");</code></pre>
@@ -132,7 +132,7 @@ module.exports = {
     ]
 }</code></pre>
     <p class="paragraph u-mb-4">Teď už by se nám měla aplikace opět úspěšně sestavit. Co vás ale může překvapit je to, že se v dist složce nevygeneroval žádný CSS soubor. Je to proto, že používáme css-loader s less-loaderem. Css-loader bere CSS styly a kompiluje je do JavaScriptu. Style-loader poté tyto styly v JavaScriptu vezme a aplikuje je na stránku. Děláme to proto, že je to pro vývoj rychlejší než vytvářet samostatný CSS soubor. Pro produkci to ale potom samozřejmě změníme až budeme mít jeden konfigurační soubor pro produkci a jeden pro vývoj. Když teď stránku otevřete, barva pozadí by měla být lehce šedá.</p>
-    <h3 class="heading-tertiary u-mb-2">Zkopírování složky</h3>
+    <h3 id="zkopirovani-slozky" class="heading-tertiary u-mb-2">Zkopírování složky</h3>
     <p class="paragraph u-mb-2">Poslední věc kterou musíme udělat, je zkopírovat složku static do složky dist. Na to využijeme plugin jménem copy-webpack-plugin. Takže si jej nainstalujeme.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install copy-webpack-plugin --save-dev</code></pre>
     <p class="paragraph u-mb-2">Po instalaci jej můžeme použít. Použijeme jej podobně jako html-webpack-plugin, akorát u něj nastavíme jiné možnosti. Možnost from říká co odkud kopírujeme, to říká kam to kopírujeme a možnost noErrorOnMissing říká, že se nemá vyhodit error když je složka prázdná.</p>
@@ -170,7 +170,7 @@ module.exports = {
     ]
 }</code></pre>
     <p class="paragraph u-mb-4">Jak můžete v předchozí ukázce vidět, tak jsem u možnosti from za metodu resolve zřetězil ještě metodu replace. To jsem si zkopíroval z dokumentace aby mi to fungovalo na Windowsu. Pokud máte jiný operační systém, tak to smažte pokud vám to nefunguje. Pokud Webpack spustíte, tak by se vám aplikace měla sestavit, ale ve složce static nic nemáme, takže se do dist složky nezkopíruje. Pokud chcete, tak tam jen tak můžete zkusit vytvořit nějaký soubor.</p>
-    <h3 class="heading-tertiary u-mb-2">Konfigurace pro vývoj</h3>
+    <h3 id="konfigurace-pro-vyvoj" class="heading-tertiary u-mb-2">Konfigurace pro vývoj</h3>
     <p class="paragraph u-mb-2">Při vývoji aplikace bychom asi nechtěli při každé změně psát "npm run build" a čekat až se aplikace sestaví. Proto si vytvoříme jeden konfigurační soubor pro vývoj a jeden pro produkci. Nebudeme ale do každého souboru psát celou konfiguraci od začátku. Společnou část konfigurace necháme v jednom souboru, který potom sloučíme s konfigurací pro produkci a pro vývoj.</p>
     <p class="paragraph u-mb-2">Začneme s tím, že si vytvoříme soubory webpack.prod.js a webpack.dev.js. Soubor webpack.prod.js bude obsahovat konfiguraci specifickou pro produkci a soubor webpack.dev.js bude obsahovat konfiguraci specifickou pro vývoj. Soubor s naší stávající konfigurací přejmenujeme na webpack.common.js, protože bude obsahovat společnou část konfigurace pro produkci i pro vývoj. Kompilovat CSS styly do JavaScriptu budeme chtít jen při vývoji, takže tuto část konfigurace přesuneme do souboru webpack.dev.js.</p>
     <pre class="code-box u-mb-2"><code>module.exports = {
@@ -271,7 +271,7 @@ module.exports = merge(commonConfig, {
     <p class="paragraph u-mb-2">S konfigurací pro produkci jsme hotovi. Mohli bychom sice přidat ještě pár dalších věcí a zminifikovat třeba CSS soubor, ale tím už se zabývat nebudeme. Jak jsem psal, pokud se chcete o Webpacku dozvědět více, tak můžeme navštívit mé <a href="https://jirkasa.github.io/webpack-tahak/" target="_blank" class="link">webové stránky o Webpacku</a>, na kterých se nachází menší tutoriál. Teď můžeme změnit název konfiguračního souboru v našem build skriptu a zkusit aplikaci sestavit.</p>
     <pre class="code-box code-box--command u-mb-2"><code>"build": "webpack --config webpack.prod.js --mode production",</code></pre>
     <p class="paragraph u-mb-4">Po zavolání příkazu "npm run build" by se nám aplikace měla sestavit. Teď máme již vše připraveno, abychom mohli začít pracovat s Three.js.</p>
-    <h2 class="heading-secondary u-mb-2">Importování Three.js</h2>
+    <h2 id="importovani-threejs" class="heading-secondary u-mb-2">Importování Three.js</h2>
     <p class="paragraph u-mb-2">Když máme Three.js nainstalované přes NPM, tak si jej k jeho používání musíme naimportovat do našeho JavaScript souboru jako jakýkoliv jiný JavaScript module. U nainstalovaných modulů přes NPM nemusíme specifikovat cestu, stačí předat název modulu a ten se automaticky najde ve složce node_modules.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -310,7 +310,7 @@ renderer.setSize(sizes.width, sizes.height);
 
 renderer.render(scene, camera);</code></pre>
     <div data-example-id="1" class="u-mb-6"></div>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-4">Projekt, který jsme si v této části vytvořili budeme používat i v ostatních částech tutoriálu abychom si vždy nemuseli vše znovu pracně konfigurovat. Připravil jsem vám zde tedy tlačítko pro stažení startovního kódu. Po jeho stažení si vždy budete muset nainstalovat balíčky, které jsou specifikované v souboru package.json pomocí příkazu "npm install". Poté můžete spustit Dev Server pomocí příkazu "npm run dev" a začít s Three.js pracovat.</p>
     <div class="u-center-text u-mb-6">
         <a href="../../static/other/threejs-startovni-kod.zip" download="threejs-startovni-kod.zip" class="button-secondary">Stáhnout startovní kód</a>

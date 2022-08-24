@@ -1,11 +1,11 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Fyzika", activePage: "fyzika" }) %>
     <h1 class="heading-primary u-mb-6">Fyzika</h1>
     <p class="paragraph u-mb-4">V této části se dozvíte, jak můžete do své Three.js aplikace přidat fyziku. Ta bývá součástí spousty počítačových her.</p>
-    <h2 class="heading-secondary u-mb-2">Knihovny pro fyziku</h2>
+    <h2 id="knihovny-pro-fyziku" class="heading-secondary u-mb-2">Knihovny pro fyziku</h2>
     <p class="paragraph u-mb-4">Mohli bychom si naprogramovat vlastní fyziku, ale to dá spoustu práce. Také samozřejmě musíme být dost dobří na matematiku. Pro většinu lidí včetně mě je to nemožné. Proto je pro fyziku lepší použít nějakou knihovnu.</p>
-    <h3 class="heading-tertiary u-mb-2">Používání knihovny pro fyziku s Three.js</h3>
+    <h3 id="pouzivani-knihovny-pro-fyziku-s-threejs" class="heading-tertiary u-mb-2">Používání knihovny pro fyziku s Three.js</h3>
     <p class="paragraph u-mb-4">Při používání knihovny pro fyziku s Three.js většinou postupujeme následujícím způsobem. Začneme tím, že si vytvoříme Three.js svět (scénu) a svět pro fyziku. Svět pro fyziku neuvidíme, ale budeme v něm fyziku provádět. Poté třeba v obou světech vytvoříme různé objekty na stejných souřadnicích. Při každém snímku poté aktualizujeme svět fyziky a aplikujeme transformace objektů ze světa pro fyziku do Three.js světa.</p>
-    <h3 class="heading-tertiary u-mb-2">2D/3D knihovny pro fyziku</h3>
+    <h3 id="2d-a-3d-knihovny-pro-fyziku" class="heading-tertiary u-mb-2">2D/3D knihovny pro fyziku</h3>
     <p class="paragraph u-mb-2">Pro fyziku existuje mnoho knihoven. Musíme se rozhodnout, jestli chceme knihovnu pro 2D fyziku nebo knihovnu pro 3D fyziku. I pro 3D grafiku můžeme totiž použít knihovnu pro 2D fyziku. Pokud bychom například dělali kulečníkovou hru, tak by se hodila použít spíš knihovna pro 2D fyziku.</p>
     <p class="paragraph u-mb-2">Knihovny pro 3D fyziku jsou například následující:</p>
     <ul class="list u-mb-2">
@@ -21,7 +21,7 @@
         <li><a href="https://box2d.org/" target="_blank" class="link">Box2D.js</a></li>
     </ul>
     <p class="paragraph u-mb-4">Kromě zmíněných knihoven jsou například i řešení, která se snaží zkombinovat Three.js s knihovnou pro fyziku. Patří sem například <a href="https://chandlerprall.github.io/Physijs/" target="_blank" class="link">Physijs</a>. Pokud ale chcete mít nad fyzikou větší kontrolu a být schopni udělat cokoliv, tak je lepší je nepoužít. Ammo.js je asi nejvíce používaná knihovna pro fyziku. Mi ale v této části použijeme Cannon.js, jelikož je jednodušší na implementaci a pochopení.</p>
-    <h2 class="heading-secondary u-mb-2">Startovní kód</h2>
+    <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli práci s knihovnou pro fyziku vyzkoušet, tak je tu pro vás připravený startovní kód. Vytvořte si pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru vložte kód, který ukazuje následující ukázka. Tento kód jen vytváří scénu a OrbitControls ovládání, abychom se po scéně mohli pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
 import * as THREE from 'three';
@@ -80,7 +80,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-4">Po spuštění aplikace zatím nic neuvidíte.</p>
-    <h2 class="heading-secondary u-mb-2">Instalace Cannon.js knihovny</h2>
+    <h2 id="instalace-cannonjs-knihovny" class="heading-secondary u-mb-2">Instalace Cannon.js knihovny</h2>
     <p class="paragraph u-mb-2">Jak jsem psal, tak pro fyziku budeme v této části používat knihovnu Cannon.js. Můžeme si ji nainstalovat jako jakýkoliv jiný NPM balíček.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install cannon --save</code></pre>
     <p class="paragraph u-mb-2">Po instalaci si můžeme Cannon.js knihovnu do našeho JavaScript souboru naimportovat následujícím způsobem.</p>
@@ -94,7 +94,7 @@ import CANNON from 'cannon';
     <img src="../../static/img/cannon-js-rename-com-to-io.png" alt="přejmenování .com na .io v URL adrese pro Cannon.js Demos" class="centered-image u-mb-2">
     <p class="paragraph u-mb-2">Další věc, kterou bych chtěl zmínit je ta, že <a href="http://schteppe.github.io/cannon.js/docs/" target="_blank" class="link">dokumentace ke Cannon.js</a> funguje jen s HTTP. Je tam nějaký problém s SSL certifikátem. Možná se to už opravilo, pokud tento tutoriál čtete někdy v daleké budoucnosti.</p>
     <img src="../../static/img/cannon-js-documentation-http.png" alt="Cannon.js dokumentace funguje jen s HTTP" class="centered-image u-mb-6">
-    <h2 class="heading-secondary u-mb-2">Vytvoření světa pro fyziku</h2>
+    <h2 id="vytvoreni-sveta-pro-fyziku" class="heading-secondary u-mb-2">Vytvoření světa pro fyziku</h2>
     <p class="paragraph u-mb-2">Cannon.js knihovnu používáme tak, že si vytvoříme svět, přidáme do něj objekty a celý svět poté při každém framu aktualizujeme. Svět vytvoříme tak, že si vytvoříme instanci třídy World.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -105,7 +105,7 @@ const world = new CANNON.World();</code></pre>
 
 // nastavení gravitace
 world.gravity.set(0, -9.82, 0);</code></pre>
-    <h2 class="heading-secondary u-mb-2">Vytvoření body</h2>
+    <h2 id="vytvoreni-body" class="heading-secondary u-mb-2">Vytvoření body</h2>
     <p class="paragraph u-mb-2">Ve Three.js pro tvorbu objektů vytváříme meshe. V Cannon.js vytváříme bodies. Je to objekt, který bude ovlivněn gravitací a kolidovat s ostatními objekty ve světě.</p>
     <p class="paragraph u-mb-2">Stejně jako pro vytvoření meshe ve Three.js potřebujeme geometrii a materiál, tak potřebujeme pro vytvoření body v Cannon.js tvar. Ten může být podobně jako ve Three.js Box, Cylinder, Plane, Sphere, a tak podobně. Pro náš příklad si vytvoříme Sphere, tedy tvar koule. A vytvoříme si rovnou i geometrii a materiál pro mesh ve Three.js světě.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -136,7 +136,7 @@ const sphereBody = new CANNON.Body({
 });
 // přidání body do světa pro fyziku
 world.addBody(sphereBody);</code></pre>
-    <h2 class="heading-secondary u-mb-2">Aktualizace světa pro fyziku</h2>
+    <h2 id="aktualizace-sveta-pro-fyziku" class="heading-secondary u-mb-2">Aktualizace světa pro fyziku</h2>
     <p class="paragraph u-mb-2">Svět pro fyziku musíme v naší tick funkci aktualizovat pomocí metody <a href="http://schteppe.github.io/cannon.js/docs/classes/World.html#method_step" target="_blank" class="link">step</a>. Té jako parametr předáváme přesný časový krok, kolik času uběhlo po jejím posledním volání (delta time) a kolik kroků může při jejím zavolání maximálně proběhnout (pokud je delta time moc velký). Po volání této metody můžeme kopírovat pozici koule ve světě pro fyziku a nastavovat ji jako pozici pro mesh ve Three.js scéně. Díky tomu uvidíme, jak je koule ovlivněna gravitací a padá dolů. Můžeme to udělat pomocí metody copy třídy <a href="https://threejs.org/docs/index.html?q=vector3#api/en/math/Vector3" target="_blank" class="link">Vector3</a>. Ta bere jako parametr jinou instanci třídy Vector3 nebo objekt, který má vlastnosti "x", "y" a "z". Pro získání delta času můžeme použít Three.js hodiny.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -164,7 +164,7 @@ function tick() {
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, jak koule padá dolů.</p>
     <div data-example-id="1" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Vytvoření statického objektu</h2>
+    <h2 id="vytvoreni-statickeho-objektu" class="heading-secondary u-mb-2">Vytvoření statického objektu</h2>
     <p class="paragraph u-mb-2">Koule, kterou jsme si do našeho příkladu přidali, padá do nekonečna dolů. Nemáme totiž vytvořenou žádnou zem, na kterou by dopadla. Tu můžeme vytvořit tak, že si vytvoříme tvar typu <a href="http://schteppe.github.io/cannon.js/docs/classes/Plane.html" target="_blank" class="link">Plane</a>, podle kterého vytvoříme body a nastavíme mu hmotnost na hodnotu 0. Pokud nastavíme hmotnost na hodnotu 0, tak se body nebude pohybovat a bude statické. Následující ukázka ukazuje, jak to můžeme udělat.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
@@ -204,7 +204,7 @@ floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.25)
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Když si aplikaci spustíte, tak by zem měla být natočená o 45 stupňů a koule by po ní měla sjet dolů. Plane je v Cannon.js nekonečný, takže i když má naše zem ve scéně rozměr jen 20x20 jednotek, ve světě pro fyziku je nekonečná.</p>
     <div data-example-id="4" class="u-mb-4"></div>
-    <h2 class="heading-secondary u-mb-2">Materiály</h2>
+    <h2 id="materialy" class="heading-secondary u-mb-2">Materiály</h2>
     <p class="paragraph u-mb-2">Pokud chceme změnit tření, poskakování a podobné věci, když dojde ke kolizi objektů, můžeme to udělat vytvořením materiálů. V našem příkladu si můžeme třeba zkusit nastavit zemi materiál podobný ledu a kouli třeba materiál představující plast (to je celkem jedno). Následující ukázka ukazuje, jak můžeme tyto materiály vytvořit a nastavit je na bodies (naši zem a kouli). Vytváříme je pomocí třídy <a href="http://schteppe.github.io/cannon.js/docs/classes/Material.html" target="_blank" class="link">Material</a> a na bodies je nastavujeme pomocí vlastnosti material.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
 
