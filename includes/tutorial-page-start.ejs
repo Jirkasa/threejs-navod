@@ -20,7 +20,7 @@
         <div id="HeaderContainer" class="header-container">
             <header id="Header" class="header">
                 <div class="header__content">
-                    <a href="../../" class="header__title">Three.js Návod</a>
+                    <a href="<%= typeof isIndexPage == 'undefined' ? "../" : "" %>../" class="header__title">Three.js Návod</a>
                     <nav class="header__navigation">
                         <ul>
                             <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/co-je-threejs/" class="header__navigation-item <%= typeof isIndexPage == 'undefined' ? "header__navigation-item--active" : "" %>">Tutoriál</a></li>
