@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 
-// READ FOLDERS FOR WITH INTERACTIVE EXAMPLES TO DETERMINE WHAT PAGES HAVE THEM OR NOT
+// READ FOLDERS FOR INTERACTIVE EXAMPLES TO DETERMINE WHAT PAGES HAVE THEM OR NOT
 const interactivePages = {};
 fs.readdirSync("./js/interactive-examples/pages").forEach(pageName => {
     interactivePages[pageName] = true;
@@ -80,6 +80,12 @@ module.exports = {
             chunks: ["main", "modelViewer"],
             inject: true
         }),
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, "obsah", "index.ejs"),
+            filename: "obsah/index.html",
+            chunks: ["main", "stickyHeader"],
+            inject: true
+        }),
         ...htmlPluginsForTutorialPages,
         new CopyPlugin({
             patterns: [
@@ -92,4 +98,3 @@ module.exports = {
         })
     ]
 }
-// todo - přidat code splitting

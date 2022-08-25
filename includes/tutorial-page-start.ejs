@@ -20,8 +20,8 @@
                     <a href="../../" class="header__title">Three.js Návod</a>
                     <nav class="header__navigation">
                         <ul>
-                            <li><a href="../co-je-threejs/" class="header__navigation-item header__navigation-item--active">Tutoriál</a></li>
-                            <li><a href="../../3d-modely/" class="header__navigation-item">3D Modely</a></li>
+                            <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/co-je-threejs/" class="header__navigation-item <%= typeof isIndexPage == 'undefined' ? "header__navigation-item--active" : "" %>">Tutoriál</a></li>
+                            <li><a href="<%= typeof isIndexPage == 'undefined' ? "../" : "" %>../3d-modely/" class="header__navigation-item">3D Modely</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -31,32 +31,32 @@
             <div class="article__container">
                 <nav class="article__sidebar">
                     <ul class="navigation">
-                        <li><a href="../co-je-threejs/" class="navigation__item <%= activePage === "co-je-threejs" ? "navigation__item--active" : "" %>">Co je Three.js</a></li>
-                        <li><a href="../prvni-scena/" class="navigation__item <%= activePage === "prvni-scena" ? "navigation__item--active" : "" %>">První scéna</a></li>
-                        <li><a href="../webpack/" class="navigation__item <%= activePage === "webpack" ? "navigation__item--active" : "" %>">Webpack</a></li>
-                        <li><a href="../transformace-objektu/" class="navigation__item <%= activePage === "transformace-objektu" ? "navigation__item--active" : "" %>">Transformace objektů</a></li>
-                        <li><a href="../animace/" class="navigation__item <%= activePage === "animace" ? "navigation__item--active" : "" %>">Animace</a></li>
-                        <li><a href="../kamera/" class="navigation__item <%= activePage === "kamera" ? "navigation__item--active" : "" %>">Kamera</a></li>
-                        <li><a href="../meneni-velikosti-canvasu/" class="navigation__item <%= activePage === "meneni-velikosti-canvasu" ? "navigation__item--active" : "" %>">Měnění velikosti canvasu</a></li>
-                        <li><a href="../typy-ovladani/" class="navigation__item <%= activePage === "typy-ovladani" ? "navigation__item--active" : "" %>">Typy ovládání</a></li>
-                        <li><a href="../dat-gui/" class="navigation__item <%= activePage === "dat-gui" ? "navigation__item--active" : "" %>">Dat.GUI</a></li>
-                        <li><a href="../geometrie/" class="navigation__item <%= activePage === "geometrie" ? "navigation__item--active" : "" %>">Geometrie</a></li>
-                        <li><a href="../textury/" class="navigation__item <%= activePage === "textury" ? "navigation__item--active" : "" %>">Textury</a></li>
-                        <li><a href="../materialy/" class="navigation__item <%= activePage === "materialy" ? "navigation__item--active" : "" %>">Materiály</a></li>
-                        <li><a href="../svetla/" class="navigation__item <%= activePage === "svetla" ? "navigation__item--active" : "" %>">Světla</a></li>
-                        <li><a href="../stiny/" class="navigation__item <%= activePage === "stiny" ? "navigation__item--active" : "" %>">Stíny</a></li>
-                        <li><a href="../particles/" class="navigation__item <%= activePage === "particles" ? "navigation__item--active" : "" %>">Particles</a></li>
-                        <li><a href="../raycasting/" class="navigation__item <%= activePage === "raycasting" ? "navigation__item--active" : "" %>">Raycasting</a></li>
-                        <li><a href="../fyzika/" class="navigation__item <%= activePage === "fyzika" ? "navigation__item--active" : "" %>">Fyzika</a></li>
-                        <li><a href="../importovani-modelu/" class="navigation__item <%= activePage === "importovani-modelu" ? "navigation__item--active" : "" %>">Importování modelů</a></li>
-                        <li><a href="../realisticke-renderovani/" class="navigation__item <%= activePage === "realisticke-renderovani" ? "navigation__item--active" : "" %>">Realistické renderování</a></li>
-                        <li><a href="../shadery/" class="navigation__item <%= activePage === "shadery" ? "navigation__item--active" : "" %>">Shadery</a></li>
-                        <li><a href="../animovani-particles/" class="navigation__item <%= activePage === "animovani-particles" ? "navigation__item--active" : "" %>">Animování particles</a></li>
-                        <li><a href="../post-processing/" class="navigation__item <%= activePage === "post-processing" ? "navigation__item--active" : "" %>">Post Processing</a></li>
-                        <li><a href="../3d-text/" class="navigation__item <%= activePage === "3d-text" ? "navigation__item--active" : "" %>">3D Text</a></li>
-                        <li><a href="../nacitani/" class="navigation__item <%= activePage === "nacitani" ? "navigation__item--active" : "" %>">Načítání</a></li>
-                        <li><a href="../pozicovani-html-elementu/" class="navigation__item <%= activePage === "pozicovani-html-elementu" ? "navigation__item--active" : "" %>">Pozicování HTML elementů</a></li>
-                        <li><a href="../optimalizace/" class="navigation__item <%= activePage === "optimalizace" ? "navigation__item--active" : "" %>">Optimalizace</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/co-je-threejs/" class="navigation__item <%= activePage === "co-je-threejs" ? "navigation__item--active" : "" %>">Co je Three.js</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/prvni-scena/" class="navigation__item <%= activePage === "prvni-scena" ? "navigation__item--active" : "" %>">První scéna</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/webpack/" class="navigation__item <%= activePage === "webpack" ? "navigation__item--active" : "" %>">Webpack</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/transformace-objektu/" class="navigation__item <%= activePage === "transformace-objektu" ? "navigation__item--active" : "" %>">Transformace objektů</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/animace/" class="navigation__item <%= activePage === "animace" ? "navigation__item--active" : "" %>">Animace</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/kamera/" class="navigation__item <%= activePage === "kamera" ? "navigation__item--active" : "" %>">Kamera</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/meneni-velikosti-canvasu/" class="navigation__item <%= activePage === "meneni-velikosti-canvasu" ? "navigation__item--active" : "" %>">Měnění velikosti canvasu</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/typy-ovladani/" class="navigation__item <%= activePage === "typy-ovladani" ? "navigation__item--active" : "" %>">Typy ovládání</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/dat-gui/" class="navigation__item <%= activePage === "dat-gui" ? "navigation__item--active" : "" %>">Dat.GUI</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/geometrie/" class="navigation__item <%= activePage === "geometrie" ? "navigation__item--active" : "" %>">Geometrie</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/textury/" class="navigation__item <%= activePage === "textury" ? "navigation__item--active" : "" %>">Textury</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/materialy/" class="navigation__item <%= activePage === "materialy" ? "navigation__item--active" : "" %>">Materiály</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/svetla/" class="navigation__item <%= activePage === "svetla" ? "navigation__item--active" : "" %>">Světla</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/stiny/" class="navigation__item <%= activePage === "stiny" ? "navigation__item--active" : "" %>">Stíny</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/particles/" class="navigation__item <%= activePage === "particles" ? "navigation__item--active" : "" %>">Particles</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/raycasting/" class="navigation__item <%= activePage === "raycasting" ? "navigation__item--active" : "" %>">Raycasting</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/fyzika/" class="navigation__item <%= activePage === "fyzika" ? "navigation__item--active" : "" %>">Fyzika</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/importovani-modelu/" class="navigation__item <%= activePage === "importovani-modelu" ? "navigation__item--active" : "" %>">Importování modelů</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/realisticke-renderovani/" class="navigation__item <%= activePage === "realisticke-renderovani" ? "navigation__item--active" : "" %>">Realistické renderování</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/shadery/" class="navigation__item <%= activePage === "shadery" ? "navigation__item--active" : "" %>">Shadery</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/animovani-particles/" class="navigation__item <%= activePage === "animovani-particles" ? "navigation__item--active" : "" %>">Animování particles</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/post-processing/" class="navigation__item <%= activePage === "post-processing" ? "navigation__item--active" : "" %>">Post Processing</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/3d-text/" class="navigation__item <%= activePage === "3d-text" ? "navigation__item--active" : "" %>">3D Text</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/nacitani/" class="navigation__item <%= activePage === "nacitani" ? "navigation__item--active" : "" %>">Načítání</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/pozicovani-html-elementu/" class="navigation__item <%= activePage === "pozicovani-html-elementu" ? "navigation__item--active" : "" %>">Pozicování HTML elementů</a></li>
+                        <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/optimalizace/" class="navigation__item <%= activePage === "optimalizace" ? "navigation__item--active" : "" %>">Optimalizace</a></li>
                     </ul>
                 </nav>
                 <main class="article__content">
