@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Fyzika", activePage: "fyzika", pageDescription: "V tutoriálu se dozvíte, jak můžete do své Three.js aplikace přidat fyziku." }) %>
     <h1 class="heading-primary u-mb-6">Fyzika</h1>
-    <p class="paragraph u-mb-4">V této části se dozvíte, jak můžete do své Three.js aplikace přidat fyziku. Ta bývá součástí spousty počítačových her.</p>
+    <p class="paragraph u-mb-6">V této části se dozvíte, jak můžete do své Three.js aplikace přidat fyziku. Ta bývá součástí spousty počítačových her.</p>
     <h2 id="knihovny-pro-fyziku" class="heading-secondary u-mb-2">Knihovny pro fyziku</h2>
     <p class="paragraph u-mb-4">Mohli bychom si naprogramovat vlastní fyziku, ale to dá spoustu práce. Také samozřejmě musíme být dost dobří na matematiku. Pro většinu lidí včetně mě je to nemožné. Proto je pro fyziku lepší použít nějakou knihovnu.</p>
     <h3 id="pouzivani-knihovny-pro-fyziku-s-threejs" class="heading-tertiary u-mb-2">Používání knihovny pro fyziku s Three.js</h3>
@@ -20,7 +20,7 @@
         <li><a href="https://piqnt.com/planck.js/" target="_blank" class="link">Planck.js</a></li>
         <li><a href="https://box2d.org/" target="_blank" class="link">Box2D.js</a></li>
     </ul>
-    <p class="paragraph u-mb-4">Kromě zmíněných knihoven jsou například i řešení, která se snaží zkombinovat Three.js s knihovnou pro fyziku. Patří sem například <a href="https://chandlerprall.github.io/Physijs/" target="_blank" class="link">Physijs</a>. Pokud ale chcete mít nad fyzikou větší kontrolu a být schopni udělat cokoliv, tak je lepší je nepoužít. Ammo.js je asi nejvíce používaná knihovna pro fyziku. Mi ale v této části použijeme Cannon.js, jelikož je jednodušší na implementaci a pochopení.</p>
+    <p class="paragraph u-mb-6">Kromě zmíněných knihoven jsou například i řešení, která se snaží zkombinovat Three.js s knihovnou pro fyziku. Patří sem například <a href="https://chandlerprall.github.io/Physijs/" target="_blank" class="link">Physijs</a>. Pokud ale chcete mít nad fyzikou větší kontrolu a být schopni udělat cokoliv, tak je lepší je nepoužít. Ammo.js je asi nejvíce používaná knihovna pro fyziku. Mi ale v této části použijeme Cannon.js, jelikož je jednodušší na implementaci a pochopení.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli práci s knihovnou pro fyziku vyzkoušet, tak je tu pro vás připravený startovní kód. Vytvořte si pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru vložte kód, který ukazuje následující ukázka. Tento kód jen vytváří scénu a OrbitControls ovládání, abychom se po scéně mohli pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -79,7 +79,7 @@ renderer.setAnimationLoop(tick);</code></pre>
 body {
     overflow: hidden;
 }</code></pre>
-    <p class="paragraph u-mb-4">Po spuštění aplikace zatím nic neuvidíte.</p>
+    <p class="paragraph u-mb-6">Po spuštění aplikace zatím nic neuvidíte.</p>
     <h2 id="instalace-cannonjs-knihovny" class="heading-secondary u-mb-2">Instalace Cannon.js knihovny</h2>
     <p class="paragraph u-mb-2">Jak jsem psal, tak pro fyziku budeme v této části používat knihovnu Cannon.js. Můžeme si ji nainstalovat jako jakýkoliv jiný NPM balíček.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install cannon --save</code></pre>
@@ -101,7 +101,7 @@ import CANNON from 'cannon';
 // vytvoření světa pro fyziku
 const world = new CANNON.World();</code></pre>
     <p class="paragraph u-mb-2">Pro svět můžeme nastavit gravitaci pomocí vlastnosti gravity. Jedná se o třídu <a href="http://schteppe.github.io/cannon.js/docs/classes/Vec3.html" target="_blank" class="link">Vec3</a>, která je podobná třídě <a href="https://threejs.org/docs/index.html?q=vector3#api/en/math/Vector3" target="_blank" class="link">Vector3</a> ve Three.js. Gravitaci nastavujeme na ose X, Y a Z. Většinou ji budeme chtít nastavit jen pro osu Y, jak ukazuje následující ukázka.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 // nastavení gravitace
 world.gravity.set(0, -9.82, 0);</code></pre>
@@ -118,7 +118,7 @@ const blueMaterial = new THREE.MeshBasicMaterial({ color: 0x78E8FA });
 // vytvoření tvaru koule pro Cannon.js body
 const sphereShape = new CANNON.Sphere(0.5);</code></pre>
     <p class="paragraph u-mb-2">Teď můžeme vytvořit body a přidat jej do světa pro fyziku. Při jeho vytváření mu předáme jaký by mělo mít tvar a vlastnosti jako je pozice (position) a hmotnost (mass). A také vytvoříme Three.js mesh a přidáme jej do scény.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 // vytvoření meshe pro kouli
 const sphereMesh = new THREE.Mesh(
@@ -163,7 +163,7 @@ function tick() {
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, jak koule padá dolů.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="vytvoreni-statickeho-objektu" class="heading-secondary u-mb-2">Vytvoření statického objektu</h2>
     <p class="paragraph u-mb-2">Koule, kterou jsme si do našeho příkladu přidali, padá do nekonečna dolů. Nemáme totiž vytvořenou žádnou zem, na kterou by dopadla. Tu můžeme vytvořit tak, že si vytvoříme tvar typu <a href="http://schteppe.github.io/cannon.js/docs/classes/Plane.html" target="_blank" class="link">Plane</a>, podle kterého vytvoříme body a nastavíme mu hmotnost na hodnotu 0. Pokud nastavíme hmotnost na hodnotu 0, tak se body nebude pohybovat a bude statické. Následující ukázka ukazuje, jak to můžeme udělat.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -203,7 +203,7 @@ scene.add(floorMesh);</code></pre>
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.25);
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Když si aplikaci spustíte, tak by zem měla být natočená o 45 stupňů a koule by po ní měla sjet dolů. Plane je v Cannon.js nekonečný, takže i když má naše zem ve scéně rozměr jen 20x20 jednotek, ve světě pro fyziku je nekonečná.</p>
-    <div data-example-id="4" class="u-mb-4"></div>
+    <div data-example-id="4" class="u-mb-6"></div>
     <h2 id="materialy" class="heading-secondary u-mb-2">Materiály</h2>
     <p class="paragraph u-mb-2">Pokud chceme změnit tření, poskakování a podobné věci, když dojde ke kolizi objektů, můžeme to udělat vytvořením materiálů. V našem příkladu si můžeme třeba zkusit nastavit zemi materiál podobný ledu a kouli třeba materiál představující plast (to je celkem jedno). Následující ukázka ukazuje, jak můžeme tyto materiály vytvořit a nastavit je na bodies (naši zem a kouli). Vytváříme je pomocí třídy <a href="http://schteppe.github.io/cannon.js/docs/classes/Material.html" target="_blank" class="link">Material</a> a na bodies je nastavujeme pomocí vlastnosti material.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

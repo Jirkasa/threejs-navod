@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Animování particles", activePage: "animovani-particles", pageDescription: "V tutoriálu si vyzkoušíme animaci particles ve Three.js." }) %>
     <h1 class="heading-primary u-mb-6">Animování particles</h1>
-    <p class="paragraph u-mb-4">V části o particles jsem na konci psal, že jejich animaci necháme na později, protože jsme ještě neuměli programovat shadery. Ty již z minulé části programovat umíme (tedy alespoň nějaké základní) a můžeme si tedy animaci particles vyzkoušet.</p>
+    <p class="paragraph u-mb-6">V části o particles jsem na konci psal, že jejich animaci necháme na později, protože jsme ještě neuměli programovat shadery. Ty již z minulé části programovat umíme (tedy alespoň nějaké základní) a můžeme si tedy animaci particles vyzkoušet.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Jako vždy je tu pro vás připravený startovní kód. Pomocí startovního kódu o Webpacku si vytvořte nový projekt a do JavaScript souboru zkopírujte kód z následující ukázky. Tento kód zatím jen vytváří prázdnou scénu a OrbitControls ovládání, abychom se mohli po scéně pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -95,10 +95,10 @@ module.exports = {
         })
     ]
 }</code></pre>
-    <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic.</p>
+    <p class="paragraph u-mb-6">Po spuštění aplikace zatím neuvidíte nic.</p>
     <h2 id="vytvoreni-geometrie-pro-particles" class="heading-secondary u-mb-2">Vytvoření geometrie pro particles</h2>
     <p class="paragraph u-mb-2">Jako první si vytvoříme pro particles geometrii a nastavíme jí attributy position a color. Z části o particles již víte jak to udělat nebo si to tam můžete najít. Rozhodně se nic neučte nazpamět, ale snažte se to pochopit. Najít si to můžete v tomto tutoriálu nebo někde jinde vždy. Z minulé části, která byla o shaderech, víte, že attributy slouží k uchování dat, která jsou pro každý vertex jiná. Následující ukázka kódu ukazuje, jak můžeme geometrii pro particles vytvořit a nastavit attributy position a color. Je to okomentované a pochopíte to tam lépe, než kdybych to tu popisoval v textu.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 // počet částic
 const PARTICLES_COUNT = 100;
@@ -164,7 +164,7 @@ const material = new THREE.ShaderMaterial({
 const particles = new THREE.Points(geometry, material);
 // přidání particles do scény
 scene.add(particles);</code></pre>
-    <p class="paragraph u-mb-4">Pokud si teď aplikaci spustíte, tak neuvidíte nic. U třídy <a href="https://threejs.org/docs/index.html?q=Points#api/en/objects/Points" target="_blank" class="link">Points</a> se totiž vykreslují vertexy, ne polygony jako u meshů. Budeme tedy muset naše shadery upravit.</p>
+    <p class="paragraph u-mb-6">Pokud si teď aplikaci spustíte, tak neuvidíte nic. U třídy <a href="https://threejs.org/docs/index.html?q=Points#api/en/objects/Points" target="_blank" class="link">Points</a> se totiž vykreslují vertexy, ne polygony jako u meshů. Budeme tedy muset naše shadery upravit.</p>
     <h2 id="zobrazeni-vertexu" class="heading-secondary u-mb-2">Zobrazení vertexů</h2>
     <p class="paragraph u-mb-2">Abychom mohli vertexy pomocí našich shaderů zobrazit podobně jako když jsme používali PointsMaterial, tak k tomu budeme muset ve vertex shaderu nastavovat kromě gl_Position i gl_PointSize. Tato proměnná určuje velikost vertexu. Nastavíme jej třeba na velikost 15.0.</p>
     <pre class="code-box u-mb-2"><code>void main() {
@@ -217,7 +217,7 @@ void main() {
     gl_PointSize = (100.0 * uPixelRatio) / -viewPosition.z;
 }</code></pre>
     <p class="paragraph u-mb-2">Teď by se již měli vertexy zobrazit s velikostí nezávislou na pixel ratio.</p>
-    <div data-example-id="3" class="u-mb-4"></div>
+    <div data-example-id="3" class="u-mb-6"></div>
     <h2 id="aplikovani-textury" class="heading-secondary u-mb-2">Aplikování textury</h2>
     <p class="paragraph u-mb-2">Teď si namísto vyrenderování obyčejného čtverce vyrenderujeme pro každou částici texturu. Budeme používat stejnou texturu jako v části o particles. Můžete si ji stáhnout <a href="../../static/img/textures/particles/star_particle.png" download class="link">zde</a> a umístit do složky static ve vašem projektu. Jedná se o texturu z <a href="https://kenney.nl/assets/particle-pack" target="_blank" class="link">tohoto particles balíčku</a>, který obsahuje spoustu particles, které můžeme použít ve vlastních projektech.</p>
     <p class="paragraph u-mb-2">Až si texturu stáhnete a umístíte do složky static, tak si ji můžeme načíst pomocí Texture Loaderu a poslat do shaderu jako uniform.</p>
@@ -307,7 +307,7 @@ void main() {
     // nastavení velikosti vertexu
     gl_PointSize = (200.0 * uPixelRatio) / -viewPosition.z;
 }</code></pre>
-    <div data-example-id="6" class="u-mb-4"></div>
+    <div data-example-id="6" class="u-mb-6"></div>
     <h2 id="pridani-barev" class="heading-secondary u-mb-2">Přidání barev</h2>
     <p class="paragraph u-mb-2">Texturu na našich částicích aplikovanou máme a teď nám ještě zbývá je obarvit podle barev vertexů. Poté si již budeme moci zkusit particles animovat.</p>
     <p class="paragraph u-mb-2">K barvám vertexů máme přístup přes attribut color. Attributy ale nemáme ve fragment shaderu k dispozici, ty se týkají jen vertexů. Proto si budeme muset vytvořit varying, přes který barvu vertexu do fragment shaderu předáme. Následující ukázka ukazuje, jak to můžeme udělat.</p>
@@ -340,7 +340,7 @@ void main() {
     gl_FragColor = vec4(vColor, texture2D(uTexture, gl_PointCoord).g);
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se částice obarvili.</p>
-    <div data-example-id="7" class="u-mb-4"></div>
+    <div data-example-id="7" class="u-mb-6"></div>
     <h2 id="animace" class="heading-secondary u-mb-2">Animace</h2>
     <p class="paragraph u-mb-2">Particles máme připravené a vykreslujeme je přes vlastní shadery. Myslím že animaci by jste si již byli schopni přidat sami, ale i přesto si to tu ukážeme. Animaci jde provádět různými způsoby. Princip je v tom, že předáváme do shaderu pomocí uniform nějakou hodnotu, kterou v JavaScript kódu aktualizujeme. Může to být třeba uplynulý čas od startu aplikace. Tuto hodnotu poté používáme třeba k nastavení pozice vertexů.</p>
     <p class="paragraph u-mb-2">V našem příkladu budeme do shaderu předávat uplynulý čas od startu aplikace. Takže si na to na materiálu nadeklarujeme uniform.</p>
@@ -406,7 +406,7 @@ void main() {
     vColor = color;
 }</code></pre>
     <p class="paragraph u-mb-2">V našem kódu posouváme částice na ose X vzhledem ke kameře. Takže se budou částice pohybovat zleva do prava v nezávislosti na tom, odkud se na ně díváme. K tomu vlastně viewPosition slouží. Můžeme nastavovat transformace vzhledem k pozici kamery, ale jinak nevím jak to funguje. Pokud si naši aplikaci spustíte, tak si můžete animaci prohlédnout.</p>
-    <div data-example-id="8" class="u-mb-4"></div>
+    <div data-example-id="8" class="u-mb-6"></div>
     <h2 id="modifikovani-points-materialu" class="heading-secondary u-mb-2">Modifikování Points Materialu</h2>
     <p class="paragraph u-mb-2">Pro animaci particles jsme si napsali vlastní shadery úplně od začátku. Viděli jste že to zas tak složité není a naučili jste se o shaderech pár dalších věcí. Jde ale také například modifikovat <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/PointsMaterial" target="_blank" class="link">PointsMaterial</a> a můžeme tím pro animaci particles napsat méně kódu. Může být ale těžší se v shaderu pro PointsMaterial vyznat a najít místo, které se hodí přepsat. Pokud si kódy shaderů pro PointsMaterial otevřete, uvidíte kód, který ukazuje následující ukázka. K souboru s tímto kódem máte přístup ve zdrojovém kódu ve složce node_modules nebo v github repozitáři. Najdete jej ve složce src/renderers/shaders/ShaderLib/points.glsl.js.</p>
     <pre class="code-box language-javascript u-mb-2"><code>export const vertex = /* glsl */`

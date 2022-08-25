@@ -1,11 +1,11 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Shadery", activePage: "shadery", pageDescription: "V tutoriálu se naučíme základy programování shaderů." }) %>
     <h1 class="heading-primary u-mb-6">Shadery</h1>
-    <p class="paragraph u-mb-4">Vše co se pomocí WebGL zobrazuje na canvas, je možné díky shaderům. Když používáme materiály, které nám Three.js nabízí, tak používáme shadery, které již někdo vytvořil a nemusíme si psát své vlastní. Pokud ale chceme udělat něco, co vestavěné Three.js materiály neumožňují (třeba vytvářet vlny), tak se často napsání vlastního shaderu nevyhneme. Proto je užitečné to umět. V této části se naučíme alespoň základy, aby jste měli představu, jak se shadery programují.</p>
+    <p class="paragraph u-mb-6">Vše co se pomocí WebGL zobrazuje na canvas, je možné díky shaderům. Když používáme materiály, které nám Three.js nabízí, tak používáme shadery, které již někdo vytvořil a nemusíme si psát své vlastní. Pokud ale chceme udělat něco, co vestavěné Three.js materiály neumožňují (třeba vytvářet vlny), tak se často napsání vlastního shaderu nevyhneme. Proto je užitečné to umět. V této části se naučíme alespoň základy, aby jste měli představu, jak se shadery programují.</p>
     <h2 id="co-je-shader" class="heading-secondary u-mb-2">Co je Shader</h2>
     <p class="paragraph u-mb-2">Shader je jeden z hlavních konceptů WebGL. Pokud bychom se chtěli naučit pracovat s nativním WebGL, tak se o něm budeme muset začít učit jako první. Jedná se o program napsaný v GLSL (OpenGL Shading Language), což je programovací jazyk pro psaní shaderů. Tento program se posílá do GPU a to podle něj pozicuje vertexy geometrie nebo vybarví každý viditelný pixel geometrie. Nazvat to jako pixel není úplně přesné, je to fragment. Pixel je část obrazovky, fragment je jakoby část geometrie, nevím jak to vysvětlit. Můžeme si to představit tak, že fragment je jakoby pixel pro geometrii. To ale samozřejmě není správně.</p>
     <p class="paragraph u-mb-4">Do shaderu předáváme spoustu dat. Můžeme mu předávat souřadnice vertexů, transformace meshe, informace o kameře, barvy, textury, světla, a spoustu dalších věcí. Můžeme mu předávat jakákoliv data. GPU tato data zpracovává a řídí se instrukcemi shaderu.</p>
     <h3 id="typy-shaderu" class="heading-tertiary u-mb-2">Typy shaderů</h3>
-    <p class="paragraph u-mb-4">Existují dva typy shaderů: vertex shader a fragment shader. Vertex shader má na starosti pozicování každého vertexu geometrie. Poté co se všechny vertexy pomocí vertex shaderu napozicují, tak GPU ví, které části geometrie jsou viditelné a může pokračovat na fragment shader. Fragment shader se postará o vybarvení každého viditelného pixelu geometrie.</p>
+    <p class="paragraph u-mb-6">Existují dva typy shaderů: vertex shader a fragment shader. Vertex shader má na starosti pozicování každého vertexu geometrie. Poté co se všechny vertexy pomocí vertex shaderu napozicují, tak GPU ví, které části geometrie jsou viditelné a může pokračovat na fragment shader. Fragment shader se postará o vybarvení každého viditelného pixelu geometrie.</p>
     <h2 id="attributes-uniforms-a-varyings" class="heading-secondary u-mb-2">Attributes, Uniforms a Varyings</h2>
     <p class="paragraph u-mb-4">Do shaderů můžeme posílat spoustu dat. Říkáme jim attributy, uniforms nebo varyings. Jaký je v tom rozdíl se tu můžete dočíst.</p>
     <h3 id="attributes" class="heading-tertiary u-mb-2">attributes</h3>
@@ -13,7 +13,7 @@
     <h3 id="uniforms" class="heading-tertiary u-mb-2">uniforms</h3>
     <p class="paragraph u-mb-4">Některá data, která jsou pro každý vertex geometrie stejná, se nazývají uniforms. Může se jednat například o pozici kamery.</p>
     <h3 id="varyings" class="heading-tertiary u-mb-2">varyings</h3>
-    <p class="paragraph u-mb-4">Do fragment shaderu nemůžeme posílat attributy. To můžeme dělat jen pro vertex shader. Můžeme ale posílat data z vertex shaderu do fragment shaderu. Těmto datům se říká varyings.</p>
+    <p class="paragraph u-mb-6">Do fragment shaderu nemůžeme posílat attributy. To můžeme dělat jen pro vertex shader. Můžeme ale posílat data z vertex shaderu do fragment shaderu. Těmto datům se říká varyings.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli zkusit napsat svoje vlastní shadery, tak je tu pro vás opět připraven startovní kód. Pomocí startovního kódu z části o Webpacku si tedy vytvořte nový projekt a do JavaScript souboru ve složce src si zkopírujte kód z následující ukázky. Tento kód jen vytváří scénu a OrbitControls ovládání, abychom se mohli po scéně pohybovat. Také provádí pár dalších běžných věcí, o kterých víte z předchozích částí.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -72,7 +72,7 @@ renderer.setAnimationLoop(tick);</code></pre>
 body {
     overflow: hidden;
 }</code></pre>
-    <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic.</p>
+    <p class="paragraph u-mb-6">Po spuštění aplikace zatím neuvidíte nic.</p>
     <h2 id="vytvoreni-vlastnich-shaderu" class="heading-secondary u-mb-2">Vytvoření vlastních shaderů</h2>
     <p class="paragraph u-mb-2">Pro vytvoření vlastních shaderů můžeme použít <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/ShaderMaterial" target="_blank" class="link">ShaderMaterial</a> nebo <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/RawShaderMaterial" target="_blank" class="link">RawShaderMaterial</a>. Rozdíl mezi nimi je ten, že ShaderMaterial za nás v shaderech automaticky nastavuje některé věci. To je pro nás lepší, pokud již víme jak shadery fungují. Pokud se ale shadery teprve učíme, tak je lepší použít RawShaderMaterial a psát si shadery úplně od základu.</p>
     <p class="paragraph u-mb-2">V našem příkladu si zkusíme vytvořit vlastní materiál pomocí RawShaderMaterialu. Následující ukázka ukazuje, jak to můžeme udělat.</p>
@@ -119,7 +119,7 @@ const cube = new THREE.Mesh(
 // přidání kostky do scény
 scene.add(cube);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění ukázky můžete vidět, že se vám vyrenderuje kostka, která bude mít zelenou barvu.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="jazyk-glsl" class="heading-secondary u-mb-2">Jazyk GLSL</h2>
     <p class="paragraph u-mb-4">Shadery píšeme v jazyku GLSL (GL Shading Language). Jeho syntaxe je blízká k jazyku C. Pokud chceme shadery psát, tak jej musíme umět. Proto si jej teď rozebereme. Jeho syntaxe není moc složitá. Pokud znáte JavaScript nebo jiný programovací jazyk, tak nám jen stačí popsat si pár věcí.</p>
     <h3 id="odsazovani-a-stredniky" class="heading-tertiary u-mb-2">Odsazování a středníky</h3>
@@ -209,7 +209,7 @@ a.xy = 4.0;</code></pre>
     <pre class="code-box u-mb-2"><code>void doSomething(bool a) {
     // nějaký kód...
 }</code></pre>
-    <p class="paragraph u-mb-4">Kromě toho, že si můžeme vytvářet vlastní funkce, tak jich nám GLSL spoustu poskytuje. Máme například funkce: sin, cos, max, min, pow, exp, mod, clamp. A spoustu dalších, například: cross, dot, mix, step, smoothstep, length, distance, reflect, refract, normalize.</p>
+    <p class="paragraph u-mb-6">Kromě toho, že si můžeme vytvářet vlastní funkce, tak jich nám GLSL spoustu poskytuje. Máme například funkce: sin, cos, max, min, pow, exp, mod, clamp. A spoustu dalších, například: cross, dot, mix, step, smoothstep, length, distance, reflect, refract, normalize.</p>
     <h2 id="psani-shaderu-do-samostatnych-souboru" class="heading-secondary u-mb-2">Psaní shaderů do samostatných souborů</h2>
     <p class="paragraph u-mb-2">V našem příkladu máme shadery zapsané přímo v JavaScript kódu pomocí template literálů. Psát shadery tímto způsobem ale samozřejmě není moc komfortní a nemáme barevně zvýrazněnou syntaxy. Proto je lepší psát shadery do samostatných souborů. Jak to můžeme udělat si teď ukážeme.</p>
     <p class="paragraph u-mb-2">Pro naše shadery si v našem projektu vytvoříme dva soubory. Jeden nazveme jako vertex.glsl a bude obsahovat kód vertex shaderu. Druhý nazveme jako fragment.glsl a bude obsahovat kód fragment shaderu. Vytvořte je ve složce src. Do souboru vertex.glsl vložíme kód pro vertex shader, který v našem příkladu používáme.</p>
@@ -286,7 +286,7 @@ module.exports = {
     ]
 }</code></pre>
     <p class="paragraph u-mb-2">Teď by se již sestavení aplikace mělo podařit a náš příklad by měl fungovat úplně stejně jako dříve. Akorát teď pro shadery používáme samostatné soubory.</p>
-    <div data-example-id="2" class="u-mb-4"></div>
+    <div data-example-id="2" class="u-mb-6"></div>
     <h2 id="psani-vertex-shaderu" class="heading-secondary u-mb-2">Psaní vertex shaderu</h2>
     <p class="paragraph u-mb-2">Viděli jste jak kód pro shader vypadá, naučili jste se základní syntaxy jazyka GLSL a nakonfigurovali jsme si Webpack tak, abychom mohli shadery psát do samostatných souborů. Jsme tedy připraveni pustit se do samotného psaní shaderů. Začneme s vertex shaderem.</p>
     <p class="paragraph u-mb-2">Rozebereme si náš kód pro vertex shader, abychom věděli jak funguje. Následující ukázka jej ukazuje ještě jednou, ale okomentovaný.</p>
@@ -385,7 +385,7 @@ void main() {
 }
     </code></pre>
     <p class="paragraph u-mb-2">Pokud si aplikaci spustíte, tak uvidíte, že vertexy kostky jsou náhodně posunuté.</p>
-    <div data-example-id="4" class="u-mb-4"></div>
+    <div data-example-id="4" class="u-mb-6"></div>
     <h2 id="psani-fragment-shaderu" class="heading-secondary u-mb-2">Psaní fragment shaderu</h2>
     <p class="paragraph u-mb-2">Teď si projdeme náš kód pro fragment shader. Následující ukázka jej ukazuje okomentovaný.</p>
     <pre class="code-box u-mb-2"><code>// nastavení preciznosti datového typu float
@@ -423,7 +423,7 @@ const material = new THREE.RawShaderMaterial({
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se kostka vykreslí s červenou barvou a bude průhledná.</p>
-    <div data-example-id="5" class="u-mb-4"></div>
+    <div data-example-id="5" class="u-mb-6"></div>
     <h2 id="varyings" class="heading-secondary u-mb-2">Varyings</h2>
     <p class="paragraph u-mb-2">Do fragment shaderu nemůžeme posílat attributy. Můžeme ale posílat data z vertex shaderu do fragment shaderu. To si teď ukážeme. Abychom ale měli něco lepšího pro práci se shadery než naši rozbitou kostku, tak si náš kód nejprve trochu pročistíme. Smažte si v kódu vytvoření kostky a namísto něj tam zatím nechte jen materiál.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -591,7 +591,7 @@ void main() {
     gl_Position = projectedPosition;
 }</code></pre>
     <p class="paragraph u-mb-2">Teď si můžete vzor prohlédnout jen jako vykreslený na geometrii.</p>
-    <div data-example-id="10" class="u-mb-4"></div>
+    <div data-example-id="10" class="u-mb-6"></div>
     <h2 id="uniforms" class="heading-secondary u-mb-2">Uniforms</h2>
     <p class="paragraph u-mb-2">Pokud chceme mít stejné shadery s různými výsledky, tak můžeme použít uniforms. Ty slouží k uchování dat, která jsou pro každý vertex stejná. V našem kódu jsme je zatím používali pro matice, s jejichž pomocí jsme vertexy správně pozicovali na obrazovku (správně do clip space). Díky uniforms můžeme například vytvořit jeden materiál červený a druhý zelený s použitím jednoho shaderu. Také nám umožňují například provádět animaci.</p>
     <p class="paragraph u-mb-2">Uniform můžeme do shaderu předat nastavením vlastnosti uniforms na materiálu, pro který shader používáme. V našem příkladu máme hodnotu 12, kterou používáme ve výpočtu hodnoty pro každý vertex. Prostě s ní v shaderu pracujeme. Namísto zapsání této hodnoty přímo v kódu pro shader, ji můžeme určovat pro materiál, který shader používá, vytvořením uniform. Jak to udělat ukazuje následující ukázka.</p>
@@ -715,7 +715,7 @@ void main() {
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že se vzor pohybuje.</p>
-    <div data-example-id="13" class="u-mb-4"></div>
+    <div data-example-id="13" class="u-mb-6"></div>
     <h2 id="aplikovani-textury" class="heading-secondary u-mb-2">Aplikování textury</h2>
     <p class="paragraph u-mb-2">Teď si zkusíme pomocí shaderů aplikovat na geometrii texturu. Vytvoříme si k tomu nový projekt, abychom nemuseli předělávat ten stávající a lépe se v kódu orientovali. Pomocí startovního kódu z části o Webpacku si jej tedy vytvořte a do JavaScript souboru si zkopírujte následující kód. Ten jen vytváří kostku a nastavuje jí shader materiál.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -910,7 +910,7 @@ void main() {
     gl_FragColor = texture2D(uTexture, vUv);
 }</code></pre>
     <p class="paragraph u-mb-2">Pokud si teď aplikaci spustíte, tak uvidíte, že se na kostku textura aplikovala.</p>
-    <div data-example-id="14" class="u-mb-4"></div>
+    <div data-example-id="14" class="u-mb-6"></div>
     <h2 id="shader-material" class="heading-secondary u-mb-2">Shader Material</h2>
     <p class="paragraph u-mb-2">Abychom pochopili jak shadery fungují, tak jsme používali <a href="https://threejs.org/docs/index.html?q=shader#api/en/materials/RawShaderMaterial" target="_blank" class="link">RawShaderMaterial</a>. Pokud již ale chápeme jak shadery fungují, tak můžeme k usnadnění práce použít <a href="https://threejs.org/docs/index.html?q=shader#api/en/materials/ShaderMaterial" target="_blank" class="link">ShaderMaterial</a>. Ten za nás automaticky deklaruje attributy a uniforms, takže to nemusíme dělat sami. Také automaticky nastavuje precision.</p>
     <p class="paragraph u-mb-2">Zkusíme si přepsat náš kód tak, aby používal namísto RawShaderMaterialu ShaderMaterial. Začneme v JavaScript kódu. Tam jen změněníme vytváření RawShaderMaterialu na vytváření ShaderMaterialu.</p>
@@ -949,7 +949,7 @@ void main() {
     gl_FragColor = texture2D(uTexture, vUv);
 }</code></pre>
     <p class="paragraph u-mb-2">Aplikace by měla po spuštění fungovat stejně jako dřív.</p>
-    <div data-example-id="15" class="u-mb-4"></div>
+    <div data-example-id="15" class="u-mb-6"></div>
     <h2 id="kresleni-vzoru" class="heading-secondary u-mb-2">Kreslení vzorů</h2>
     <p class="paragraph u-mb-2">Díky tomu, že máme ve fragment shaderu přístup k UV souřadnicím, tak můžeme na geometrii kreslit různé vzory. Mohli bychom na to sice použít texturu a v některých případech by to možná bylo i výkonnější, ale takto nad tím můžeme mít větší kontrolu. Navíc to může být celkem zábava. Vše co máme jsou naše matematické dovednosti a UV souřadnice.</p>
     <p class="paragraph u-mb-2">Zkuste si ve vašem kódu zakomentovat získávání barvy z textury a namísto toho použijte kód z následující ukázky.</p>
@@ -983,7 +983,7 @@ void main() {
 }</code></pre>
     <div data-example-id="17" class="u-mb-2"></div>
     <p class="paragraph u-mb-2">V GLSL můžeme používat třeba i podmínky if, stejně jako v JavaScriptu. Je ale dobré se jim spíš vyhnout a snažit se použít vestavěné funkce, pokud to jde. Je to lepší pro výkon. Zde jsem popsal pár funkcí, které by se vám při vytváření vzorů třeba mohli hodit:</p>
-    <ul class="list u-mb-4">
+    <ul class="list u-mb-6">
         <li><b>step</b> - Jako parametr bere limit a hodnotu. Vrací 0.0 když je hodnota pod limitem a 1.0 když je nad limitem.</li>
         <li><b>mod</b> - Provádí modulo operaci (zbytek po dělení) mezi dvěma předanými čísly.</li>
         <li><b>abs</b> - Vrací absolutní hodnotu předaného čísla.</li>

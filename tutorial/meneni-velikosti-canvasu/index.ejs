@@ -1,9 +1,9 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Měnění velikosti canvasu", activePage: "meneni-velikosti-canvasu", pageDescription: "V tutoriálu si ukážeme, jak můžeme měnit velikost canvasu." }) %>
     <h1 class="heading-primary u-mb-6">Měnění velikosti canvasu</h1>
-    <p class="paragraph u-mb-4">V této části si ukážeme, jak můžeme měnit velikost canvasu. Vlastně si spíš ukážeme, jak můžeme třeba canvas roztáhnout přes celé okno prohlížeče a jak správně reagovat na změnu velikosti okna.</p>
+    <p class="paragraph u-mb-6">V této části si ukážeme, jak můžeme měnit velikost canvasu. Vlastně si spíš ukážeme, jak můžeme třeba canvas roztáhnout přes celé okno prohlížeče a jak správně reagovat na změnu velikosti okna.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Zatím jsme v našich příkladech pro velikost canvasu používali jen nějaké fixní rozměry, které jsme si předem určili (akorát tady v ukázkách na webu jsem to samozřejmě řešil, aby to bylo responzivní). V této části si již zkusíme canvas roztáhnout přes celé okno prohlížeče. Abychom měli alespoň něco k renderování, tak si vytvoříme jednoduchou scénu. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Pomocí tohoto kódu jen vytváříme scénu a přidáváme do ní kostku, kouly, kužel a pod ně obdelníkovou plochu. Ani zatím nevytváříme kameru a renderer.</p>
-    <pre class="code-box u-mb-4"><code>import './style.css';
+    <pre class="code-box u-mb-6"><code>import './style.css';
 import * as THREE from 'three';
 
 // vytvoření scény
@@ -80,7 +80,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);</code></pre>
 // vyrenderování scény na canvas
 renderer.render(scene, camera);</code></pre>
     <p class="paragraph u-mb-2">Pokud si teď aplikaci spustíte v prohlížeči, tak se vám scéna vyrenderuje přes celou obrazovku. Pokud ale změníte velikost okna, velikost canvasu se nezmění. To zachvíli pořešíme. Tady v ukázce na webu se vám po spuštění ukázky scéna nevyrenderuje přes celou obrazovku, je to tu jen tak.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="reagovani-na-zmenu-velikosti-okna" class="heading-secondary u-mb-2">Reagování na změnu velikosti okna</h2>
     <p class="paragraph u-mb-2">Když změníme velikost okna, tak to na velikost našeho canvasu nemá žádný vliv. Proto teď přidáme event listener pro změnu velikosti okna a budeme na to reagovat změněním velikosti canvasu a aktualizací poměru stran kamery. Také znovu vyrenderujeme scénu, jelikož nepoužíváme žádnou animační smyčku, kterou jsme si vytvářeli v části o animaci.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -97,7 +97,7 @@ window.addEventListener("resize", () => {
     // vyrenderování scény na canvas
     renderer.render(scene, camera);
 });</code></pre>
-    <p class="paragraph u-mb-4">Jak v předchozí ukázce kódu vidíte, po změnění poměru stran kamery voláme metodu updateProjectionMatrix. To je nutné aby se kamera aktualizovala, musíme ji volat po jakékoliv změně jejich parametrů. Když teď změníte velikost okna, tak se vám změní i velikost canvasu a scéna se vám znovu vyrenderuje. Tady na web jsem ukázku nedával, protože by byla stejná jako ta předchozí.</p>
+    <p class="paragraph u-mb-6">Jak v předchozí ukázce kódu vidíte, po změnění poměru stran kamery voláme metodu updateProjectionMatrix. To je nutné aby se kamera aktualizovala, musíme ji volat po jakékoliv změně jejich parametrů. Když teď změníte velikost okna, tak se vám změní i velikost canvasu a scéna se vám znovu vyrenderuje. Tady na web jsem ukázku nedával, protože by byla stejná jako ta předchozí.</p>
     <h2 id="pixel-ratio" class="heading-secondary u-mb-2">Pixel ratio</h2>
     <p class="paragraph u-mb-2">Ve vyrenderované scéně můžete na hranách objektů vidět takové schody (pixely). Ukazuje je následující obrázek.</p>
     <img src="../../static/img/stairs-on-edges-of-objects.png" alt="vyrenderované schody na hranách objektů" class="centered-image u-mb-2">
@@ -138,7 +138,7 @@ window.addEventListener("resize", () => {
     // vyrenderování scény na canvas
     renderer.render(scene, camera);
 });</code></pre>
-    <p class="paragraph u-mb-4">Vyrenderováním schodů na hranách objektu se dá předejít kromě vyšší hustoty pixelů i zapnutím anti-aliasingu, to si ale ukážeme v jiné části.</p>
+    <p class="paragraph u-mb-6">Vyrenderováním schodů na hranách objektu se dá předejít kromě vyšší hustoty pixelů i zapnutím anti-aliasingu, to si ale ukážeme v jiné části.</p>
     <h2 id="fullscreen" class="heading-secondary u-mb-2">Fullscreen</h2>
     <p class="paragraph u-mb-2">Na závěr této části si ještě ukážeme, jak můžeme canvas zobrazit přes celou obrazovku. Využijeme na to metodu requestFullscreen, která nám umožňuje zobrazit přes celou obrazovku jakýkoliv HTML element na kterém ji zavoláme. Zavoláme ji tedy na canvasu a ten se nám zobrazí přes celou obrazovku. K tomu si ale canvas budeme muset v našem kódu uložit do proměnné a ne jej jen přímo předat rendereru. Proto upravte kód pro vytváření rendereru do následující podoby.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

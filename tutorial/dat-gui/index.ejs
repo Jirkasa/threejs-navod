@@ -1,8 +1,8 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Dat.GUI", activePage: "dat-gui", pageDescription: "V tutoriálu se naučíme používat knihovnu dat.GUI, která slouží pro snadné měnění proměnných v JavaScriptu pomocí grafického rozhraní na stránce." }) %>
     <h1 class="heading-primary u-mb-6">Dat.GUI</h1>
-    <p class="paragraph u-mb-4">Když ve Three.js něco vytváříme, tak často třeba ze začátku nevíme kam přesně na scéně umístit objekty, jaké jim nastavit hodnoty některých vlastností jejich materiálů, a tak podobně. Mohli bychom experimentovat s různými hodnotami přímo v kódu, ale to může být dost velká otrava. Proto je lepší pro tento účel použít nějakou knihovnu, která nám tyto hodnoty umožní dynamicky měnit přímo na stránce. Existuje na to více knihoven, ale mi se naučíme používat <a href="https://github.com/dataarts/dat.gui" target="_blank" class="link">dat.GUI</a>.</p>
+    <p class="paragraph u-mb-6">Když ve Three.js něco vytváříme, tak často třeba ze začátku nevíme kam přesně na scéně umístit objekty, jaké jim nastavit hodnoty některých vlastností jejich materiálů, a tak podobně. Mohli bychom experimentovat s různými hodnotami přímo v kódu, ale to může být dost velká otrava. Proto je lepší pro tento účel použít nějakou knihovnu, která nám tyto hodnoty umožní dynamicky měnit přímo na stránce. Existuje na to více knihoven, ale mi se naučíme používat <a href="https://github.com/dataarts/dat.gui" target="_blank" class="link">dat.GUI</a>.</p>
     <h2 id="co-je-dat-gui" class="heading-secondary u-mb-2">Co je dat.GUI</h2>
-    <p class="paragraph u-mb-4">Dat.GUI je knihovna pro vytváření grafického uživatelské rozhraní pro měnění hodnot proměnných v JavaScriptu. Umožňuje nám vytvořit si takový panel, který se zobrazí v pravé horní části stránky a umístit do něj inputy pro měnění některých hodnot v našem kódu. Už jste se s tím vlastně setkali u některých interaktivních ukázek, které se na tomto webu nacházejí. Hlavní účel dat.GUI je ale pro debugování a experimentování s hodnotami bez toho aniž bychom něco museli měnit v kódu. Je to pro nás tedy takový nástroj pro vývoj.</p>
+    <p class="paragraph u-mb-6">Dat.GUI je knihovna pro vytváření grafického uživatelské rozhraní pro měnění hodnot proměnných v JavaScriptu. Umožňuje nám vytvořit si takový panel, který se zobrazí v pravé horní části stránky a umístit do něj inputy pro měnění některých hodnot v našem kódu. Už jste se s tím vlastně setkali u některých interaktivních ukázek, které se na tomto webu nacházejí. Hlavní účel dat.GUI je ale pro debugování a experimentování s hodnotami bez toho aniž bychom něco museli měnit v kódu. Je to pro nás tedy takový nástroj pro vývoj.</p>
     <h2 id="stratovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom měli něco, na čem si můžeme dat.GUI vyzkoušet, tak je tu pro vás opět připraven startovní kód. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru vložte kód, který ukazuje následující ukázka. Tento kód jen vytváří scénu, přidává do ní pár objektů, zajišťuje aby se canvas roztáhl přes celé okno prohlížeče a spouští animační smyčku pro renderování scény každý frame.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -83,12 +83,12 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace byste měli vidět vyrenderovanou scénu. Na té si dat.GUI vyzkoušíme.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="instalace-dat-gui" class="heading-secondary u-mb-2">Instalace dat.GUI</h2>
     <p class="paragraph u-mb-2">Než můžeme dat.GUI použít, tak si jej samozřejmě musíme nainstalovat. Můžeme jej nainstalovat pomocí NPM jako jakýkoliv jiný balíček.</p>
     <pre class="code-box code-box--command u-mb-2"><code>npm install dat.gui --save</code></pre>
     <p class="paragraph u-mb-2">Po instalaci si můžeme dat.GUI naimportovat do našeho JavaScript souboru. Následující ukázka ukazuje, jak to můžeme udělat.</p>
-    <pre class="code-box u-mb-4"><code>import './style.css';
+    <pre class="code-box u-mb-6"><code>import './style.css';
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 

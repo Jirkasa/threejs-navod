@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Stíny", activePage: "stiny", pageDescription: "V tutoriálu se naučíme nastavovat stíny. Dozvíte se jak tvorba stínů funguje, jak stíny zapnout a také jak zlepšit jejich kvalitu." }) %>
     <h1 class="heading-primary u-mb-6">Stíny</h1>
-    <p class="paragraph u-mb-4">V minulé části jste se dozvěděli o různých typech světel. Když používáme světla, tak často také chceme stíny. Ty se v této části naučíme nastavovat.</p>
+    <p class="paragraph u-mb-6">V minulé části jste se dozvěděli o různých typech světel. Když používáme světla, tak často také chceme stíny. Ty se v této části naučíme nastavovat.</p>
     <h2 id="jak-tvorba-stinu-funguje" class="heading-secondary u-mb-2">Jak tvorba stínů funguje</h2>
     <p class="paragraph u-mb-2">Stíny byly pro real-time renderování vždy výzvou a vývojáři museli hledat triky k zobrazení realistických stínů s rozumným výkonem. Three.js na to má vestavěné řešení. Není to perfektní, ale je to celkem pohodlné. Funguje to takto:</p>
     <ul class="list u-mb-2">
@@ -128,7 +128,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikaci si můžete prohlédnout scénu, na které si budeme zkoušet nastavování stínů.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="zapnuti-stinu" class="heading-secondary u-mb-2">Zapnutí stínů</h2>
     <p class="paragraph u-mb-2">Abychom zapnuli stíny, tedy vytváření shadow map, tak to musíme zapnout na rendereru. Je to jeho práce. Stíny se vytvářejí když provedeme renderování. Jak stíny na rendereru zapneme ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -151,7 +151,7 @@ sphere.receiveShadow = true;
 dodecahedron.castShadow = true;
 dodecahedron.receiveShadow = true;</code></pre>
     <p class="paragraph u-mb-2">Když si teď aplikaci spustíte, tak bude vytváření stínů fungovat. Akorát jejich kvalita bude celkem mizerná.</p>
-    <div data-example-id="2" class="u-mb-4"></div>
+    <div data-example-id="2" class="u-mb-6"></div>
     <h2 id="zlepseni-kvality-stinu" class="heading-secondary u-mb-2">Zlepšení kvality stínů</h2>
     <p class="paragraph u-mb-4">V našem příkladu jsme si stíny úspěšně zapnuli. Jejich kvalita ale není moc dobrá. Proto si teď ukážeme, jak je můžeme vylepšit.</p>
     <h3 id="rozliseni-shadow-mapy" class="heading-tertiary u-mb-2">Rozlišení shadow mapy</h3>
@@ -328,10 +328,10 @@ directionalLight.shadow.radius = 10;</code></pre>
 // změnění algoritmu pro shadow mapy
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete stíny po změnění algoritmu prohlédnout. Možná to v našem příkladu není tolik vidět, protože máme celkem velkou shadow mapu. Pokud bychom ale THREE.PCFSoftShadowMap algoritmus použili pro shadow mapu z menším rozlišením, tak už by to mohlo jít vidět lépe.</p>
-    <div data-example-id="10" class="u-mb-4"></div>
+    <div data-example-id="10" class="u-mb-6"></div>
     <h2 id="cemu-se-vyhnout" class="heading-secondary u-mb-2">Čemu se vyhnout</h2>
     <p class="paragraph u-mb-2">Teď bych tu chtěl jen krátce popsat dvě věci, kterým by jste se při nastavování stínů měli vyhnout. Ta první je, že by jste neměli mít moc světel vytvářejících stín na jednom místě. Mixování stínů totiž není fyzikálně správně a nemusí to vypadat dobře.</p>
-    <p class="paragraph u-mb-4">Druhou věc, kterou by jste neměli při vytváření stínů dělat, je měnit field of view kamery pro stín u PointLight světla. U PointLight světla se totiž shadow mapy vytvářejí tak, že se provede 6 renderování: nahoře, dole, nalevo, napravo, před a za. Dělá se to tak, protože PointLight světlo svítí na všechny strany. Celkem tedy máme 6 shadow map. Field of view je nastaveno tak, aby na sebe shadow mapy navazovali. Pokud bychom jej změnili, stíny by se nevytvářeli správně. Ale další vlastnosti kamery jako je třeba její dohled již nastavovat můžete. Mi jsme si v této části zkoušeli nastavovat stín jen pro DirectionalLight světlo a pro PointLight a SpotLight už ne. Proto jsem to tu chtěl jen zmínit. Jinak je nastavování stínů pro tyto typy světel podobné jako pro DirectionalLight.</p>
+    <p class="paragraph u-mb-6">Druhou věc, kterou by jste neměli při vytváření stínů dělat, je měnit field of view kamery pro stín u PointLight světla. U PointLight světla se totiž shadow mapy vytvářejí tak, že se provede 6 renderování: nahoře, dole, nalevo, napravo, před a za. Dělá se to tak, protože PointLight světlo svítí na všechny strany. Celkem tedy máme 6 shadow map. Field of view je nastaveno tak, aby na sebe shadow mapy navazovali. Pokud bychom jej změnili, stíny by se nevytvářeli správně. Ale další vlastnosti kamery jako je třeba její dohled již nastavovat můžete. Mi jsme si v této části zkoušeli nastavovat stín jen pro DirectionalLight světlo a pro PointLight a SpotLight už ne. Proto jsem to tu chtěl jen zmínit. Jinak je nastavování stínů pro tyto typy světel podobné jako pro DirectionalLight.</p>
     <h2 id="vypekani-stinu-do-textur" class="heading-secondary u-mb-2">Vypékání stínů do textur</h2>
     <p class="paragraph u-mb-6">V minulé části jsem se zmiňoval, že můžeme do textur vypékat světlo. Stejně to můžeme udělat i se stíny. Můžeme si je již připravit do textury v nějakém 3D programu jako je třeba Blender. To se samozřejmě hodí třeba jen pro nějaké statické objekty.</p>
     <p class="paragraph u-mb-4">To je vše co jsem vám chtěl o stínech sdělit. Možná dá trochu práce je nastavit, ale i tak si myslím že je to celkem pohodlné. V příští části si ukážeme, jak můžeme vytvářet particles.</p>

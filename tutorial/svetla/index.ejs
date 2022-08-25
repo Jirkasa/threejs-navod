@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Světla", activePage: "svetla", pageDescription: "V tutoriálu si ukážeme různé typy světel, které nám Three.js nabízí." }) %>
     <h1 class="heading-primary u-mb-6">Světla</h1>
-    <p class="paragraph u-mb-4">Jak jste v předchozí části zjistili, tak některé materiály potřebují světlo aby byly vidět. V této části si tedy ukážeme, jaké máme typy světel. Na závěr také zjistíme, jaké typy světel mají větší či menší vliv na výkon a co je to vypékání světla do textur.</p>
+    <p class="paragraph u-mb-6">Jak jste v předchozí části zjistili, tak některé materiály potřebují světlo aby byly vidět. V této části si tedy ukážeme, jaké máme typy světel. Na závěr také zjistíme, jaké typy světel mají větší či menší vliv na výkon a co je to vypékání světla do textur.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli různé typy světel vyzkoušet, tak je tu pro vás opět přichystán startovní kód. Je úplně stejný jako ten pro minulou část, akorát používáme MeshStandardMaterial, protože pracuje se světlem. S pomocí startovního kódu z části o Webpacku si tedy vytvořte nový projekt a do JavaScript souboru si zkopírujte následující kód.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -88,7 +88,7 @@ renderer.setAnimationLoop(tick);</code></pre>
 body {
     overflow: hidden;
 }</code></pre>
-    <p class="paragraph u-mb-4">Po spuštění aplikace by jste neměli vidět nic, protože MeshStandardMaterial potřebuje světlo k tomu, aby byl vidět.</p>
+    <p class="paragraph u-mb-6">Po spuštění aplikace by jste neměli vidět nic, protože MeshStandardMaterial potřebuje světlo k tomu, aby byl vidět.</p>
     <h2 id="typy-svetel" class="heading-secondary u-mb-2">Typy světel</h2>
     <p class="paragraph u-mb-4">Stejně jako máme různé typy materiálů, tak máme různé typy světel. Postupně si je tu ukážeme. Začneme s tím nejjednoduším, což je AmbientLight.</p>
     <h3 id="ambient-light" class="heading-tertiary u-mb-2">Ambient Light</h3>
@@ -185,7 +185,7 @@ scene.add(spotLight.target);</code></pre>
     <p class="paragraph u-mb-2">Aby jste lépe pochopili různé vlastnosti SpotLight světla, tak jsem tu pro vás připravil interaktivní ukázku, kde si vlastnosti SpotLight světla můžete zkusit různě měnit.</p>
     <div data-example-id="10" class="u-mb-4"></div>
     <h3 id="rect-area-light" class="heading-tertiary u-mb-2">Rect Area Light</h3>
-    <p class="paragraph u-mb-4">Poslední typ světla, který tu zmíním, je <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/RectAreaLight" target="_blank" class="link">RectAreaLight</a>. Toto světlo vyzařuje světlo rovnoměrně z definovaného obdelníku. Dá se použít k simulaci světelných zdrojů jako jsou třeba jasná okna a tak podobně. Je ale o něco složitější na použití a funguje jen s MeshStandardMaterialem a MeshPhysicalMaterialem. Nemůžeme jej jen tak použít, nejdříve musíme inicializovat RectAreaLightUniformsLib. Nevím co to je, ale vím že to musíme udělat. Jak RectAreaLight světlo použít si tu ukazovat nebudeme, ale pokud si jej chcete prohlédnout na ukázce, tak můžete <a href="https://threejs.org/examples/#webgl_lights_rectarealight" target="_blank" class="link">tady</a>. Zdrojový kód je k tomu <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_rectarealight.html" target="_blank" class="link">zde</a>. Nenechte se odradit od jeho používání, když se podíváte na zdrojový kód toho příkladu, tak uvidíte že to zas tak těžké není. Mě se hlavně nechtělo jej tady popisovat.</p>
+    <p class="paragraph u-mb-6">Poslední typ světla, který tu zmíním, je <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/RectAreaLight" target="_blank" class="link">RectAreaLight</a>. Toto světlo vyzařuje světlo rovnoměrně z definovaného obdelníku. Dá se použít k simulaci světelných zdrojů jako jsou třeba jasná okna a tak podobně. Je ale o něco složitější na použití a funguje jen s MeshStandardMaterialem a MeshPhysicalMaterialem. Nemůžeme jej jen tak použít, nejdříve musíme inicializovat RectAreaLightUniformsLib. Nevím co to je, ale vím že to musíme udělat. Jak RectAreaLight světlo použít si tu ukazovat nebudeme, ale pokud si jej chcete prohlédnout na ukázce, tak můžete <a href="https://threejs.org/examples/#webgl_lights_rectarealight" target="_blank" class="link">tady</a>. Zdrojový kód je k tomu <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_rectarealight.html" target="_blank" class="link">zde</a>. Nenechte se odradit od jeho používání, když se podíváte na zdrojový kód toho příkladu, tak uvidíte že to zas tak těžké není. Mě se hlavně nechtělo jej tady popisovat.</p>
     <h2 id="vliv-svetel-na-vykon" class="heading-secondary u-mb-2">Vliv světel na výkon</h2>
     <p class="paragraph u-mb-2">Prošli jsme si celkem 6 typů světel, které nám Three.js nabízí. Můžete je tedy ve svých aplikacích dle potřeby používat. Světla nás ale mohou stát hodně výkonu, proto je důležité vědět, která světla mají minimální vliv na výkon a která naopak velký. Měli bychom se snažit používat co nejméně světel a používat světla, která nás stojí méně výkonu. Zde jsem sepsal seznamy světel rozdělené podle jejich vlivu na výkon:</p>
     <p class="paragraph"><b>Minimální vliv na výkon:</b></p>
@@ -199,12 +199,12 @@ scene.add(spotLight.target);</code></pre>
         <li>PointLight</li>
     </ul>
     <p class="paragraph"><b>Velký vliv na výkon:</b></p>
-    <ul class="list u-mb-4">
+    <ul class="list u-mb-6">
         <li>SpotLight</li>
         <li>RectAreaLight</li>
     </ul>
     <h2 id="vypekani-svetel-do-textur" class="heading-secondary u-mb-2">Vypékání světel do textur</h2>
-    <p class="paragraph u-mb-4">Protože světla mohou mít velký vliv na výkon, tak se je v některých případech můžeme rozhodnout nepoužít vůbec a namísto toho si světlo již připravit (vypéct) do textury. To můžeme udělat v nějakém 3D programu jako je třeba Blender. Na to jak to udělat bude na internetu určitě spoustu tutoriálů. Nevýhoda samozřejmě je, že poté světlem již nemůžeme pohybovat. Může se to tedy hodit třeba na nějaké statické scény.</p>
+    <p class="paragraph u-mb-6">Protože světla mohou mít velký vliv na výkon, tak se je v některých případech můžeme rozhodnout nepoužít vůbec a namísto toho si světlo již připravit (vypéct) do textury. To můžeme udělat v nějakém 3D programu jako je třeba Blender. Na to jak to udělat bude na internetu určitě spoustu tutoriálů. Nevýhoda samozřejmě je, že poté světlem již nemůžeme pohybovat. Může se to tedy hodit třeba na nějaké statické scény.</p>
     <h2 id="helpery" class="heading-secondary u-mb-2">Helpery</h2>
     <p class="paragraph u-mb-4">Pozicování a nastavování světel může být těžké. Proto nám Three.js poskytuje pro světla pár helperů, které nám s tím mohou pomoci. Už jste je vlastně viděli v interaktivních ukázkách, které se v této části nacházejí. Teď se je naučíme používat.</p>
     <h3 id="directional-light-helper" class="heading-tertiary u-mb-2">Directional Light Helper</h3>

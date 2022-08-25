@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Realistické renderování", activePage: "realisticke-renderovani", pageDescription: "V tutoriálu se podíváme na pár tipů, jak můžete své modely pomocí Three.js renderovat renderovat realističtěji." }) %>
     <h1 class="heading-primary u-mb-6">Realistické renderování</h1>
-    <p class="paragraph u-mb-4">V této části se podíváme na pár tipů, jak můžeme své modely pomocí Three.js renderovat realističtěji.</p>
+    <p class="paragraph u-mb-6">V této části se podíváme na pár tipů, jak můžeme své modely pomocí Three.js renderovat realističtěji.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Je tu pro vás připraven startovní kód, který vytváří scénu, přidává do ní DirectionalLight světlo a načítá 3D model. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a kód si zkopírujte do JavaScript souboru.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -78,7 +78,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět 3D model lavice, u kterého se budeme snažit, abychom ho vyrenderovali co nejrealističtěji.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="realisticka-svetla" class="heading-secondary u-mb-2">Realistická světla</h2>
     <p class="paragraph u-mb-2">Defaultně světla nepoužívají fyzikálně správný režim osvětlení. Pokud chceme fyzikálně správný režim osvětlení zapnout, tak to můžeme udělat pomocí vlastnosti physicallyCorrectLights na rendereru.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -164,7 +164,7 @@ gui.add(directionalLight, "intensity")
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste teď měli být schopni měnit intenzitu environment mapy a intenzitu DirectionalLight světla.</p>
     <div data-example-id="3" class="u-mb-2"></div>
     <p class="paragraph u-mb-2">Pro intenzitu environment mapy se mi tak nějak nejvíce líbila hodnota 1.2 a pro intenzitu DirectionalLight světla hodnota 2. Můžeme tedy tyto hodnoty nastavit v kódu.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 // přidání DirectionalLight světla
 const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
@@ -224,7 +224,7 @@ gui.add(renderer, "outputEncoding", {
     // převedení na číselnou hodnotu
     renderer.outputEncoding = Number(renderer.outputEncoding);
 });</code></pre>
-    <p class="paragraph u-mb-4">Encoding můžeme nastavovat i u textur pomocí vlastnosti encoding. To za nás již zajišťuje GLTFLoader a stačí jen přepnout output encoding na rendereru. Pokud by jste to ale u textur někdy potřebovali změnit sami, tak můžete. V podstatě to jde aplikovat na všechno, kde se používají barvy. Ne u všech textur je ale dobré encoding přepnout na sRGB. Například u normal mapy chceme mít přesné hodnoty, proto u ní ponecháme defaultní lineární encoding.</p>
+    <p class="paragraph u-mb-6">Encoding můžeme nastavovat i u textur pomocí vlastnosti encoding. To za nás již zajišťuje GLTFLoader a stačí jen přepnout output encoding na rendereru. Pokud by jste to ale u textur někdy potřebovali změnit sami, tak můžete. V podstatě to jde aplikovat na všechno, kde se používají barvy. Ne u všech textur je ale dobré encoding přepnout na sRGB. Například u normal mapy chceme mít přesné hodnoty, proto u ní ponecháme defaultní lineární encoding.</p>
     <h2 id="tone-mapping" class="heading-secondary u-mb-2">Tone Mapping</h2>
     <p class="paragraph u-mb-2">Tone Mapping je technika, která se používá ve zpracování obrazu a počítačové grafice k mapování jedné sady barev na druhou, aby se přiblížil vzhled obrazů s vysokým dynamickým rozsahem na médiu, které má omezenější dynamický rozsah. Tuto větu jsem zkopíroval z Wikipedie a sám nevím jak Tone Mapping vlastně funguje. Nemůžu to tu tedy ani vysvětlovat. Ukážeme si ale, jak jej můžeme změnit pomocí vlastnosti toneMapping na rendereru. Máme na výběr z následujících hodnot:</p>
     <ul class="list u-mb-2">
@@ -266,7 +266,7 @@ gui.add(renderer, "toneMappingExposure")
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete zkusit měnit Tone Mapping a vlastnost toneMappingExposure.</p>
     <div data-example-id="6" class="u-mb-2"></div>
     <p class="paragraph u-mb-2">Mě se líbilo ACESFilmicToneMapping s toneMappingExposure nastavenou na 0.5. Můžeme to tedy nastavit přímo v kódu.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
@@ -462,7 +462,7 @@ directionalLight.shadow.camera.bottom = -1.2;
 // aktualizace kamery pro stíny
 directionalLight.shadow.camera.updateProjectionMatrix();</code></pre>
     <p class="paragraph u-mb-2">S nastavováním stínů jsme hotovi.</p>
-    <div data-example-id="12" class="u-mb-4"></div>
+    <div data-example-id="12" class="u-mb-6"></div>
     <h2 id="anti-aliasing" class="heading-secondary u-mb-2">Anti-Aliasing</h2>
     <p class="paragraph u-mb-2">V části o měnění velikosti canvasu jsem se zmiňoval o tom, že podle toho jakou máte hustotu pixelů, můžete na hranách objektů vidět vyrenderované schody (pixely). Ukazuje je následující obrázek.</p>
     <img src="../../static/img/rendered-stairs.png" alt="vyrenderované schody na hranách objektů" class="centered-image u-mb-2">

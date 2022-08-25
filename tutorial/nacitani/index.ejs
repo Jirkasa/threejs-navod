@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Načítání", activePage: "nacitani", pageDescription: "V tutoriálu si ukážeme, jak můžeme ve Three.js lépe řídit načítání." }) %>
     <h1 class="heading-primary u-mb-6">Načítání</h1>
-    <p class="paragraph u-mb-4">V této části si ukážeme, jak můžeme ve Three.js lépe řídit načítání. V minulých částech jsme pomocí různých loaderů načítali textury, 3D modely, environment mapy, font a možná i některé další věci. Řídit načítání pro spoustu různých věcí zároveň může být celkem složité, ale Three.js nám to usnadňuje. V této části se dozvíte jak.</p>
+    <p class="paragraph u-mb-6">V této části si ukážeme, jak můžeme ve Three.js lépe řídit načítání. V minulých částech jsme pomocí různých loaderů načítali textury, 3D modely, environment mapy, font a možná i některé další věci. Řídit načítání pro spoustu různých věcí zároveň může být celkem složité, ale Three.js nám to usnadňuje. V této části se dozvíte jak.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Je tu pro vás opět připraven startovní kód. Takže si pomocí startovního kódu z části o Webpacku vytvořte nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky. Tento kód vytváří scénu, přidává do ní DirectionalLight světlo a vytváří OrbitControls ovládání, abychom se mohli po scéně pohybovat.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -64,7 +64,7 @@ renderer.setAnimationLoop(tick);</code></pre>
 body {
     overflow: hidden;
 }</code></pre>
-    <p class="paragraph u-mb-4">Po spuštění aplikace zatím neuvidíte nic, jelikož ve scéně nic nemáme.</p>
+    <p class="paragraph u-mb-6">Po spuštění aplikace zatím neuvidíte nic, jelikož ve scéně nic nemáme.</p>
     <h2 id="nacteni-assetu" class="heading-secondary u-mb-2">Načtení assetů</h2>
     <p class="paragraph u-mb-2">Do naší aplikace si zkusíme načíst 3D model, jeho textury a environment mapu. Všechny tyto věci si můžete stáhnout <a href="../../static/other/nacitani-startovni-soubory.zip" download class="link">zde</a> a umístit do složky static. Jak můžeme tyto věci načíst by vám již mělo být jasné z minulých částí. Budeme potřebovat GLTFLoader (protože máme model v GLTF formátu), TextureLoader a CubeTextureLoader. GLTFLoader si musíme nejdříve naimportovat, než jej můžeme použít.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -145,7 +145,7 @@ gltfLoader.load(
     }
 );</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete prohlédnout náš načtený model.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="loading-manager" class="heading-secondary u-mb-2">Loading Manager</h2>
     <p class="paragraph u-mb-2">Pokud si naši aplikaci spustíte, tak můžete vidět, že načtení textur a modelu může chvíli trvat a neobjeví se na scéně hned. Tady v ukázce na webu to uvidíte pouze když si ukázku spustíte poprvé, protože model nenačítám při každém spuštění ukázky, ale jen jednou. Pokud si ale aplikaci spouštíte sami, tak to můžete vidět při každém obnovení stránky. Pokud ne, tak to může znamenat, že prohlížeč má načtené textury zacachované. Pokud stránku obnovíte pomocí Ctrl + F5, tak se prohlížeč nebude dívat do cache paměti, ale stáhne si textury znovu.</p>
     <p class="paragraph u-mb-2">Samozřejmě většinou nechceme aby se uživateli ve scéně jen tak objevil model až se načte. Chceme uživateli umožnit naši aplikaci používat až poté, co už se vše načetlo. Jenže může být celkem složité sledovat co se již načetlo a co ještě ne, když používáme více loaderů, stejně jako v našem příkladu. Proto nám Three.js nabízí třídu jménem <a href="https://threejs.org/docs/index.html?q=loadingmanager#api/en/loaders/managers/LoadingManager" target="_blank" class="link">LoadingManager</a>. Můžeme vytvořit její instanci a předávat ji do loaderů, když je vytváříme. Následující ukázka to ukazuje.</p>

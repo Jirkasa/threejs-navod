@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Materiály", activePage: "materialy", pageDescription: "V tutoriálu se podíváme a rozebereme si různé typy materiálů, které nám Three.js nabízí." }) %>
     <h1 class="heading-primary u-mb-6">Materiály</h1>
     <p class="paragraph u-mb-2">V této části se podíváme na materiály. Ty slouží k popisu vzhledu objektů. Už jsme se s nimi v tutoriálu setkali, ale nevysvětlovali jsme si o nich žádné velké detaily. V této části si je tedy rozebereme a podívame se, jaké máme typy materiálů.</p>
-    <p class="paragraph u-mb-4">Abychom mohli na canvas vykreslit objekt, tak k tomu potřebujeme shadery. Ty obsahují instrukce pro vykreslování. Můžeme si je sami napsat a vytvořit si tedy vlastní materiál. To si ale zkusíme až v samostatné části o shaderech. Shadery si nemusíme psát sami, můžeme použít materiály, které nám Three.js nabízí. Postupně si některé v této části projdeme.</p>
+    <p class="paragraph u-mb-6">Abychom mohli na canvas vykreslit objekt, tak k tomu potřebujeme shadery. Ty obsahují instrukce pro vykreslování. Můžeme si je sami napsat a vytvořit si tedy vlastní materiál. To si ale zkusíme až v samostatné části o shaderech. Shadery si nemusíme psát sami, můžeme použít materiály, které nám Three.js nabízí. Postupně si některé v této části projdeme.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli vyžkoušet a vidět různé materiály, tak si je budeme muset aplikovat na nějaké objekty. Proto je tu pro vás připravený startovní kód, který objekty vytváří, přidává je do scény a tu poté renderuje. Také vytváří OrbitControls ovládání, aby jste se po scéně mohli pohybovat. Takže si pomocí startovního kódu z části o Webpacku vytvořte nový projekt a následující kód si zkopírujte do JavaScript souboru.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -88,7 +88,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět tři objekty. Na ty si budeme zkoušet aplikovat různé materiály.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="mesh-basic-material" class="heading-secondary u-mb-2">Mesh Basic Material</h2>
     <p class="paragraph u-mb-4">Nejzákladnějším materiálem je <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshBasicMaterial" target="_blank" class="link">MeshBasicMaterial</a>. Tento materiál nepotřebuje světlo a můžeme s jeho pomocí na geometrii jednoduše aplikovat barvu nebo texturu. Co všecho můžeme tomuto materiálu nastavit za vlastnosti si můžete prohlédnout v dokumentaci. Mi si tu ukážeme jen některé.</p>
     <h3 id="barva" class="heading-tertiary u-mb-2">Barva</h3>
@@ -183,7 +183,7 @@ const material = new THREE.MeshBasicMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace byste měli objekty vidět i zevnitř.</p>
     <div data-example-id="7" class="u-mb-4"></div>
-    <p class="paragraph u-mb-4">Vlastnosti, které jsme si na Mesh Basic Materiálu ukázali se dají použít i u některých dalších materiálu. Nebudu se k nim tedy u dalších typů materiálů vracet. Co všechno se dá u daného typu materiálu nastavit si vždy můžete prohlédnout v dokumentaci.</p>
+    <p class="paragraph u-mb-6">Vlastnosti, které jsme si na Mesh Basic Materiálu ukázali se dají použít i u některých dalších materiálu. Nebudu se k nim tedy u dalších typů materiálů vracet. Co všechno se dá u daného typu materiálu nastavit si vždy můžete prohlédnout v dokumentaci.</p>
     <h2 id="mesh-normal-material" class="heading-secondary u-mb-2">Mesh Normal Material</h2>
     <p class="paragraph u-mb-2">Jako druhý materiál si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshNormalMaterial" target="_blank" class="link">MeshNormalMaterial</a>. Jedná se vlastně o reprezentaci normálů a většinou se používá pro jejich debugování. Protože ale vypadá dobře, tak jej klidně můžeme použít ve svých projektech. Možná si říkáte co to normály jsou. U polygonů normály určují, kam polygon směřuje. Vlastně určuje jaká je přední a zadní strana polygonu. Následující obrázek normály ukazuje.</p>
     <img src="../../static/img/Normals.png" alt="normály" class="centered-image u-mb-2">
@@ -206,7 +206,7 @@ const material = new THREE.MeshNormalMaterial({
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Teď bychom již barevný přechod na kouli neměli vidět.</p>
-    <div data-example-id="9" class="u-mb-4"></div>
+    <div data-example-id="9" class="u-mb-6"></div>
     <h2 id="mesh-matcap-material" class="heading-secondary u-mb-2">Mesh Matcap Material</h2>
     <p class="paragraph u-mb-2">U předchozího materiálu jste se dozvěděli co to jsou normály. Teď si ukážeme materiál, který je používá k výběru barvy na textuře a podle toho na objekt aplikuje barvu. Jedná se o <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshMatcapMaterial" target="_blank" class="link">MeshMatcapMaterial</a>. K jeho vyzkoušení potřebujeme Matcap texturu. Jedná se o obrázek s koulí, ze které se bere podle směru normálu barva.</p>
     <img src="../../static/img/textures/matcaps/Matcap.png" alt="Matcap textura" class="centered-image u-mb-2">
@@ -225,7 +225,7 @@ const material = new THREE.MeshMatcapMaterial({
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace uvidíte, že na objektech bude matcap textura aplikována. Když se podívate na kouli, tak můžete vidět, že vypadá úplně stejně jako koule na textuře. Díky Matcap materiálu můžeme simulovat světlo na objektech bez toho, aniž bychom ve skutečnosti ve scéně nějaké světlo měli.</p>
-    <div data-example-id="10" class="u-mb-4"></div>
+    <div data-example-id="10" class="u-mb-6"></div>
     <h2 id="mesh-lambert-material" class="heading-secondary u-mb-2">Mesh Lambert Material</h2>
     <p class="paragraph u-mb-2">Jako další materiál si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshLambertMaterial" target="_blank" class="link">MeshLambertMaterial</a>. Tento materiál již potřebuje světlo aby byl vidět, proto si do scény nějaká přídáme. Světlem se budeme zabývat v samostatné části, takže si jen zkopírujte následující kód, který světla vytváří. Nemusíte mu rozuměť. Můžete jej umístit třeba hned za kód pro vytvoření scény.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -248,7 +248,7 @@ const material = new THREE.MeshLambertMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace byste na objektech měli MeshLambertMaterial vidět.</p>
     <div data-example-id="11" class="u-mb-2"></div>
-    <p class="paragraph u-mb-4">MeshLambertMaterial je výkonný, ale můžeme na objektech vidět divné vzory. V našem příkladu je asi neuvidíte, ale na <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshLambertMaterial" target="_blank" class="link">ukázce v dokumentaci</a> byste mohli. Také nemůže simulovat lesklé povrchy. Proto je často lepší použít spíš MeshPhongMaterial, který si ukážeme jako další. Pokud byste se chtěli dozvědět, jaké různé vlastnosti můžeme MeshLambertMaterialu nastavit, tak se můžete podívat do dokumentace.</p>
+    <p class="paragraph u-mb-6">MeshLambertMaterial je výkonný, ale můžeme na objektech vidět divné vzory. V našem příkladu je asi neuvidíte, ale na <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshLambertMaterial" target="_blank" class="link">ukázce v dokumentaci</a> byste mohli. Také nemůže simulovat lesklé povrchy. Proto je často lepší použít spíš MeshPhongMaterial, který si ukážeme jako další. Pokud byste se chtěli dozvědět, jaké různé vlastnosti můžeme MeshLambertMaterialu nastavit, tak se můžete podívat do dokumentace.</p>
     <h2 id="mesh-phong-material" class="heading-secondary u-mb-2">Mesh Phong Material</h2>
     <p class="paragraph u-mb-2">Teď si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshPhongMaterial" target="_blank" class="link">MeshPhongMaterial</a>. Je podobný MeshLambertMaterialu, ale nevytváří na objektech divné vzory. Také může narozdíl od něj simulovat lesklé povrchy. Je ale samozřejmě méně výkonný než MeshLambertMaterial.</p>
     <p class="paragraph u-mb-2">Smažte si v kódu MeshLambertMaterial a vložte si tam namísto něj kód pro vytvoření MeshPhongMaterialu.</p>
@@ -274,7 +274,7 @@ const material = new THREE.MeshPhongMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Když si aplikaci spustíte, tak si můžete zvýšenou lesklost prohlédnout. Pod určitým úhlem na kouli uvidíte červený odlesk.</p>
     <div data-example-id="13" class="u-mb-4"></div>
-    <p class="paragraph u-mb-4">Více si toho o MeshPhongMaterialu neukážeme. V dokumentaci se o něm můžete dozvědět víc.</p>
+    <p class="paragraph u-mb-6">Více si toho o MeshPhongMaterialu neukážeme. V dokumentaci se o něm můžete dozvědět víc.</p>
     <h2 id="mesh-toon-material" class="heading-secondary u-mb-2">Mesh Toon Material</h2>
     <p class="paragraph u-mb-2">Další materiál, který si ukážeme, je <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshToonMaterial" target="_blank" class="link">MeshToonMaterial</a>. Tento materiál vytváří takový kreslený efekt. Smažte si předchozí materiál a vytvořte si MeshToonMaterial, jak ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>/* ... */
@@ -306,7 +306,7 @@ const material = new THREE.MeshToonMaterial({
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Teď byste na materiálu měli gradient vidět. Když se podívate na kouli, tak uvidíte, že má 5 barevných částí, stejně jako gradient textura.</p>
     <div data-example-id="15" class="u-mb-4"></div>
-    <p class="paragraph u-mb-4">Více si o MeshToonMaterialu můžete přečíst v dokumentaci.</p>
+    <p class="paragraph u-mb-6">Více si o MeshToonMaterialu můžete přečíst v dokumentaci.</p>
     <h2 id="mesh-standard-material" class="heading-secondary u-mb-2">Mesh Standard Material</h2>
     <p class="paragraph u-mb-2">Jako další si ukážeme <a href="https://threejs.org/docs/?q=material#api/en/materials/MeshStandardMaterial" target="_blank" class="link">MeshStandardMaterial</a>. Tento materiál narozdíl od těch předchozích používá PBR principy. Stejně jako například MeshPhongMaterial pracuje se světlem, ale používá více realistický algoritmus. Podporuje všechny typy textur, které jsme si ukazovali v minulé části o texturách.</p>
     <p class="paragraph u-mb-2">Smažte si předchozí materiál a můžeme začít používat MeshStandardMaterial. Zatím si jej vytvořte bez žádného nastavení.</p>
@@ -457,7 +457,7 @@ const material = new THREE.MeshStandardMaterial({
     <div data-example-id="22" class="u-mb-2"></div>
     <p class="paragraph u-mb-2">V našem příkladu jsme environment mapu nastavovali na materiál. Můžeme ji ale nastavit také na scénu a ta ji automaticky aplikuje na každý PBR materiál, který nemá nastavanou vlastnost envMap. Aplikuje ji ale jen na PBR materiály, takže pokud například chceme environment mapu použít třeba na Mesh Phong Materiály, tak ji musíme ručně nastavit na materiál pomocí vlastnosti envMap. Na scénu environment mapu nastavíme pomocí vlastnosti environment.</p>
     <pre class="code-box u-mb-4"><code>scene.environment = environmentMapTexture;</code></pre>
-    <p class="paragraph u-mb-4">To je vše co jsme si o MeshStandardMaterialu ukázali. Více vlastností, které můžete nastavovat, najdete v dokumentaci.</p>
+    <p class="paragraph u-mb-6">To je vše co jsme si o MeshStandardMaterialu ukázali. Více vlastností, které můžete nastavovat, najdete v dokumentaci.</p>
     <h2 id="dalsi-material" class="heading-secondary u-mb-2">Další materiály</h2>
     <p class="paragraph u-mb-4">V této části jsme si ukázali různé druhy materiálů, ale je tu ještě pár dalších materiálů, které jsme si neukázali. Chtěl bych tu u některých jen krátce popsat k čemu slouží. Zbývající najdete v dokumentaci.</p>
     <h3 id="mesh-physical-material" class="heading-tertiary u-mb-2">Mesh Physical Material</h3>

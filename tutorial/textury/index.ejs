@@ -1,6 +1,6 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Textury", activePage: "textury", pageDescription: "V tutoriálu se dozvíte jaké máme typy textur, jak textury ve Three.js načítat, co je UV unwrapping a další věci, které se textur týkají." }) %>
     <h1 class="heading-primary u-mb-6">Textury</h1>
-    <p class="paragraph u-mb-4">Tato část je o texturách. Dozvíte se tu jaké máme typy textur, jak textury načítat, co je UV unwrapping a další věci, které se textur týkají. Na začátek bych ale chtěl ještě krátce popsat co to textury jsou a k čemu slouží, pokud to ještě nevíte.</p>
+    <p class="paragraph u-mb-6">Tato část je o texturách. Dozvíte se tu jaké máme typy textur, jak textury načítat, co je UV unwrapping a další věci, které se textur týkají. Na začátek bych ale chtěl ještě krátce popsat co to textury jsou a k čemu slouží, pokud to ještě nevíte.</p>
     <h2 id="co-jsou-textury" class="heading-secondary u-mb-2">Co jsou textury</h2>
     <p class="paragraph u-mb-2">Textury jsou jednoduše obrázky, které pokrývají povrch geometrie. Můžeme si to představit tak, jako bychom geometrii do obrázků balili. Nevím co k tomu dodat dál. Následující ukázka ukazuje model s texturou a bez textury, což dostatečně ilustruje k čemu textury slouží.</p>
     <div data-example-id="1" class="u-mb-6"></div>
@@ -31,7 +31,7 @@
     <p class="paragraph u-mb-2">Emissive textura slouží k označení částí objektu, které mají svítit.</p>
     <img src="../../static/img/texture-types/Emissive.png" alt="Emissive textura" class="centered-image u-mb-6">
     <h2 id="physically-based-rendering" class="heading-secondary u-mb-2">Physically Based Rendering</h2>
-    <p class="paragraph u-mb-4">Většina textur, které jsem tu popsal, dodržuje PBR principy. PBR (Physically based rendering) je fyzicky založené vykreslování 3D grafiky, které se snaží vykreslit objekty způsobem, který modeluje tok světla v reálném světě. Je to v podstatě standard pro realistické renderování (vykreslování). Spousta programů, herních enginů a knihoven jej používá.</p>
+    <p class="paragraph u-mb-6">Většina textur, které jsem tu popsal, dodržuje PBR principy. PBR (Physically based rendering) je fyzicky založené vykreslování 3D grafiky, které se snaží vykreslit objekty způsobem, který modeluje tok světla v reálném světě. Je to v podstatě standard pro realistické renderování (vykreslování). Spousta programů, herních enginů a knihoven jej používá.</p>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli zkusit na objekty aplikovat textury, tak si budeme muset objekty vytvořit a přidat si je do scény. Je tu pro vás stejně jako v minulých částech připravený startovní kód, který se o to postará za vás. Takže si vytvořte pomocí startovního kódu z části o Webpacku nový projekt a kód si zkopírujte do svého JavaScript souboru.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -108,7 +108,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět vyrenderovanou scénu s kostkou a koulí. Na tyto objekty si později zkusíme aplikovat texturu.</p>
-    <div data-example-id="2" class="u-mb-4"></div>
+    <div data-example-id="2" class="u-mb-6"></div>
     <h2 id="nacitani-textur" class="heading-secondary u-mb-2">Načítání textur</h2>
     <p class="paragraph u-mb-2">Pro vyzkoušení aplikování textury na objekt si budeme muset stáhnout nějakou texturu. Výborné textury, které jsou zdarma, můžete najít na <a href="https://polyhaven.com/textures" target="_blank" class="link">Poly Haven</a>. Můžete si tam najít nějakou texturu, která se vám libí a stáhnout si ji. Bude stačit jen Base Color (diffuse). Pokud ale chcete použít stejnou texturu jako já, můžete si ji <a href="https://polyhaven.com/a/brick_wall_001" target="_blank" class="link">stáhnout zde</a>. Po stažení si texturu umístěte do složky static v kořenové složce projektu.</p>
     <p class="paragraph u-mb-2">Pokud jste si do projektu přidali texturu, tak si ji můžeme zkusit načíst. Mohli bychom si texturu načíst pomocí JavaScriptu, tak jak jsme běžně zvyklí načítat obrázky, ale Three.js nám na to poskytuje lepší cestu. K načtení textury můžeme použít třídu <a href="https://threejs.org/docs/index.html?q=texture#api/en/loaders/TextureLoader" target="_blank" class="link">TextureLoader</a>. Použijeme ji tak, že si vytvoříme její instanci a pro načtení textury zavoláme metodu load. Naši texturu si můžeme načíst třeba hned na začátku našeho kódu, jak ukazuje následující ukázka.</p>
@@ -132,7 +132,7 @@ const material = new THREE.MeshBasicMaterial({
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace si můžete texturu na objektech prohlédnout. Musíte ale pro načtení textury používat Dev Server, nebo si sestavenou aplikaci spustit na webovém serveru. Jak jsem v části o Webpacku psal, je to kvůli bezpečnosti.</p>
-    <div data-example-id="3" class="u-mb-4"></div>
+    <div data-example-id="3" class="u-mb-6"></div>
     <h2 id="uv-unwrapping" class="heading-secondary u-mb-2">UV Unwrapping</h2>
     <p class="paragraph u-mb-2">Možná si říkáte, jak je možné že se textura na objekty v naší aplikaci aplikovala tak, aby pokryla každou stěnu kostky a obtočila se kolem koule. Je to proto, že každá geometrie má UV souřadnice. Pokud chceme na geometrii aplikovat texturu, tak se geometrie musí dát nějakým způsobem rozložit na 2D plochu. U geometrií, které nám nabízí Three.js, je to řešeno automaticky. Pokud bychom ale například vytvářeli vlastní model v nějakém 3D modelovacím programu, tak bychom si jej museli na 2D plochu rozložit sami. Tomuto procesu se říká UV unwrapping. Následující obrázek například ukazuje jednu z mých židlí, které jsem modeloval, rozloženou na 2D plochu aby se na ni mohla aplikovat textura. Každý vertex má na 2D ploše vlastně souřadnice a podle toho se určí, jak přesně se na geometrii textura aplikuje.</p>
     <img src="../../static/img/UVUnwrapping.png" alt="UV unwrapping" class="centered-image u-mb-6">
@@ -189,7 +189,7 @@ texture.rotation = Math.PI * 0.25;
 
 /* ... */</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace by měla být textura na objektech natočená.</p>
-    <div data-example-id="7" class="u-mb-4"></div>
+    <div data-example-id="7" class="u-mb-6"></div>
     <h2 id="filtering-a-mipmapping" class="heading-secondary u-mb-2">Filtering a Mipmapping</h2>
     <p class="paragraph u-mb-2">Three.js defaultně u textur provádí mipmapping. Jedná se o techniku, která je používána k odstranění nebo alespoň zmenšení některých vizuálních chyb, které mohou vzniknout například při pohybu objektů nebo pohybu kamery. Funguje to tak, že se pro texturu postupně vytváří poloviční verze až nakonec dojdeme k velikosti textury 1x1 pixelů. Když tedy například máme texturu o rozměrech 2048x2048 pixelů, tak se vytvoří poloviční verze, která bude mít 1024x1024 pixelů. Tato verze se opět rozdělí a dostaneme texturu o rozměru 512x512 pixelů. Tak to pořád pokračuje až do textury o rozměru 1x1 pixelů. Všechny vygenerované varianty textury se poté pošlou do GPU a to se rozhodne použít co nejvíce odpovídající verzi textury.</p>
     <img src="../../static/img/Mipmapping.svg" alt="Mipmapping" class="centered-image u-mb-2">

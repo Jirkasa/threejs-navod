@@ -1,10 +1,10 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Transformace objektů", activePage: "transformace-objektu", pageDescription: "V tutoriálu se podíváme, jak můžeme ve scéně pozicovat, rotovat a nastavovat velikost objektů." }) %>
     <h1 class="heading-primary u-mb-6">Transformace objektů</h1>
-    <p class="paragraph u-mb-4">V minulé části jsme si vytvořili startovní kód, který teď můžeme používat v každé další části tutoriálu. Jsme tedy připraveni věnovat se pouze Three.js. V této části se podíváme na to, jak můžeme ve scéně pozicovat, rotovat a nastavovat velikost objektů.</p>
+    <p class="paragraph u-mb-6">V minulé části jsme si vytvořili startovní kód, který teď můžeme používat v každé další části tutoriálu. Jsme tedy připraveni věnovat se pouze Three.js. V této části se podíváme na to, jak můžeme ve scéně pozicovat, rotovat a nastavovat velikost objektů.</p>
     <h2 id="souradnicovy-system" class="heading-secondary u-mb-2">Souřadnicový systém</h2>
     <p class="paragraph u-mb-2">Abychom mohli ve scéně pozicovat objekty, tak k tomu musíme porozumět souřadnicovému systému, který Three.js používá. Není to nic složitého a možná že už i víte nebo tušíte jak to funguje. Je to o tom že máme 3 osy: X, Y a Z. Na ose X pozicujeme objekty horizontálně (doleva nebo doprava), na ose Y pozicujeme objekty vertikálně (nahoru nebo dolů) a na ose Z pozicujeme objekty dopředu nebo dozadu (k nám nebo od nás). Pro lepší pochopení jsem tu pro vás připravil interaktivní ukázku, ve které si můžete pomocí inputů v pravé horní části pozicovat ve scéně kostku.</p>
     <div data-example-id="1" class="u-mb-2"></div>
-    <p class="paragraph u-mb-4">Jak jste si mohli v předchozí interaktivní ukázce zkusit, tak pokud na ose X nastavíte kladnou hodnotu, kostka se posune doprava. Pokud nastavíme zápornou tak se posune doleva. Podobné je to i u osy Y a Z. Pokud nastavíme kladnou hodnotu na ose Y, tak se objekt posune nahoru. Pokud nastavíme kladnou hodnotu na ose Z, tak se objekt posune směrem k nám. Záleží samozřejmě také na tom, kde se nachází kamera.</p>
+    <p class="paragraph u-mb-6">Jak jste si mohli v předchozí interaktivní ukázce zkusit, tak pokud na ose X nastavíte kladnou hodnotu, kostka se posune doprava. Pokud nastavíme zápornou tak se posune doleva. Podobné je to i u osy Y a Z. Pokud nastavíme kladnou hodnotu na ose Y, tak se objekt posune nahoru. Pokud nastavíme kladnou hodnotu na ose Z, tak se objekt posune směrem k nám. Záleží samozřejmě také na tom, kde se nachází kamera.</p>
     <h2 id="vlastnosti-pro-transformaci-objektu" class="heading-secondary u-mb-2">Vlastnosti pro transformaci objektů</h2>
     <p class="paragraph u-mb-2">Pro transformaci objektů používáme vlastnosti position, scale, rotation a quaternion. Tyto vlastnosti mají k dispozici třídy, které dědí od třídy Object3D (takže Mesh, PerspectiveCamera, atd.). Pokud chcete zjistit od kterých tříd nějaká třída dědí, tak se můžete podívat do <a href="https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene" target="_blank" class="link">dokumentace</a>. Když si tam nějakou třídu rozkliknete, tak to vidíte v levé horní části.</p>
     <img src="../../static/img/SeeClassInheritance.png" alt="třídy od kterých třída dědí" class="centered-image u-mb-2">
@@ -114,7 +114,7 @@ renderer.render(scene, camera);</code></pre>
     <pre class="code-box u-mb-4"><code>// nejprve se aplikuje rotace kolem osy Z, poté kolem osy Y a nakonec kolem osy X
 cube.rotation.order = "ZYX";</code></pre>
     <h3 id="quaternion" class="heading-tertiary u-mb-2">quaternion</h3>
-    <p class="paragraph u-mb-4">Dalším způsobem jak objektům nastavovat rotaci je přes quaternion. Eulerovy úhly jsou jednoduché ale pořadí os může být problematické. Jak jste viděli, tak může dojít ke gimbal locku. Pokud použijeme k nastavení rotace quaternion, tak se tomuto problému vyhneme. Vyjadřuje rotaci větší matematickou cestou ale je o dost složitější než eulerovy úhly. Narozdíl od nich vůbec nevím jak quaternion funguje, protože nejsem na matematiku vůbec dobrý. Takže si o o rotaci objektů pomocí quaternionu budete moci zjistit informace jinde, pokud by vás to zajímalo.</p>
+    <p class="paragraph u-mb-6">Dalším způsobem jak objektům nastavovat rotaci je přes quaternion. Eulerovy úhly jsou jednoduché ale pořadí os může být problematické. Jak jste viděli, tak může dojít ke gimbal locku. Pokud použijeme k nastavení rotace quaternion, tak se tomuto problému vyhneme. Vyjadřuje rotaci větší matematickou cestou ale je o dost složitější než eulerovy úhly. Narozdíl od nich vůbec nevím jak quaternion funguje, protože nejsem na matematiku vůbec dobrý. Takže si o o rotaci objektů pomocí quaternionu budete moci zjistit informace jinde, pokud by vás to zajímalo.</p>
     <h2 id="seskupovani-objektu" class="heading-secondary u-mb-2">Seskupování objektů</h2>
     <p class="paragraph u-mb-4">Transformace můžeme aplikovat i na více objektů zároveň namísto toho abychom je aplikovali na každý objekt zvlášť. Můžeme to udělat tak, že objekty seskupíme do skupiny a transformace aplikujeme na ni. Také ale stejně jako do scény můžeme přidávat objekty, tak můžeme objekty přidávat do objektů jako potomky. Oba způsoby si ukážeme.</p>
     <h3 id="pridavani-objektu-do-objektu" class="heading-tertiary u-mb2">Přidávání objektů do objektů</h3>
@@ -238,10 +238,10 @@ group.scale.y = 0.4;
 // vyrenderování scény na canvas
 renderer.render(scene, camera);</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace dostaneme úplně stejný výsledek jako předtím.</p>
-    <div data-example-id="11" class="u-mb-4"></div>
+    <div data-example-id="11" class="u-mb-6"></div>
     <h2 id="trida-vector3" class="heading-secondary u-mb-2">Třída Vector3</h2>
     <p class="paragraph u-mb-2">Jak jsem již psal, třídy které dědí od třídy <a href="https://threejs.org/docs/index.html#api/en/core/Object3D" target="_blank" class="link">Object3D</a> (Mesh, PerspectiveCamera, atd.) mají k dispozici vlasnosti jako je position, scale a rotation, pomocí kterých můžeme objekty transformovat. Také jsem psal, že position a scale vlastnosti jsou instance třídy <a href="https://threejs.org/docs/index.html#api/en/math/Vector3" target="_blank" class="link">Vector3</a>, která uchovává hodnoty "x", "y" a "z". Kromě těchto hodnot ale třída Vector3 obsahuje i různé užitečné metody, které by se vám mohli hodit. Všechny je najdete v dokumentaci, ale některé jsem se tu rozhodl jen tak pro ukázku zmínit.</p>
-    <ul class="list u-mb-4">
+    <ul class="list u-mb-6">
         <li><b>length</b> - vypočítá vzdálenost bodu od středu scény ([0, 0, 0])</li>
         <li><b>normalize</b> - převede vektor aby měl délku 1 (ale nechá mu směr)</li>
         <li><b>equals</b> - zjistí jestli se dva vektory rovnají</li>
@@ -249,7 +249,7 @@ renderer.render(scene, camera);</code></pre>
     </ul>
     <h2 id="trida-object3d" class="heading-secondary u-mb-2">Třída Object3D</h2>
     <p class="paragraph u-mb-2">Když už jsem zmínil, že třída <a href="https://threejs.org/docs/index.html#api/en/math/Vector3" target="_blank" class="link">Vector3</a> obsahuje různé užitečné metody, tak bych chtěl také zmínit, že třída <a href="https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D" target="_blank" class="link">Object3D</a> také. Všechny její metody najdete v dokumentaci, ale zde jsem se rozhodl pro ukázku zmínit jen metodu lookAt. Pomocí metody lookAt můžeme zařídit, aby se objekt natočil směrem k předanému bodu (Vector3). Takže můžeme třeba kameře nastavit, aby se podívala na nějaký objekt.</p>
-    <pre class="code-box language-javascript u-mb-4"><code>camera.lookAt(cube.position);</code></pre>
+    <pre class="code-box language-javascript u-mb-6"><code>camera.lookAt(cube.position);</code></pre>
     <h2 id="axes-helper" class="heading-secondary u-mb-2">Axes Helper</h2>
     <p class="paragraph u-mb-2">Pozicování objektů ve scéně může být těžké. Pokud si chceme pomoci tím, že si u objektů zobrazíme jejich osy, tak můžeme. Jde to udělat pomocí třídy <a href="https://threejs.org/docs/index.html?q=helper#api/en/helpers/AxesHelper" target="_blank" class="link">AxesHelper</a>. Můžeme si vytvořit její instanci a pracovat s ní podobně jako třeba s meshy. Můžeme ji přidat do scény nebo ji například nastavit jako potomka některému objektu. To přesně uděláme v našem příkladu s kostkou. Vytvoříme si AxesHelper a nastavíme jej jako potomka kostce. Při jeho vytváření můžeme specifikovat délku os, nastavíme je třeba na velikost 2. A abychom viděli všechny osy, tak ještě posuneme kameru směrem doprava.</p>
     <pre class="code-box u-mb-2"><code>/* ... */

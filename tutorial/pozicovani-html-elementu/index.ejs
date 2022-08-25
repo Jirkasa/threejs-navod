@@ -1,7 +1,7 @@
 <%- include("../../includes/tutorial-page-start.ejs", { title: "Pozicování HTML elementů", activePage: "pozicovani-html-elementu", pageDescription: "V tutoriálu si ukážeme, jak můžeme na canvasu pozicovat HTML elementy pomocí CSS transform vlastnosti podle nějakých určených bodů ve scéně." }) %>
     <h1 class="heading-primary u-mb-6">Pozicování HTML elementů</h1>
     <p class="paragraph u-mb-2">V této části si ukážeme, jak můžeme na canvasu pozicovat HTML elementy pomocí CSS transform vlastnosti podle nějakých určených bodů ve scéně. Pokud nechápete co tím chci říct, tak se podívejte na následující ukázku.</p>
-    <div data-example-id="5" class="u-mb-4"></div>
+    <div data-example-id="5" class="u-mb-6"></div>
     <h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2>
     <p class="paragraph u-mb-2">Abychom si mohli zkusit pozicovat HTML elementy podle nějakého bodu ve scéně, tak musíme nějakou mít. Proto je tu pro vás připravený startovní kód, který scénu vytváří a přidává do ní alespoň kostku. Vytvořte si tedy pomocí startovního kódu z části o Webpacku nový projekt a do JavaScript souboru si zkopírujte kód z následující ukázky.</p>
     <pre class="code-box u-mb-2"><code>import './style.css';
@@ -80,7 +80,7 @@ body {
     overflow: hidden;
 }</code></pre>
     <p class="paragraph u-mb-2">Po spuštění aplikace uvidíte ve scéně kostku.</p>
-    <div data-example-id="1" class="u-mb-4"></div>
+    <div data-example-id="1" class="u-mb-6"></div>
     <h2 id="pozicovani-elementu-na-canvasu" class="heading-secondary u-mb-2">Pozicování elementů na canvasu</h2>
     <p class="paragraph u-mb-2">Jak jsem již psal, tak si zkusíme na canvasu pozicovat HTML elementy podle nějakých bodů ve scéně. Nejdříve si elementy vytvoříme v HTML kódu, jak ukazuje následující ukázka.</p>
     <pre class="code-box u-mb-2"><code>&lt;!DOCTYPE html&gt;
@@ -171,7 +171,7 @@ function tick() {
     <p class="paragraph u-mb-2">Po spuštění aplikace můžete vidět, že elementy se pozicují podle souřadnic rohů kostky, které jsme pro ně definovali.</p>
     <div data-example-id="3" class="u-mb-2"></div>
     <p class="paragraph u-mb-2">Jelikož každý frame nastavujeme elementům pozici pomocí vlastnosti transform, tak tuto vlastnost můžeme v CSS trochu optimalizovat. Slouží k tomu vlastnost <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/will-change" target="_blank" class="link">will-change</a>. Neměli bychom ji používat úplně na všechno, ale v našem případě si myslím že se hodí ji použít, když vlastnost transform měníme každý frame. Sice nevím jak přesně vlastnost will-change funguje, ale vím že může vylepšit výkonnost. Následující ukázka ukazuje, jak ji můžeme pro vlastnost transform v CSS kódu nastavit. Možná bychom ji ani nastavovat nemuseli, záleží na vás. Každopádně ji ale můžete zkusit použít, pokud někdy budete mít problém s výkonem vaší aplikace.</p>
-    <pre class="code-box u-mb-4"><code>/* ... */
+    <pre class="code-box u-mb-6"><code>/* ... */
 
 .point {
     width: 32px;
