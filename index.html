@@ -35,8 +35,14 @@
                         <a href="#o-webu" class="button-primary button-primary--no-bg">O webu</a>
                     </div>
                 </div>
-                <div class="home-intro-section__canvas">
-                    <canvas></canvas>
+                <div id="WebGLCanvasContainer" class="home-intro-section__canvas">
+                    <canvas id="WebGLCanvas"></canvas>
+                    <div id="LoadingInfo" class="loading-info">
+                        <p class="loading-info__text">Načítám 3D model...</p>
+                        <div class="loading-info__progress-bar">
+                            <div id="ProgressBarTrack" class="loading-info__progress-bar-track"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -45,7 +51,8 @@
                 <div class="u-center-text">
                     <hr class="horizontal-rule u-center-block u-mb-3">
                     <h2 class="heading-secondary u-mb-4">O webu</h2>
-                    <p class="paragraph">Tento web jsem se rozhodl vytvořit, protože mě napadlo, že by tutoriál o Three.js s různými interaktivními ukázkami mohl být celkem dobrý. Rozhodl jsem se jej tedy napsat a vytvořit tento web.  Textově tutoriál možná není místy nic moc, ale interaktivní ukázky, které obsahuje, jej dělají výjimečným. Umožňují vám prohlédnout si výsledek i bez toho, aniž by jste si museli podle tutoriálu příklady programovat sami. Ale doporučuji, aby jste to dělali alespoň v prvních částech tutoriálu, aby jste si zkusili s Three.js pracovat.</p>
+                    <p class="paragraph u-mb-6">Tento web jsem se rozhodl vytvořit, protože mě napadlo, že by tutoriál o Three.js s různými interaktivními ukázkami mohl být celkem dobrý. Rozhodl jsem se jej tedy napsat a vytvořit tento web.  Textově tutoriál možná není místy nic moc, ale interaktivní ukázky, které obsahuje, jej dělají vyjímečným. Umožňují vám prohlédnout si výsledek i bez toho, aniž by jste si museli podle tutoriálu příklady programovat sami. Ale doporučuji, aby jste to dělali alespoň v prvních částech tutoriálu, aby jste si zkusili s Three.js pracovat.</p>
+                    <a href="./tutorial/co-je-threejs/" class="button-primary">Otevřít tutoriál</a>
                 </div>
                 <div>
                     <div class="photo-composition">
@@ -74,9 +81,7 @@
                 </div>
                 <div class="chapter-cards">
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/co-je-threejs.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/co-je-threejs.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Co je Three.js</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte co je to Three.js, že pracuje s WebGL, a také se dozvíte, jak se vykresluje 3D grafika.</p>
@@ -84,9 +89,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/prvni-scena.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/prvni-scena.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">První scéna</h3>
                             <p class="paragraph u-mb-8">V této části si vytvoříme jednoduchou scénu, do které umístíme kostku a vykreslíme ji na canvas.</p>
@@ -94,9 +97,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/webpack.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/webpack.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Webpack</h3>
                             <p class="paragraph u-mb-8">V této části si nainstalujeme Three.js přes NPM a nakonfigurujeme Webpack.</p>
@@ -104,9 +105,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/transformace-objektu.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/transformace-objektu.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Transformace objektů</h3>
                             <p class="paragraph u-mb-8">V této části se podíváme, jak můžeme ve scéně pozicovat, rotovat a nastavovat velikost objektů.</p>
@@ -114,9 +113,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/animace.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/animace.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Animace</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte, jakým způsobem můžete ve Three.js provádět animaci.</p>
@@ -124,9 +121,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/kamera.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/kamera.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Kamera</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte, jaké nám Three.js nabízí typy kamer a vysvětlíme si vlastnosti perspektivní a ortografické kamery.</p>
@@ -134,9 +129,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/meneni-velikosti-canvasu.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/meneni-velikosti-canvasu.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Měnění velikosti canvasu</h3>
                             <p class="paragraph u-mb-8">V této části si ukážeme, jak můžeme měnit velikost canvasu.</p>
@@ -144,9 +137,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/typy-ovladani.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/typy-ovladani.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Typy ovládání</h3>
                             <p class="paragraph u-mb-8">V této části si projdeme typy ovládání, které nám Three.js poskytuje.</p>
@@ -154,9 +145,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/dat-gui.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/dat-gui.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">dat.GUI</h3>
                             <p class="paragraph u-mb-8">V této části se naučíme používat knihovnu dat.GUI, která slouží pro snadné měnění proměnných pomocí grafického rozhraní na stránce.</p>
@@ -164,9 +153,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/geometrie.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/geometrie.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Geometrie</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte, co je to geometrie a jaké nám Three.js poskytuje typy geometrií.</p>
@@ -174,9 +161,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/textury.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/textury.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Textury</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte jaké máme typy textur, jak textury ve Three.js načítat, co je to UV unwrapping a další věci týkající se textur</p>
@@ -184,9 +169,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/materialy.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/materialy.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Materiály</h3>
                             <p class="paragraph u-mb-8">V této části se podíváme na různé typy materiálů, které nám Three.js nabízí a rozebereme si je.</p>
@@ -194,9 +177,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/svetla.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/svetla.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Světla</h3>
                             <p class="paragraph u-mb-8">V této části si ukážeme různé typy světel, které nám Three.js nabízí.</p>
@@ -204,9 +185,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/stiny.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/stiny.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Stíny</h3>
                             <p class="paragraph u-mb-8">V této části se naučíme nastavovat stíny. Dozvíte se jak tvorba stínů funguje, jak stíny zapnout a také jak zlepšit jejich kvalitu.</p>
@@ -214,9 +193,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/particles.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/particles.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Particles</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte co to jsou particles a jak je ve Three.js vytvořit.</p>
@@ -224,9 +201,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/raycasting.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/raycasting.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Raycasting</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte co je to raycasting, k čemu slouží a jak jej provádět.</p>
@@ -234,9 +209,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/fyzika.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/fyzika.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Fyzika</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte, jak můžete do své Three.js aplikace přidat fyziku.</p>
@@ -244,9 +217,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/importovani-modelu.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/importovani-modelu.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Importování modelů</h3>
                             <p class="paragraph u-mb-8">V této části si ukážeme, jak můžeme do Three.js naimportovat 3D modely.</p>
@@ -254,9 +225,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/realisticke-renderovani.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/realisticke-renderovani.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Realistické renderování</h3>
                             <p class="paragraph u-mb-8">V této části se podíváme na pár tipů, jak můžete své modely pomocí Three.js renderovat realističtěji.</p>
@@ -264,9 +233,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/shadery.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/shadery.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Shadery</h3>
                             <p class="paragraph u-mb-8">V této části se naučíme základy programování shaderů.</p>
@@ -274,9 +241,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/animovani-particles.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/animovani-particles.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Animování particles</h3>
                             <p class="paragraph u-mb-8">V této části si vyzkoušíme animaci particles pomocí shaderů.</p>
@@ -284,9 +249,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/post-processing.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/post-processing.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Post processing</h3>
                             <p class="paragraph u-mb-8">V této části se podíváme na post-processing a zkusíme si na vyrenderovaný obrázek aplikovat různé efekty.</p>
@@ -294,9 +257,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/3d-text.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/3d-text.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">3D text</h3>
                             <p class="paragraph u-mb-8">V této části si zkusíme ve Three.js scéně vytvořit 3D text.</p>
@@ -304,9 +265,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/nacitani.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/nacitani.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Načítání</h3>
                             <p class="paragraph u-mb-8">V této části si ukážeme, jak můžeme ve Three.js lépe řídit načítání.</p>
@@ -314,9 +273,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/pozicovani-html-elementu.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/pozicovani-html-elementu.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Pozicování HTML elementů</h3>
                             <p class="paragraph u-mb-8">V této části si ukážeme, jak můžeme na canvasu pozicovat HTML elementy pomocí CSS transform vlastnosti podle určených bodů ve scéně.</p>
@@ -324,9 +281,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card__image">
-                            <img src="./static/img/chapter-card-pictures/optimalizace.png" alt="">
-                        </div>
+                        <div data-image-src="./static/img/chapter-card-pictures/optimalizace.png" class="card__image"></div>
                         <div class="card__content">
                             <h3 class="heading-tertiary u-mb-4">Optimalizace</h3>
                             <p class="paragraph u-mb-8">V této části se dozvíte, jak můžete měřit výkonnost své aplikace a pár tipů, jak ji můžete optimalizovat.</p>
@@ -336,7 +291,7 @@
                 </div>
             </div>
         </section>
-        <section class="section">
+        <section id="3d-modely" class="section">
             <div class="section__content divided-section divided-section--inverted">
                 <div>
                     <hr class="horizontal-rule u-mb-3">
@@ -351,6 +306,5 @@
         </section>
         <footer class="footer">Tento web vytvořil <a href="https://jirkasa.github.io/" target="_blank" class="footer__link">Jiří Satora</a></footer>
     </div>
-    <!-- pro to spodní použít flex-direction, ať to má dobrou strukturu --inverted -->
 </body>
 </html>

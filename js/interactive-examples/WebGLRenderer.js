@@ -10,5 +10,3 @@ const webGLRenderer = new THREE.WebGLRenderer({
 });
 webGLRenderer.setPixelRatio(window.devicePixelRatio);
 export default webGLRenderer;
-
-// todo - později by se renderu mohli předávat nějaké vlastnosti, takže to potom asi budu muset ještě nějak předělat, uvidím

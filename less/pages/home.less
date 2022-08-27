@@ -8,6 +8,8 @@
 
     position: relative;
 
+    overflow: hidden;
+
     &::before, &::after {
         content: "";
         display: block;
@@ -47,13 +49,24 @@
 
     &__content {
         grid-column: span 7;
+        z-index: 20;
     }
 
     &__canvas {
         grid-column: span 5;
+        height: 100%;
+        max-height: 44.8rem;
+
+        position: relative;
 
         canvas {
-
+            position: absolute;
+            top: 50%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            height: 125%;
+            width: 125%;
+            // background-color: @colors[black];
         }
     }
 

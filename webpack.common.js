@@ -38,7 +38,9 @@ module.exports = {
         main: './main.js',
         modelViewer: './js/model-viewer/main.js',
         stickyHeader: './js/sticky-header/main.js',
-        ...entriesForTutorialPages
+        ...entriesForTutorialPages,
+        homePageModel: './js/home-page-model/main.js',
+        chapterCardsLazyLoading: './js/chapter-cards-lazy-loading/main.js'
     },
     output: {
         path: path.resolve(__dirname, "dist"),
@@ -71,7 +73,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "index.html"),
-            chunks: ["main", "stickyHeader"],
+            chunks: ["main", "stickyHeader", "homePageModel", "chapterCardsLazyLoading"],
             inject: true
         }),
         new HtmlWebpackPlugin({
