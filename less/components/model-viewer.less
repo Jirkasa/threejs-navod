@@ -14,6 +14,11 @@
         position: absolute;
         top: 0;
         left: 0;
+
+        @media (max-width: #pxToEm(1000)[]) {
+            border: none;
+            border-top: .2rem solid @colors[grey-60];
+        }
     }
 
     &__model-name {
@@ -28,6 +33,10 @@
         text-transform: uppercase;
 
         color: @colors[secondary];
+
+        #respond-tab-port({
+            left: 5.6rem;
+        });
     }
 
     &__download-button {

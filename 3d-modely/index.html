@@ -15,17 +15,27 @@
         <header class="header">
             <div class="header__content">
                 <a href="../" class="header__title">Three.js Návod</a>
-                <nav class="header__navigation">
+                <nav id="HeaderNavigation" class="header__navigation">
                     <ul>
                         <li><a href="../tutorial/co-je-threejs/" class="header__navigation-item">Tutoriál</a></li>
                         <li><a href="../3d-modely/" class="header__navigation-item header__navigation-item--active">3D Modely</a></li>
                     </ul>
                 </nav>
+                <button id="HeaderNavigationButton" class="nav-toggle-button">
+                    <span class="nav-toggle-button__icon"></span>
+                    Menu
+                </button>
             </div>
         </header>
         <div class="models-page">
             <div class="models-page__content">
                 <div id="ModelsSelectMenu" class="models-page__models"></div>
+                <button id="ModelsSelectMenuButton" class="models-page__models-button">
+                    <svg>
+                        <use xlink:href="../static/img/icon-sprite.svg#icon-arrow_forward_ios"></use>
+                    </svg>
+                    modely
+                </button>
                 <div class="models-page__viewport">
                     <div class="model-viewer" id="ModelViewerViewport">
                         <canvas id="WebGLCanvas" class="model-viewer__canvas"></canvas>

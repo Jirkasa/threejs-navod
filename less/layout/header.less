@@ -1,6 +1,7 @@
 .header {
     height: @header-height;
     width: 100%;
+    max-width: @max-page-width;
 
     padding: 0 3.2rem;
     
@@ -9,6 +10,10 @@
     z-index: 30;
 
     position: relative;
+
+    #respond-phone({
+        padding: 0 2.4rem;
+    });
 
     &--fixed {
         position: fixed;
@@ -41,6 +46,9 @@
             @media (max-width: #pxToEm(450)[]) {
                 font-size: 2.8rem;
             }
+            @media (max-width: #pxToEm(370)[]) {
+                font-size: 2.2rem;
+            }
         }
     }
 
@@ -60,7 +68,7 @@
             padding-left: 3.2rem;
             clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%);
 
-            transition: all .4s cubic-bezier(0.33, 1, 0.68, 1);
+            transition: transform .4s cubic-bezier(0.33, 1, 0.68, 1);
 
             &--opened {
                 transform: translateY(.4rem) rotate(0deg);

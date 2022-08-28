@@ -2,6 +2,8 @@
     padding: 0 3.2rem;
 
     height: ~"calc(100vh - @{header-height})";
+    max-height: 100rem;
+
     background-color: #EFE8E2;
     background-image: url("../../css-images/HomeIntroBackground.svg");
     background-size: cover;
@@ -9,6 +11,17 @@
     position: relative;
 
     overflow: hidden;
+
+    #respond-phone({
+        padding: 0 2.4rem;
+
+        min-height: ~"calc(100vh - @{header-height})";
+        max-height: none;
+        height: auto;
+
+        display: flex;
+        align-items: center;
+    });
 
     &::before, &::after {
         content: "";

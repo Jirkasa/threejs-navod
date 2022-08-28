@@ -21,18 +21,22 @@
             <header id="Header" class="header">
                 <div class="header__content">
                     <a href="<%= typeof isIndexPage == 'undefined' ? "../" : "" %>../" class="header__title">Three.js Návod</a>
-                    <nav class="header__navigation">
+                    <nav id="HeaderNavigation" class="header__navigation">
                         <ul>
                             <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/co-je-threejs/" class="header__navigation-item <%= typeof isIndexPage == 'undefined' ? "header__navigation-item--active" : "" %>">Tutoriál</a></li>
                             <li><a href="<%= typeof isIndexPage == 'undefined' ? "../" : "" %>../3d-modely/" class="header__navigation-item">3D Modely</a></li>
                         </ul>
                     </nav>
+                    <button id="HeaderNavigationButton" class="nav-toggle-button">
+                        <span class="nav-toggle-button__icon"></span>
+                        Menu
+                    </button>
                 </div>
             </header>
         </div>
         <div class="article">
             <div class="article__container">
-                <nav class="article__sidebar">
+                <nav id="Sidebar" class="article__sidebar">
                     <ul class="navigation">
                         <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/co-je-threejs/" class="navigation__item <%= activePage === "co-je-threejs" ? "navigation__item--active" : "" %>">Co je Three.js</a></li>
                         <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/prvni-scena/" class="navigation__item <%= activePage === "prvni-scena" ? "navigation__item--active" : "" %>">První scéna</a></li>
@@ -61,5 +65,11 @@
                         <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/pozicovani-html-elementu/" class="navigation__item <%= activePage === "pozicovani-html-elementu" ? "navigation__item--active" : "" %>">Pozicování HTML elementů</a></li>
                         <li><a href="..<%= typeof isIndexPage != 'undefined' ? "/tutorial" : "" %>/optimalizace/" class="navigation__item <%= activePage === "optimalizace" ? "navigation__item--active" : "" %>">Optimalizace</a></li>
                     </ul>
+                    <button id="SidebarButton" class="article__sidebar-button">
+                        <svg>
+                            <use xlink:href="../../static/img/icon-sprite.svg#icon-arrow_forward_ios"></use>
+                        </svg>
+                        navigace
+                    </button>
                 </nav>
                 <main class="article__content">

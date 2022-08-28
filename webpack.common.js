@@ -15,7 +15,7 @@ const entriesForTutorialPages = {};
 
 // CREATE PLUGINS FOR TUTORIAL PAGES
 fs.readdirSync("./tutorial").forEach(pageName => {
-    const chunks = ["main", "stickyHeader"];
+    const chunks = ["main", "stickyHeader", "navigation"];
 
     if (interactivePages[pageName]) {
         chunks.push(`interactiveExamples-${pageName}`);
@@ -40,7 +40,8 @@ module.exports = {
         stickyHeader: './js/sticky-header/main.js',
         ...entriesForTutorialPages,
         homePageModel: './js/home-page-model/main.js',
-        chapterCardsLazyLoading: './js/chapter-cards-lazy-loading/main.js'
+        chapterCardsLazyLoading: './js/chapter-cards-lazy-loading/main.js',
+        navigation: './js/navigation/main.js'
     },
     output: {
         path: path.resolve(__dirname, "dist"),
@@ -79,13 +80,13 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "3d-modely", "index.html"),
             filename: "3d-modely/index.html",
-            chunks: ["main", "modelViewer"],
+            chunks: ["main", "modelViewer", "stickyHeader"],
             inject: true
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "obsah", "index.ejs"),
             filename: "obsah/index.html",
-            chunks: ["main", "stickyHeader"],
+            chunks: ["main", "stickyHeader", "navigation"],
             inject: true
         }),
         ...htmlPluginsForTutorialPages,

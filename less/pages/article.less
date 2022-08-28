@@ -1,6 +1,10 @@
 .article {
     padding: 0 3.2rem;
 
+    #respond-phone({
+        padding: 0 2.4rem;
+    });
+
     &__container {
         max-width: @grid-width;
         margin: 0 auto;
@@ -12,17 +16,105 @@
         background-image: url("../../css-images/SideIllustration.svg");
         background-position: top 0 right 0;
         background-repeat: repeat-y;
+
+        @media (max-width: #pxToEm(1150)[]) {
+            background-image: none;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+        }
+        #respond-tab-port({
+            background-image: url("../../css-images/SideIllustration.svg");
+            grid-template-columns: repeat(11, minmax(0, 1fr)) @grid-column-width;
+        });
+        @media (max-width: #pxToEm(700)[]) {
+            background-image: none;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 0;
+        }
     }
 
     &__sidebar {
         grid-column: span 3;
 
         background-color: @colors[grey-20];
+
+        @media (max-width: #pxToEm(1150)[]) {
+            grid-column: span 4;
+        }
+        #respond-tab-port({
+            position: fixed;
+            top: @header-height;
+            left: 0;
+            z-index: 25;
+
+            max-width: ~"calc(100vw - 4rem - 1.6rem)";
+
+            height: ~"calc(100vh - @{header-height})";
+
+            transform: translateX(-100%);
+
+            transition: all .2s;
+
+            &--opened {
+                transform: translateX(0);
+            }
+        });
+    }
+
+    &__sidebar-button {
+        display: none;
+
+        font-size: 0;
+
+        position: absolute;
+        top: 0;
+        left: 100%;
+        z-index: 25;
+
+        width: 4rem;
+        height: 4rem;
+
+        background-color: @colors[primary-light];
+        border: .2rem solid @colors[grey-80];
+        border-left: none;
+        border-top: none;
+
+        cursor: pointer;
+
+        &:hover {
+            background-color: @colors[primary];
+        }
+
+        svg {
+            #center-pos-abs();
+
+            width: 2.8rem;
+            height: 2.8rem;
+            fill: @colors[grey-80];
+
+            transition: transform .2s;
+        }
+
+        &--checked {
+            svg {
+                transform: translate(-50%, -50%) scaleX(-1);
+            }
+        }
+
+        #respond-tab-port({
+            display: block;
+        });
     }
 
     &__content {
         grid-column: span 8;
 
         padding: 3.2rem 0;
+
+        #respond-tab-port({
+            grid-column: span 11;
+        });
+        @media (max-width: #pxToEm(700)[]) {
+            grid-column: span 12;
+        }
     }
 }

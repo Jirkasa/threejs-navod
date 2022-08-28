@@ -19,6 +19,12 @@ class ModelsSelectMenu {
 
         // add click event listener to container of cards
         this._container.addEventListener("click", this._onMenuClick.bind(this));
+
+        const toggleButton = document.getElementById("ModelsSelectMenuButton");
+        toggleButton.addEventListener("click", () => {
+            this._container.classList.toggle("models-page__models--opened");
+            toggleButton.classList.toggle("models-page__models-button--checked");
+        });
     }
 
     // creates model cards based on passed models data
