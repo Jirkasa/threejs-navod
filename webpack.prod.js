@@ -8,7 +8,20 @@ module.exports = merge(commonConfig, {
         rules: [
             {
                 test: /\.less$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    ["postcss-preset-env", {}]
+                                ]
+                            }
+                        }
+                    },
+                    "less-loader"]
             }
         ]
     },
