@@ -13,6 +13,8 @@
         color: @colors[grey-80];
         background-color: @colors[primary-light];
         border: .2rem solid @colors[grey-80];
+
+        outline-color: @colors[grey-80];
     }
 
     &--no-bg {
@@ -21,7 +23,7 @@
         }
     }
 
-    &:hover {
+    &:hover, &:focus-visible {
         background-color: @colors[primary];
     }
 }

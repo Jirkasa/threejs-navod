@@ -17,6 +17,7 @@ const entriesForTutorialPages = {};
 fs.readdirSync("./tutorial").forEach(pageName => {
     const chunks = ["main", "stickyHeader", "navigation"];
 
+    // add chunk for interactive examples if page has them
     if (interactivePages[pageName]) {
         chunks.push(`interactiveExamples-${pageName}`);
         entriesForTutorialPages[`interactiveExamples-${pageName}`] = `./js/interactive-examples/pages/${pageName}/main.js`;
@@ -67,7 +68,7 @@ module.exports = {
         ]
     },
     optimization: {
-        splitChunks: { // todo - toto ještě nějak prozkoumat, tvoří se nějak moc JS souborů, to se mi nelíbí
+        splitChunks: {
             chunks: "all"
         }
     },

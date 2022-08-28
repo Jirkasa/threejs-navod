@@ -9,4 +9,11 @@
     color: @colors[grey-80];
     border: .2rem solid @colors[grey-80];
     width: auto;
+
+    outline-offset: .2rem;
+    outline-color: @colors[grey-80];
+
+    &:focus-visible {
+        background-color: darken(@colors[grey-20], 5%);
+    }
 }

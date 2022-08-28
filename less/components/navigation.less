@@ -46,9 +46,11 @@
 
             border: .2rem solid @colors[grey-80];
             color: @colors[grey-80];
+
+            outline-color: @colors[grey-80];
         }
 
-        &:hover, &--active:link, &--active:visited {
+        &:hover, &--active:link, &--active:visited, &:focus-visible {
             background-color: @colors[primary];
         }
     }

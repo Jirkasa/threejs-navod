@@ -13,9 +13,11 @@
         background-color: @colors[primary-dark];
 
         padding: .8rem 1.2rem;
+
+        outline-color: @colors[grey-80];
     }
 
-    &:hover {
+    &:hover, &:focus-visible {
         background-color: darken(@colors[primary-dark], 5%);
     }
 }
