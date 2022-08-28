@@ -8,6 +8,8 @@
 
     z-index: 30;
 
+    position: relative;
+
     &--fixed {
         position: fixed;
         top: 0;
@@ -35,10 +37,38 @@
             text-decoration: none;
 
             color: @colors[primary];
+
+            @media (max-width: #pxToEm(450)[]) {
+                font-size: 2.8rem;
+            }
         }
     }
 
     &__navigation {
+        @media (max-width: #pxToEm(700)[]) {
+            position: absolute;
+            top: 100%;
+            right: 0;
+
+            transform-origin: top right;
+            transform: translateY(.4rem) rotate(-90deg);
+
+            background-color: @colors[grey-80];
+
+            padding: .8rem 1.6rem;
+
+            padding-left: 3.2rem;
+            clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%);
+
+            transition: all .4s cubic-bezier(0.33, 1, 0.68, 1);
+
+            &--opened {
+                transform: translateY(.4rem) rotate(0deg);
+            }
+        }
+
+        
+
         ul {
             list-style: none;
 

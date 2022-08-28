@@ -16,12 +16,16 @@
             <header id="Header" class="header">
                 <div class="header__content">
                     <a href="./" class="header__title">Three.js Návod</a>
-                    <nav class="header__navigation">
+                    <nav id="HeaderNavigation" class="header__navigation">
                         <ul>
                             <li><a href="./tutorial/co-je-threejs/" class="header__navigation-item">Tutoriál</a></li>
                             <li><a href="./3d-modely/" class="header__navigation-item">3D Modely</a></li>
                         </ul>
                     </nav>
+                    <button id="HeaderNavigationButton" class="nav-toggle-button">
+                        <span class="nav-toggle-button__icon"></span>
+                        Menu
+                    </button>
                 </div>
             </header>
         </div>
@@ -54,20 +58,18 @@
                     <p class="paragraph u-mb-6">Tento web jsem se rozhodl vytvořit, protože mě napadlo, že by tutoriál o Three.js s různými interaktivními ukázkami mohl být celkem dobrý. Rozhodl jsem se jej tedy napsat a vytvořit tento web.  Textově tutoriál možná není místy nic moc, ale interaktivní ukázky, které obsahuje, jej dělají vyjímečným. Umožňují vám prohlédnout si výsledek i bez toho, aniž by jste si museli podle tutoriálu příklady programovat sami. Ale doporučuji, aby jste to dělali alespoň v prvních částech tutoriálu, aby jste si zkusili s Three.js pracovat.</p>
                     <a href="./tutorial/co-je-threejs/" class="button-primary">Otevřít tutoriál</a>
                 </div>
-                <div>
-                    <div class="photo-composition">
-                        <div class="photo-composition__photo">
-                            <img src="./static/img/home-about-pictures/Picture1.png" alt="">
-                        </div>
-                        <div class="photo-composition__photo">
-                            <img src="./static/img/home-about-pictures/Picture2.png" alt="">
-                        </div>
-                        <div class="photo-composition__photo">
-                            <img src="./static/img/home-about-pictures/Picture3.png" alt="">
-                        </div>
-                        <div class="photo-composition__photo">
-                            <img src="./static/img/home-about-pictures/Picture4.png" alt="">
-                        </div>
+                <div class="photo-composition">
+                    <div class="photo-composition__photo">
+                        <img src="./static/img/home-about-pictures/Picture1.png" alt="">
+                    </div>
+                    <div class="photo-composition__photo">
+                        <img src="./static/img/home-about-pictures/Picture2.png" alt="">
+                    </div>
+                    <div class="photo-composition__photo">
+                        <img src="./static/img/home-about-pictures/Picture3.png" alt="">
+                    </div>
+                    <div class="photo-composition__photo">
+                        <img src="./static/img/home-about-pictures/Picture4.png" alt="">
                     </div>
                 </div>
             </div>
@@ -299,7 +301,7 @@
                     <p class="paragraph u-mb-8">Protože jsem se rozhodl vytvořit web o Three.js, tak mě napadlo, že bych na něj také přidal ke stažení své 3D modely. V minulosti jsem jich totiž spoustu vytvořil, ale nakonec jsem je nikde nepoužil. Chtěl jsem vytvořit svoji vlastní hru v herním enginu Unity, ale s tím jsem nakonec skončil. V té době jsem byl ještě spíš naivní začátečník s nereálnými cíly, moc jsem programovat neuměl a spoustu času jsem trávil u video tutoriálů. Nějakou dobu mi trvalo, než jsem zjistil jak se programování učit a našel rovnováhu mezi teorií a praxí. Když si na to vzpomenu teď, tak si říkám, co jsem si to vlastně myslel. Alespoň mám ale z té doby pár 3D modelů, které si tu teď můžete zdarma stáhnout a použít ve vlastních projektech.</p>
                     <a href="./3d-modely/" class="button-primary">Procházet 3D modely</a>
                 </div>
-                <div>
+                <div class="home-models-section-image-side">
                     <img src="./static/img/ModelIllustration.png" alt="" class="fluid-image">
                 </div>
             </div>

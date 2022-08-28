@@ -12,7 +12,7 @@ const progressBarTrack = document.getElementById("ProgressBarTrack");
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(45, (canvasContainer.clientWidth*1.25) / (canvasContainer.clientHeight*1.25), 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(45, (canvasContainer.clientHeight*1.25) / (canvasContainer.clientHeight*1.25), 0.1, 1000);
 camera.position.set(23, 43, 83);
 scene.add(camera);
 
@@ -30,7 +30,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setClearAlpha(0);
 renderer.physicallyCorrectLights = true;
 
-renderer.setSize(canvasContainer.clientWidth*1.25, canvasContainer.clientHeight*1.25);
+renderer.setSize(canvasContainer.clientHeight*1.25, canvasContainer.clientHeight*1.25);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 /* ---------------------- */
@@ -38,10 +38,10 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 window.addEventListener("resize", () => {
     // update camera
-    camera.aspect = (canvasContainer.clientWidth*1.25) / (canvasContainer.clientHeight*1.25);
+    camera.aspect = (canvasContainer.clientHeight*1.25) / (canvasContainer.clientHeight*1.25);
     camera.updateProjectionMatrix();
     // update renderer
-    renderer.setSize(canvasContainer.clientWidth*1.25, canvasContainer.clientHeight*1.25);
+    renderer.setSize(canvasContainer.clientHeight*1.25, canvasContainer.clientHeight*1.25);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
@@ -115,7 +115,7 @@ fbxLoader.load("./static/models/little-creature-statue/LittleCreatureStatue.fbx"
 });
 
 /* ---------------------- */
-// ADD EVENTS FOR LOADING MANAGER
+// ADD EVENT LISTENERS FOR LOADING MANAGER
 
 loadingManager.onLoad = () => {
     loadingInfoElement.style.display = "none";
