@@ -21,7 +21,8 @@ module.exports = merge(commonConfig, {
                             }
                         }
                     },
-                    "less-loader"]
+                    "less-loader"
+                ]
             }
         ]
     },
