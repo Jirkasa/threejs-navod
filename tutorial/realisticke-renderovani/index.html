@@ -1,0 +1,393 @@
+<!doctype html><html lang="cs"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes,maximum-scale=2.2,minimum-scale=1"><meta name="author" content="Jiří Satora"><meta name="description" content="V tutoriálu se podíváme na pár tipů, jak můžete své modely pomocí Three.js renderovat realističtěji."><link rel="icon" type="image/svg+xml" href="../../static/img/favicon.svg"><script src="../../static/js/highlight.min.js"></script><script>hljs.highlightAll()</script><title>Realistické renderování | Three.js Návod</title><script defer="defer" src="../../main.31d6cfe0d16ae931b73c.js"></script><script defer="defer" src="../../stickyHeader.80ff3d74749cfc9cff89.js"></script><script defer="defer" src="../../9365.a874532ed51d8bd1fad0.js"></script><script defer="defer" src="../../4376.0754c612d1401d13abca.js"></script><script defer="defer" src="../../1217.019ab3f975210a781a29.js"></script><script defer="defer" src="../../9997.6147a28a845b0f424f9d.js"></script><script defer="defer" src="../../interactiveExamples-realisticke-renderovani.49f49275f9016a64cfcc.js"></script><script defer="defer" src="../../navigation.d17e5dfc208bd2450b18.js"></script><link href="../../main.css" rel="stylesheet"></head><body><div class="page"><div id="HeaderContainer" class="header-container"><header id="Header" class="header"><div class="header__content"><a href="../../" class="header__title">Three.js Návod</a><nav id="HeaderNavigation" class="header__navigation"><ul><li><a href="../co-je-threejs/" class="header__navigation-item header__navigation-item--active">Tutoriál</a></li><li><a href="../../3d-modely/" class="header__navigation-item">3D Modely</a></li></ul></nav><button id="HeaderNavigationButton" class="nav-toggle-button"><span class="nav-toggle-button__icon"></span> Menu</button></div></header></div><div class="article"><div class="article__container"><nav id="Sidebar" class="article__sidebar"><ul class="navigation"><li><a href="../co-je-threejs/" class="navigation__item">Co je Three.js</a></li><li><a href="../prvni-scena/" class="navigation__item">První scéna</a></li><li><a href="../webpack/" class="navigation__item">Webpack</a></li><li><a href="../transformace-objektu/" class="navigation__item">Transformace objektů</a></li><li><a href="../animace/" class="navigation__item">Animace</a></li><li><a href="../kamera/" class="navigation__item">Kamera</a></li><li><a href="../meneni-velikosti-canvasu/" class="navigation__item">Měnění velikosti canvasu</a></li><li><a href="../typy-ovladani/" class="navigation__item">Typy ovládání</a></li><li><a href="../dat-gui/" class="navigation__item">Dat.GUI</a></li><li><a href="../geometrie/" class="navigation__item">Geometrie</a></li><li><a href="../textury/" class="navigation__item">Textury</a></li><li><a href="../materialy/" class="navigation__item">Materiály</a></li><li><a href="../svetla/" class="navigation__item">Světla</a></li><li><a href="../stiny/" class="navigation__item">Stíny</a></li><li><a href="../particles/" class="navigation__item">Particles</a></li><li><a href="../raycasting/" class="navigation__item">Raycasting</a></li><li><a href="../fyzika/" class="navigation__item">Fyzika</a></li><li><a href="../importovani-modelu/" class="navigation__item">Importování modelů</a></li><li><a href="../realisticke-renderovani/" class="navigation__item navigation__item--active">Realistické renderování</a></li><li><a href="../shadery/" class="navigation__item">Shadery</a></li><li><a href="../animovani-particles/" class="navigation__item">Animování particles</a></li><li><a href="../post-processing/" class="navigation__item">Post Processing</a></li><li><a href="../3d-text/" class="navigation__item">3D Text</a></li><li><a href="../nacitani/" class="navigation__item">Načítání</a></li><li><a href="../pozicovani-html-elementu/" class="navigation__item">Pozicování HTML elementů</a></li><li><a href="../optimalizace/" class="navigation__item">Optimalizace</a></li></ul><button id="SidebarButton" class="article__sidebar-button"><svg><use xlink:href="../../static/img/icon-sprite.svg#icon-arrow_forward_ios"></use></svg> navigace</button></nav><main class="article__content"><h1 class="heading-primary u-mb-6">Realistické renderování</h1><p class="paragraph u-mb-6">V této části se podíváme na pár tipů, jak můžeme své modely pomocí Three.js renderovat realističtěji.</p><h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2><p class="paragraph u-mb-2">Je tu pro vás připraven startovní kód, který vytváří scénu, přidává do ní DirectionalLight světlo a načítá 3D model. Pomocí startovního kódu z části o Webpacku si vytvořte nový projekt a kód si zkopírujte do JavaScript souboru.</p><pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+// přidání DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+// načtení 3D modelu
+gltfLoader.load(
+    "./static/Desk.glb",
+    (gltf) => {
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // aktualizace OrbitControls ovládání
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre><p class="paragraph u-mb-2">Jelikož v kódu načítáme 3D model, tak si jej budete muset umístit do složky static. Můžete jej stáhnout <a href="../../static/other/DeskModel/glTFBinary/Desk.glb" download class="link">zde</a>. Také si zkopírujte následující CSS styly a zkopírujte si je do CSS souboru. Tím se zbavíme defaultních marginů nebo paddingů, protože canvas roztahujeme přes celou velikost okna prohlížeče.</p><pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět 3D model lavice, u kterého se budeme snažit, abychom ho vyrenderovali co nejrealističtěji.</p><div data-example-id="1" class="u-mb-6"></div><h2 id="realisticka-svetla" class="heading-secondary u-mb-2">Realistická světla</h2><p class="paragraph u-mb-2">Defaultně světla nepoužívají fyzikálně správný režim osvětlení. Pokud chceme fyzikálně správný režim osvětlení zapnout, tak to můžeme udělat pomocí vlastnosti physicallyCorrectLights na rendereru.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// zapnutí fyzikálně správného režimu osvětlení
+renderer.physicallyCorrectLights = true;</code></pre><p class="paragraph u-mb-2">Další věc, kterou můžeme pro realistické osvětlení udělat, je použít environment mapu. To jsme již dělali v části o materiálech. Následující ukázka ukazuje, jak můžeme environment mapu načíst a nastavit pro všechny PBR materiály ve scéně. Environment mapu, kterou použijeme, si můžete stáhnout <a href="../../static/other/environment-map.zip" download class="link">zde</a> a umístit do složky static.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření Cube Texture Loaderu
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+// načtení environment mapy
+const environmentMapTexture = cubeTextureLoader.load([
+    './static/px.png',
+    './static/nx.png',
+    './static/py.png',
+    './static/ny.png',
+    './static/pz.png',
+    './static/nz.png',
+]);
+
+// nastavení defaultní environment mapy
+// pro všechny PBR materiály ve scéně
+scene.environment = environmentMapTexture;</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že model je již osvětlen lépe. Ještě si ale budeme muset se světlem trochu pohrát.</p><div data-example-id="2" class="u-mb-2"></div><p class="paragraph u-mb-2">Abychom si se světlem mohli trochu pohrát a vybrat co nejlepší hodnoty, tak k tomu použijeme dat.GUI. Do projektu si jej můžeme nainstalovat následujícím příkazem:</p><pre class="code-box code-box--command u-mb-2"><code>npm install dat.gui --save</code></pre><p class="paragraph u-mb-2">Po instalaci si můžeme dat.GUI naimportovat do našeho JavaScript souboru a použít.</p><pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import * as dat from 'dat.gui';
+
+/* ... */</code></pre><p class="paragraph u-mb-2">Abychom mohli měnit vlastnosti načteného modelu, tak si jej po načtení uložíme do proměnné.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+let model;
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+// načtení 3D modelu
+gltfLoader.load(
+    "./static/Desk.glb",
+    (gltf) => {
+        // uložení načteného modelu
+        model = gltf.scene;
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre><p class="paragraph u-mb-2">Teď můžeme měnit intenzitu environment mapy pomocí dat.GUI. To u materiálu můžeme dělat pomocí vlastnosti envMapIntensity. Vytvoříme si dat.GUI panel a přidáme si pro to do něj input. Vlastnost envMapIntensity chceme měnit u všech meshů, ze kterých se načtený model skládá. Proto používáme pomocný objekt a po změnění inputu v dat.GUI panelu procházíme všechny potomky modelu pomocí metody traverse a pokud se jedná o mesh, měníme vlastnost envMapIntensity jeho materiálu.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+const gui = new dat.GUI();
+
+const debugObject = {
+    envMapIntensity: 1
+};
+
+gui.add(debugObject, "envMapIntensity")
+.min(0).max(10).step(0.01)
+.onChange(val => {
+    // procházení všech potomků modelu
+    model.traverse(child => {
+        // pokud se jedná o mesh, tak změníme
+        // intenzitu environment mapy
+        if (child.isMesh) {
+            child.material.envMapIntensity = val;
+        }
+    })
+});</code></pre><p class="paragraph u-mb-2">Dále bychom mohli chtít pomocí dat.GUI kontrolovat intenzitu DirectionalLight světla. Proto si na to také do panelu přidáme input.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+gui.add(directionalLight, "intensity")
+.min(0).max(5).step(0.01)
+.name("directional light intensity");</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace by jste teď měli být schopni měnit intenzitu environment mapy a intenzitu DirectionalLight světla.</p><div data-example-id="3" class="u-mb-2"></div><p class="paragraph u-mb-2">Pro intenzitu environment mapy se mi tak nějak nejvíce líbila hodnota 1.2 a pro intenzitu DirectionalLight světla hodnota 2. Můžeme tedy tyto hodnoty nastavit v kódu.</p><pre class="code-box u-mb-6"><code>/* ... */
+
+// přidání DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+directionalLight.position.set(0.5, 1.5, 0.3);
+scene.add(directionalLight);
+
+let model;
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+// načtení 3D modelu
+gltfLoader.load(
+    "./static/Desk.glb",
+    (gltf) => {
+        // uložení načteného modelu
+        model = gltf.scene;
+        // procházení všech potomků modelu
+        model.traverse(child => {
+            // pokud se jedná o mesh, tak změníme
+            // intenzitu environment mapy
+            if (child.isMesh) {
+                child.material.envMapIntensity = 1.2;
+            }
+        });
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre><h2 id="output-encoding" class="heading-secondary u-mb-2">Output Encoding</h2><p class="paragraph u-mb-2">Renderer má vlastnost outputEncoding, kterou vám nebudu schopný popsat, protože jí moc nerozumím. Ale vím, že když ji nastavíme na THREE.sRGBEncoding, tak to bude většinou vypadat dobře. Co je to sRGB si můžete přečíst <a href="https://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/#gamma-vs-srgb" target="_blank" class="link">zde</a>. Vím že je to v podstatě takový standard, ale jak to funguje skoro vůbec nevím.</p><p class="paragraph u-mb-2">Do našeho dat.GUI panelu si můžeme přidat input pro přepínání mezi lineárním encodingem (ten je defaultní) a sRGB encodingem. Jelikož select input vrací vždy řetězec, tak je potřeba jej po změně inputu převést na číslo, jak ukazuje ukázka.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+gui.add(renderer, "outputEncoding", {
+    sRGBEncoding: THREE.sRGBEncoding,
+    LinearEncoding: THREE.LinearEncoding
+})
+.onChange(() => {
+    // převedení na číselnou hodnotu
+    renderer.outputEncoding = Number(renderer.outputEncoding);
+});</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete outputEncoding zkusit pomocí inputu v dat.GUI panelu měnit.</p><div data-example-id="4" class="u-mb-2"></div><p class="paragraph u-mb-2">Po změnění output encodingu na sRGB by jste měli vidět, že se vykreslování o něco zlepšilo. Teda alespoň podle mě. Nastavíme jej tedy také v kódu.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// nastavení output encodingu na sRGB
+renderer.outputEncoding = THREE.sRGBEncoding;
+
+gui.add(renderer, "outputEncoding", {
+    sRGBEncoding: THREE.sRGBEncoding,
+    LinearEncoding: THREE.LinearEncoding
+})
+.onChange(() => {
+    // převedení na číselnou hodnotu
+    renderer.outputEncoding = Number(renderer.outputEncoding);
+});</code></pre><p class="paragraph u-mb-6">Encoding můžeme nastavovat i u textur pomocí vlastnosti encoding. To za nás již zajišťuje GLTFLoader a stačí jen přepnout output encoding na rendereru. Pokud by jste to ale u textur někdy potřebovali změnit sami, tak můžete. V podstatě to jde aplikovat na všechno, kde se používají barvy. Ne u všech textur je ale dobré encoding přepnout na sRGB. Například u normal mapy chceme mít přesné hodnoty, proto u ní ponecháme defaultní lineární encoding.</p><h2 id="tone-mapping" class="heading-secondary u-mb-2">Tone Mapping</h2><p class="paragraph u-mb-2">Tone Mapping je technika, která se používá ve zpracování obrazu a počítačové grafice k mapování jedné sady barev na druhou, aby se přiblížil vzhled obrazů s vysokým dynamickým rozsahem na médiu, které má omezenější dynamický rozsah. Tuto větu jsem zkopíroval z Wikipedie a sám nevím jak Tone Mapping vlastně funguje. Nemůžu to tu tedy ani vysvětlovat. Ukážeme si ale, jak jej můžeme změnit pomocí vlastnosti toneMapping na rendereru. Máme na výběr z následujících hodnot:</p><ul class="list u-mb-2"><li>THREE.NoToneMapping (defaultní)</li><li>THREE.LinearToneMapping</li><li>THREE.ReinhardToneMapping</li><li>THREE.CineonToneMapping</li><li>THREE.ACESFilmicToneMapping</li></ul><p class="paragraph u-mb-2">Pro měnění Tone Mappingu si do dat.GUI panelu přidáme input. Po změnění Tone Mappingu musíme aktualizovat všechny materiály ve scéně nastavením vlastnosti needsUpdate na true. Proto použijeme metodu onChange, které předáme funkci, která se má zavolat po změnění inputu a u všech materiálu to nastavíme. Také musíme převádět řetězec na číselnou hodnotu, jelikož se jedná o select input. Následující ukázka kódu to ukazuje mnohem lépe než text.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+gui.add(renderer, "toneMapping", {
+    "NoToneMapping": THREE.NoToneMapping,
+    "LinearToneMapping": THREE.LinearToneMapping,
+    "ReinhardToneMapping": THREE.ReinhardToneMapping,
+    "CineonToneMapping": THREE.CineonToneMapping,
+    "ACESFilmicToneMapping": THREE.ACESFilmicToneMapping
+})
+.onChange(() => {
+    // převedení na číselnou hodnotu
+    renderer.toneMapping = Number(renderer.toneMapping);
+    // procházení všech potomků modelu
+    model.traverse(child => {
+        // pokud je potomek mesh
+        if (child.isMesh) {
+            // aktualizování materiálu meshe
+            child.material.needsUpdate = true;
+        }
+    });
+});</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete Tone Mapping zkusit měnit.</p><div data-example-id="5" class="u-mb-2"></div><p class="paragraph u-mb-2">Moc se mi žádná z možností Tone Mappingu nelíbila. Zatím jej tedy v kódu měnit nebudeme. Ještě si ale můžeme vyzkoušet měnit vlastnost toneMappingExposure, která udává... Vlastně ani nevím co udává, nebo jak to popsat, ale týká se to jakoby světla. Přidáme si pro to tedy do dat.GUI panelu input.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+gui.add(renderer, "toneMappingExposure")
+.min(0).max(5).step(0.01);</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete zkusit měnit Tone Mapping a vlastnost toneMappingExposure.</p><div data-example-id="6" class="u-mb-2"></div><p class="paragraph u-mb-2">Mě se líbilo ACESFilmicToneMapping s toneMappingExposure nastavenou na 0.5. Můžeme to tedy nastavit přímo v kódu.</p><pre class="code-box u-mb-6"><code>/* ... */
+
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.5;
+
+gui.add(renderer, "toneMapping", {
+    "NoToneMapping": THREE.NoToneMapping,
+    "LinearToneMapping": THREE.LinearToneMapping,
+    "ReinhardToneMapping": THREE.ReinhardToneMapping,
+    "CineonToneMapping": THREE.CineonToneMapping,
+    "ACESFilmicToneMapping": THREE.ACESFilmicToneMapping
+})
+.onChange(() => {
+    // převedení na číselnou hodnotu
+    renderer.toneMapping = Number(renderer.toneMapping);
+    // procházení všech potomků modelu
+    model.traverse(child => {
+        // pokud je potomek mesh
+        if (child.isMesh) {
+            // aktualizování materiálu meshe
+            child.material.needsUpdate = true;
+        }
+    });
+});
+
+gui.add(renderer, "toneMappingExposure")
+.min(0).max(5).step(0.01);</code></pre><h2 id="stiny" class="heading-secondary u-mb-2">Stíny</h2><p class="paragraph u-mb-2">Pro realistické renderování chceme mít stíny. Ty jsme již rozebírali v samostatné části a měli by jste je být tedy schopni nastavit (samozřejmě si to pamatovat nemusíte, ale návod k tomu máte). Zde si to tedy jen zopakujeme a nebudeme zabíhat moc do detailu. Pro zapnutí stínů nejdříve musíme na rendereru zapnout vytváření shadow map.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// zapnutí shadow map
+renderer.shadowMap.enabled = true;</code></pre><p class="paragraph u-mb-2">Poté musíme u meshů nastavit, že mohou vrhat i přijímat stíny. Budeme tedy metodou traverse procházet všechny potomky modelu a nastavovat všem meshům vlastnost castShadow a receiveShadow na true. Můžeme to udělat hned po načtení modelu, jelikož tam již potomky procházíme.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+// načtení 3D modelu
+gltfLoader.load(
+    "./static/Desk.glb",
+    (gltf) => {
+        // uložení načteného modelu
+        model = gltf.scene;
+        // procházení všech potomků modelu
+        model.traverse(child => {
+            // pokud se jedná o mesh, tak změníme
+            // intenzitu environment mapy a nastavíme
+            // že může vrhat a přijímat stíny
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.material.envMapIntensity = 1.2;
+            }
+        });
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre><p class="paragraph u-mb-2">U DirectionalLight světla musíme nastavit, že může vrhat stíny.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// DirectionalLight vrhá stín
+directionalLight.castShadow = true;</code></pre><p class="paragraph u-mb-2">Pokud si aplikaci spustíte, stíny by měli fungovat. Dostaneme ale na povrchu objektu takový dívný vzor. Říká se tomu Shadow Acne.</p><div data-example-id="7" class="u-mb-2"></div><p class="paragraph u-mb-2">Shadow Acne vzniklo proto, že pro materiál modelu je nastaveno, že se mají renderovat obě strany polygonu. Objekt jakoby vytváří stín na vlastní plochu. Můžeme se toho zbavit tím, že nastavíme materiálu renderování jen přední strany polygonu. Je to i lepší pro výkon.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření GLTFLoaderu
+const gltfLoader = new GLTFLoader();
+// načtení 3D modelu
+gltfLoader.load(
+    "./static/Desk.glb",
+    (gltf) => {
+        // uložení načteného modelu
+        model = gltf.scene;
+        // procházení všech potomků modelu
+        model.traverse(child => {
+            // pokud se jedná o mesh
+            if (child.isMesh) {
+                // nastavení, že mesh může
+                // vrhat i přijímat stíny
+                child.castShadow = true;
+                child.receiveShadow = true;
+                // nastavení intenzity environment mapy
+                child.material.envMapIntensity = 1.2;
+                // nastavení, že se má renderovat
+                // jen přední strana polygonu
+                child.material.side = THREE.FrontSide;
+            }
+        });
+        // přidání načteného modelu do scény
+        scene.add(gltf.scene);
+    }
+);
+
+/* ... */</code></pre><p class="paragraph u-mb-2">Pokud si aplikaci spustíte teď, tak by Shadow Acne mělo zmizet.</p><div data-example-id="8" class="u-mb-2"></div><p class="paragraph u-mb-2">Občas se může Shadow Acne objevit i když nerenderujeme obě strany polygonů. V takovém případě může pomoct pohrát si s vlastnostmi <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/shadows/LightShadow.bias" target="_blank" class="link">bias</a> a <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/shadows/LightShadow.normalBias" target="_blank" class="link">normalBias</a> vlastnosti shadow u světla, které vytváří stíny. V dokumentaci se u vlastnosti bias píše: "Very tiny adjustments here (in the order of 0.0001) may help reduce artifacts in shadows".</p><p class="paragraph u-mb-2">Abychom mohli vidět stíny, které model na scéně vrhá i na zemi, tak si na to vytvoříme plane (plochu). Jako materiál mu nastavíme <a href="https://threejs.org/docs/index.html?q=material#api/en/materials/ShadowMaterial" target="_blank" class="link">ShadowMaterial</a>, který jsme si v tutoriálu ještě neukazovali. Jedná se o materiál, který může přijímat stíny, ale jinak je úplně průhledný. Jako parametr mu můžeme nastavit barvu stínu, kterou nastavíme na takovou tmavě šedou, jinak bychom stíny na černém pozadí neviděli. A aby to vypadalo lépe, tak také změníme na rendereru barvu pro mazání canvasu. Takže bychom ani barvu stínu měnit nemuseli, ale klidně můžeme.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření plochy
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.ShadowMaterial({
+        color: 0x121212
+    })
+);
+// otočení plochy (aby představovala zem)
+plane.rotation.x = -Math.PI * 0.5;
+// plocha bude přijímat stín
+plane.receiveShadow = true;
+// přidání plochy do scény
+scene.add(plane);
+
+// nastavení barvy, kterou se má mazat canvas
+renderer.setClearColor(new THREE.Color(0x2B2D2E));</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete na zemi stín prohlédnout.</p><div data-example-id="9" class="u-mb-2"></div><p class="paragraph u-mb-2">Náš stín nevypadá zas tak špatně, ale můžeme jeho kvalitu ještě vylepšit. U DirectionalLight světla zvýšíme rozlišení shadow mapy a změníme pro ni na rendereru algoritmus na THREE.PCFSoftShadowMap.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// změnění rozlišení shadow mapy pro DirectionalLight
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+
+// změnění algoritmu pro shadow mapy
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace by teď měl stín vypadat o něco lépe.</p><div data-example-id="10" class="u-mb-2"></div><p class="paragraph u-mb-2">Kvalita našeho stínu je dost dobrá. Pokud ale můžeme změnit rozměry kamery pro stíny tak, aby zachycovala jen objekt na scéně, nevidím důvod proč to neudělat. Získáme tím zadarmo ještě lepší kvalitu stínů a mohli bychom třeba snížit rozlišení shadow mapy. Proto by pravděpodobně asi bylo lepší, začít s měněmím rozměru kamery pro stíny jako první. To už je ale jedno. Přidejte si na kameru pro stíny helper a vytvořte si na měnění jejích rozměrů v dat.GUI input, jak ukazuje ukázka. Více do detailu to bylo vysvětlené v samostatné části o stínech.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření helperu pro kameru pro stíny DirectionalLight světla
+const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// přidání helperu do scény
+scene.add(cameraHelper);
+
+// přidání vlastnosti size do pomocného objektu
+debugObject.size = directionalLight.shadow.camera.right;
+
+// přidání inputu pro změnu rozměrů kamery pro stíny
+gui.add(debugObject, "size")
+.min(0).max(10).step(0.01)
+.onChange(val => {
+    // změna velikosti kamery
+    directionalLight.shadow.camera.right = val;
+    directionalLight.shadow.camera.left = -val;
+    directionalLight.shadow.camera.top = val;
+    directionalLight.shadow.camera.bottom = -val;
+    // aktualizování kamery
+    directionalLight.shadow.camera.updateProjectionMatrix();
+    // aktualizování helperu
+    cameraHelper.update();
+});</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete měnit rozměry kamery a vybrat pro ni co nejlepší hodnotu.</p><div data-example-id="11" class="u-mb-2"></div><p class="paragraph u-mb-2">Myslím že nejlepší rozměr je pro kameru 1.2. Nastavíme tedy v kódu její strany na délku 2.4 (nastavovali jsme polovinu strany) a odstraníme helper a dat.GUI input.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// // vytvoření helperu pro kameru pro stíny DirectionalLight světla
+// const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// // přidání helperu do scény
+// scene.add(cameraHelper);
+
+// // přidání vlastnosti size do pomocného objektu
+// debugObject.size = directionalLight.shadow.camera.right;
+
+// // přidání inputu pro změnu rozměrů kamery pro stíny
+// gui.add(debugObject, "size")
+// .min(0).max(10).step(0.01)
+// .onChange(val => {
+//     // změna velikosti kamery
+//     directionalLight.shadow.camera.right = val;
+//     directionalLight.shadow.camera.left = -val;
+//     directionalLight.shadow.camera.top = val;
+//     directionalLight.shadow.camera.bottom = -val;
+//     // aktualizování kamery
+//     directionalLight.shadow.camera.updateProjectionMatrix();
+//     // aktualizování helperu
+//     cameraHelper.update();
+// });
+
+// nastavení rozměrů kamery pro stíny
+directionalLight.shadow.camera.right = 1.2;
+directionalLight.shadow.camera.left = -1.2;
+directionalLight.shadow.camera.top = 1.2;
+directionalLight.shadow.camera.bottom = -1.2;
+// aktualizace kamery pro stíny
+directionalLight.shadow.camera.updateProjectionMatrix();</code></pre><p class="paragraph u-mb-2">S nastavováním stínů jsme hotovi.</p><div data-example-id="12" class="u-mb-6"></div><h2 id="anti-aliasing" class="heading-secondary u-mb-2">Anti-Aliasing</h2><p class="paragraph u-mb-2">V části o měnění velikosti canvasu jsem se zmiňoval o tom, že podle toho jakou máte hustotu pixelů, můžete na hranách objektů vidět vyrenderované schody (pixely). Ukazuje je následující obrázek.</p><img src="../../static/img/rendered-stairs.png" alt="vyrenderované schody na hranách objektů" class="centered-image u-mb-2"><p class="paragraph u-mb-2">Kromě vyšší hustoty pixelů se dá vyrenderování schodů předejít zapnutím anti-aliasingu. Ten slouží k tomu, aby se vyhladili hrany objektů a schody se nerenderovali. Jeho zapnutí je jednoduché, jen při vytváření rendereru nastavíme možnost antialias na true. Pokud bychom ale tuto možnost chtěli později změnit, tak již nemůžeme, museli bychom vytvořit nový renderer.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas"),
+    antialias: true
+});
+
+/* ... */</code></pre><p class="paragraph u-mb-2">Po nastavení možnosti antialias na true by jste již na hranách objektu schody vidět neměli, pokud jste je dříve viděli.</p><div data-example-id="13" class="u-mb-2"></div><p class="paragraph u-mb-2">U anti-aliasingu bych chtěl zmínit, že pokud má uživatel pixel ratio 2 nebo vyšší, tak anti-aliasing není potřeba zapínat, protože vyrenderované schody nevidí. Pokud se teda nedivá na obrazovku z 5 centimetrů. Můžeme tedy antialiasing zapnout podle podmínky, jak ukazuje následující ukázka. Jestli to budete dělat záleží na vás, ale myslím si že pro pixel ratio o hodnotě 2 není anti-aliasing potřeba. Zvýšíme tím o něco výkon naší aplikace.</p><pre class="code-box u-mb-6"><code>/* ... */
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas"),
+    antialias: window.devicePixelRatio &lt; 2
+});
+
+/* ... */</code></pre><p class="paragraph u-mb-4">To je vše, co jsem vám chtěl o realistickém renderování sdělit. Viděli jste, že je to hlavně o experimentování s různými nastaveními a hodnotami. Hodně jsme k tomu používali dat.GUI, pomocí kterého jsme si mohli různá nastavení za běhu měnit. Pokud chcete svůj model vyrenderovat realisticky, tak je to hlavně o tom si s tím pohrát, neexistuje na to žádný recept.</p><div class="u-center-text"><a href="../shadery/" class="button-primary">Pokračovat</a></div></main></div></div><footer class="footer">Tento web vytvořil <a href="https://jirkasa.github.io/" target="_blank" class="footer__link">Jiří Satora</a></footer></div></body></html>

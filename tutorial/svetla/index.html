@@ -1,0 +1,187 @@
+<!doctype html><html lang="cs"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes,maximum-scale=2.2,minimum-scale=1"><meta name="author" content="Jiří Satora"><meta name="description" content="V tutoriálu si ukážeme různé typy světel, které nám Three.js nabízí."><link rel="icon" type="image/svg+xml" href="../../static/img/favicon.svg"><script src="../../static/js/highlight.min.js"></script><script>hljs.highlightAll()</script><title>Světla | Three.js Návod</title><script defer="defer" src="../../main.31d6cfe0d16ae931b73c.js"></script><script defer="defer" src="../../stickyHeader.80ff3d74749cfc9cff89.js"></script><script defer="defer" src="../../9365.a874532ed51d8bd1fad0.js"></script><script defer="defer" src="../../4376.0754c612d1401d13abca.js"></script><script defer="defer" src="../../3952.3fb7ed90e8d4df137a87.js"></script><script defer="defer" src="../../interactiveExamples-svetla.c0c6e3ff97a507b6b9b1.js"></script><script defer="defer" src="../../navigation.d17e5dfc208bd2450b18.js"></script><link href="../../main.css" rel="stylesheet"></head><body><div class="page"><div id="HeaderContainer" class="header-container"><header id="Header" class="header"><div class="header__content"><a href="../../" class="header__title">Three.js Návod</a><nav id="HeaderNavigation" class="header__navigation"><ul><li><a href="../co-je-threejs/" class="header__navigation-item header__navigation-item--active">Tutoriál</a></li><li><a href="../../3d-modely/" class="header__navigation-item">3D Modely</a></li></ul></nav><button id="HeaderNavigationButton" class="nav-toggle-button"><span class="nav-toggle-button__icon"></span> Menu</button></div></header></div><div class="article"><div class="article__container"><nav id="Sidebar" class="article__sidebar"><ul class="navigation"><li><a href="../co-je-threejs/" class="navigation__item">Co je Three.js</a></li><li><a href="../prvni-scena/" class="navigation__item">První scéna</a></li><li><a href="../webpack/" class="navigation__item">Webpack</a></li><li><a href="../transformace-objektu/" class="navigation__item">Transformace objektů</a></li><li><a href="../animace/" class="navigation__item">Animace</a></li><li><a href="../kamera/" class="navigation__item">Kamera</a></li><li><a href="../meneni-velikosti-canvasu/" class="navigation__item">Měnění velikosti canvasu</a></li><li><a href="../typy-ovladani/" class="navigation__item">Typy ovládání</a></li><li><a href="../dat-gui/" class="navigation__item">Dat.GUI</a></li><li><a href="../geometrie/" class="navigation__item">Geometrie</a></li><li><a href="../textury/" class="navigation__item">Textury</a></li><li><a href="../materialy/" class="navigation__item">Materiály</a></li><li><a href="../svetla/" class="navigation__item navigation__item--active">Světla</a></li><li><a href="../stiny/" class="navigation__item">Stíny</a></li><li><a href="../particles/" class="navigation__item">Particles</a></li><li><a href="../raycasting/" class="navigation__item">Raycasting</a></li><li><a href="../fyzika/" class="navigation__item">Fyzika</a></li><li><a href="../importovani-modelu/" class="navigation__item">Importování modelů</a></li><li><a href="../realisticke-renderovani/" class="navigation__item">Realistické renderování</a></li><li><a href="../shadery/" class="navigation__item">Shadery</a></li><li><a href="../animovani-particles/" class="navigation__item">Animování particles</a></li><li><a href="../post-processing/" class="navigation__item">Post Processing</a></li><li><a href="../3d-text/" class="navigation__item">3D Text</a></li><li><a href="../nacitani/" class="navigation__item">Načítání</a></li><li><a href="../pozicovani-html-elementu/" class="navigation__item">Pozicování HTML elementů</a></li><li><a href="../optimalizace/" class="navigation__item">Optimalizace</a></li></ul><button id="SidebarButton" class="article__sidebar-button"><svg><use xlink:href="../../static/img/icon-sprite.svg#icon-arrow_forward_ios"></use></svg> navigace</button></nav><main class="article__content"><h1 class="heading-primary u-mb-6">Světla</h1><p class="paragraph u-mb-6">Jak jste v předchozí části zjistili, tak některé materiály potřebují světlo aby byly vidět. V této části si tedy ukážeme, jaké máme typy světel. Na závěr také zjistíme, jaké typy světel mají větší či menší vliv na výkon a co je to vypékání světla do textur.</p><h2 id="startovni-kod" class="heading-secondary u-mb-2">Startovní kód</h2><p class="paragraph u-mb-2">Abychom si mohli různé typy světel vyzkoušet, tak je tu pro vás opět přichystán startovní kód. Je úplně stejný jako ten pro minulou část, akorát používáme MeshStandardMaterial, protože pracuje se světlem. S pomocí startovního kódu z části o Webpacku si tedy vytvořte nový projekt a do JavaScript souboru si zkopírujte následující kód.</p><pre class="code-box u-mb-2"><code>import './style.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// vytvoření scény
+const scene = new THREE.Scene();
+
+// vytvoření materiálu
+const material = new THREE.MeshStandardMaterial({
+    color: 0xFAB278,
+    roughness: 0.5
+});
+
+// vytvoření kostky
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    material
+);
+scene.add(cube);
+
+// vytvoření koule
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 12, 10),
+    material
+);
+sphere.position.x = -1.5;
+scene.add(sphere);
+
+// vytvoření dodecahedronu (nebo co to je)
+const dodecahedron = new THREE.Mesh(
+    new THREE.DodecahedronGeometry(0.5, 0),
+    material
+);
+dodecahedron.position.x = 1.5;
+scene.add(dodecahedron);
+
+// vytvoření kamery
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 3;
+scene.add(camera);
+
+// vytvoření rendereru
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById("WebGLCanvas")
+});
+// nastavení velikosti canvasu a pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// přidání event listeneru pro změnu velikosti okna
+window.addEventListener("resize", () => {
+    // aktualizace poměru stran kamery
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    // změnění velikosti canvasu a pixel ratio
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+// vytvoření OrbitControls ovládání
+const controls = new OrbitControls(camera, renderer.domElement);
+// zapnutí tlumení při posunutí
+controls.enableDamping = true;
+
+// tato funkce je volána každý frame
+function tick() {
+    // protože máme zapnuté tlumení při posunutí,
+    // tak musíme OrbitControls aktualizovat
+    controls.update();
+    // vyrenderování scény na canvas
+    renderer.render(scene, camera);
+}
+
+// nastavení animační smyčky
+// - funkce tick se bude volat každý frame
+renderer.setAnimationLoop(tick);</code></pre><p class="paragraph u-mb-2">Do CSS souboru si ještě zkopírujte následující CSS styly pro odstranění defaultních marginů a paddingů.</p><pre class="code-box u-mb-2"><code>*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+}</code></pre><p class="paragraph u-mb-6">Po spuštění aplikace by jste neměli vidět nic, protože MeshStandardMaterial potřebuje světlo k tomu, aby byl vidět.</p><h2 id="typy-svetel" class="heading-secondary u-mb-2">Typy světel</h2><p class="paragraph u-mb-4">Stejně jako máme různé typy materiálů, tak máme různé typy světel. Postupně si je tu ukážeme. Začneme s tím nejjednoduším, což je AmbientLight.</p><h3 id="ambient-light" class="heading-tertiary u-mb-2">Ambient Light</h3><p class="paragraph u-mb-2"><a href="https://threejs.org/docs/index.html?q=light#api/en/lights/AmbientLight" target="_blank" class="link">AmbientLight</a> světlo globálně a rovnoměrně osvětluje všechny objekty ve scéně. Nezáleží tedy na tom kde je umístěno, bude mít vliv na všechny objekty ve scéně. Takže jej jen vytvoříme a přidáme do scény. Při jeho vytváření specifikujeme barvu světla a jeho intenzitu.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření AmbientLight světla
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+// přidání AmbientLight světla do scény
+scene.add(ambientLight);</code></pre><p class="paragraph u-mb-2">Pokud jste si zkopírovali kód z předchozí ukázky, tak by jste na scéně měli objekty vidět. Budou na každém místě stejně osvíceny.</p><div data-example-id="1" class="u-mb-2"></div><p class="paragraph u-mb-4">AmbientLight se používá k základnímu osvětlení scény, protože odrážení světla je velmi těžké simulovat a bylo by to náročné na výkon. Pokud bychom jej nepoužili, tak budou neosvětlené části objektů tmavé. Pokud ale používáme k základnímu osvětlení environment mapu, kterou jsme si ukazovali v předchozí části, tak AmbientLight nepotřebujeme.</p><h3 id="directional-light" class="heading-tertiary u-mb-2">Directional Light</h3><p class="paragraph u-mb-2">Jako druhý typ světla si ukážeme <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/DirectionalLight" target="_blank" class="link">DirectionalLight</a>. Jedná se o světlo, které je vyzařováno určitým směrem jakoby paralelně a nikdy nekončí. Běžně se používá k simulaci denního světla. V podstatě simuluje světlo ze slunce, jelikož je tak daleko, že jeho polohu můžeme považovat za nekonečnou. Aby jste lépe pochopili jak DirectionalLight funguje, tak jsem zde pro vás připravil obrázek. Prostě se jedná o světlo, které působí všude stejným směrem, jak na obrázku ukazují šipky. Lépe to v textu vysvětlit neumím.</p><img src="../../static/img/DirectionalLight.svg" alt="directional light" class="centered-image u-mb-2"><p class="paragraph u-mb-2">Stejně jako u AmbientLight, tak i u DirectionaLight nezáleží na jeho pozici ve scéně, protože působí všude stejně. Jeho pozice ale určuje jeho směr. Světlo se bude vyzařovat ve směru, který určuje pozice DirectionalLight světla a středu scény [0, 0, 0]. Vzdálenost není důležitá, pokud nepoužíváme stíny. O těch je ale až další část. Následující ukázka ukazuje, jak můžeme DirectionalLight vytvořit. Jako parametr při jeho vytváření předáváme barvu světla a jeho intenzitu.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+// nastavení směru DirectionalLight světla
+directionalLight.position.set(0.5, 1.5, 0.3);
+// přidání DirectionalLight světla do scény
+scene.add(directionalLight);</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace by jste měli vidět, že jsou objekty DirectionalLight světlem osvíceny.</p><div data-example-id="2" class="u-mb-2"></div><p class="paragraph u-mb-2">Aby jste lépe pochopili, jak pozice DirectionalLight světla určuje jeho směr, tak jsem tu pro vás připravil menší vizualizaci, ve které si můžete pozici DirectionalLight světla měnit.</p><div data-example-id="3" class="u-mb-4"></div><h3 id="hemisphere-light" class="heading-tertiary u-mb-2">Hemisphere Light</h3><p class="paragraph u-mb-2">Světlo, které si ukážeme teď, je hodně podobné AmbientLight. Jedná se o <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/HemisphereLight" target="_blank" class="link">HemisphereLight</a>. Oproti AmbientLight, které nám umožňuje nastavit pouze jednu barvu světla, můžeme pro HemisphereLight nastavit barvy dvě. Jedna je pro barvu světla z oblohy a druhá ze země. Vytváří to takový jakoby barevný gradient. Až si HemisphereLight přidáme do našeho příkladu, tak uvidíte co tím myslím. V textu se to vysvětluje hrozně špatně. Můžeme si jej přidat namísto AmbientLight, takže si jej smažte nebo zakomentujte. Při vytváření HemisphereLight předáváme jako parametr barvu světla z oblohy, barvu světla ze země a intenzitu světla.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// // vytvoření AmbientLight světla
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+// // přidání AmbientLight světla do scény
+// scene.add(ambientLight);
+
+// vytvoření HemisphereLight světla
+// - barva světla z oblohy je modrá a barva světla ze země je červená
+const hemisphereLight = new THREE.HemisphereLight(0x0000ff, 0xff0000, 0.4);
+// přidání HemisphereLight do scény
+scene.add(hemisphereLight);
+
+/* ... */</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete HemisphereLight prohlédnout.</p><div data-example-id="4" class="u-mb-2"></div><p class="paragraph u-mb-2">Možná s DirectionalLight světlem, které ve scéně máme, není moc vidět co vlastně HemisphereLight dělá. Můžete si tedy zkusit zakomentovat přidání DirectionalLight světla do scény a spustit si aplikaci ještě jednou.</p><pre class="code-box u-mb-4"><code>// scene.add(directionalLight);</code></pre><div data-example-id="5" class="u-mb-4"></div><h3 id="point-light" class="heading-tertiary u-mb-2">Point Light</h3><p class="paragraph u-mb-2">Jako další typ světla si ukážeme <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/PointLight" target="_blank" class="link">PointLight</a>. U tohoto světla již záleží na jeho pozici, protože se jedná o jeden bod světla, který je vyzařován na všechny strany. Často se používá například pro replikování vyzařování světla z nějaké žárovky. Při jeho vytváření můžeme specifikovat barvu světla, intenzitu, a pokud chceme, tak také maximální dosah světla (defaultně není nastavený žádný limit) a míru tlumení světla podél vzdálenosti světla. Defaultní míra tlumení světla je 1, ale pro realistické renderování bychom ji mohli nastavit na hodnotu 2. To se píše v dokumentaci. Pokud nevíte co těmito vlastnosti myslím, tak nevadí. Budete si je moci vyzkoušet v interaktivní ukázce.</p><p class="paragraph u-mb-2">Následující ukázka ukazuje, jak si můžeme PointLight přidat do našeho příkladu. Pro lepší viditelnost také odstraňujeme DirectionalLight, které jsme ve scéně měli.</p><pre class="code-box u-mb-2"><code>/* ... */
+// scene.add(directionalLight);
+
+// vytvoření PointLight světla
+const pointLight = new THREE.PointLight(0xffffff, 1, 3);
+// nastavení pozice PointLight světla
+pointLight.position.set(0.7, 1, 1.5);
+// přidání PointLight světla do scény
+scene.add(pointLight);</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete PointLight prohlédnout.</p><div data-example-id="6" class="u-mb-2"></div><p class="paragraph u-mb-2">V následující interaktivní ukázce si můžete zkusit měnit různé vlastnosti PointLight světla a pochopit je tak.</p><div data-example-id="7" class="u-mb-4"></div><h3 id="spot-light" class="heading-tertiary u-mb-2">Spot Light</h3><p class="paragraph u-mb-2">Další světlo, které si ukážeme, funguje jako baterka. Jedná se o <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/SpotLight" target="_blank" class="link">SpotLight</a>. Funguje tak, že vyzařuje světlo v jednom směru z jednoho bodu ve formě kužele. Jeho velikost se tedy zvětšuje, čím dále se od startovního bodu světla dostáváme. Prostě si to představte jako když svítí baterka.</p><img src="../../static/img/SpotLight.svg" alt="spot light" class="centered-image u-mb-2"><p class="paragraph u-mb-2">Při vytváření SpotLight světla předáváme jako parametr barvu světla, intenzitu světla, dosah světla (defaultní je 0, což znamená žádný limit) a můžeme také předat úhel, takové rozmazání krajů (nevím jak to nazvat) a míru tlumení světla. Opět si to budete moci vyzkoušet v interaktivní ukázce. Chápu že z tohoto textu se to pochopit nedá.</p><p class="paragraph u-mb-2">Následující ukázka ukazuje, jak si můžeme SpotLight přidat do našeho příkladu. Aby se nám to nepletlo se SpotLight světlem, které jsme si zkoušel předtím, tak si můžeme zakomentovat jeho přidání do scény.</p><pre class="code-box u-mb-2"><code>/* ... */
+// scene.add(pointLight);
+
+// vytvoření SpotLight světla
+const spotLight = new THREE.SpotLight(0xffffff, 1.5, 3, Math.PI * 0.2);
+// nastavení pozice SpotLight světla
+// - na objekty bude svítit seshora
+spotLight.position.y = 2;
+// přidání SpotLight světla do scény
+scene.add(spotLight);</code></pre><p class="paragraph u-mb-2">Když si aplikaci spustít, tak můžete vidět, že na objekty svítí seshora světlo</p><div data-example-id="8" class="u-mb-2"></div><p class="paragraph u-mb-2">Jak jste viděli, rotaci jsme SpotLight světlu nenastavovali a směřovalo do středu scény na souřadnice [0, 0, 0]. To kam směruje, určuje pozice jeho targetu (vlastnost target). Jedná se o instanci třídy <a href="https://threejs.org/docs/index.html?q=object3D#api/en/core/Object3D" target="_blank" class="link">Object3D</a>, takže můžeme změnit jeho pozici a změnit tak, kam SpotLight světlo směřuje. Po změně pozice targetu jej ale musíme přidat do scény aby to fungovalo.</p><p class="paragraph u-mb-2">Kód v následující ukázce posouvá target na ose X o 1.5.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// posunutí targetu (na jaké místo SpotLight světlo směřuje)
+spotLight.target.position.x = 1.5;
+// aby to fungovalo, tak musíme target přidat do scény
+scene.add(spotLight.target);</code></pre><p class="paragraph u-mb-2">Když si teď aplikaci spustíte, SpotLight světlo bude směřovat směrem doprava.</p><div data-example-id="9" class="u-mb-2"></div><p class="paragraph u-mb-2">Aby jste lépe pochopili různé vlastnosti SpotLight světla, tak jsem tu pro vás připravil interaktivní ukázku, kde si vlastnosti SpotLight světla můžete zkusit různě měnit.</p><div data-example-id="10" class="u-mb-4"></div><h3 id="rect-area-light" class="heading-tertiary u-mb-2">Rect Area Light</h3><p class="paragraph u-mb-6">Poslední typ světla, který tu zmíním, je <a href="https://threejs.org/docs/index.html?q=light#api/en/lights/RectAreaLight" target="_blank" class="link">RectAreaLight</a>. Toto světlo vyzařuje světlo rovnoměrně z definovaného obdelníku. Dá se použít k simulaci světelných zdrojů jako jsou třeba jasná okna a tak podobně. Je ale o něco složitější na použití a funguje jen s MeshStandardMaterialem a MeshPhysicalMaterialem. Nemůžeme jej jen tak použít, nejdříve musíme inicializovat RectAreaLightUniformsLib. Nevím co to je, ale vím že to musíme udělat. Jak RectAreaLight světlo použít si tu ukazovat nebudeme, ale pokud si jej chcete prohlédnout na ukázce, tak můžete <a href="https://threejs.org/examples/#webgl_lights_rectarealight" target="_blank" class="link">tady</a>. Zdrojový kód je k tomu <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_rectarealight.html" target="_blank" class="link">zde</a>. Nenechte se odradit od jeho používání, když se podíváte na zdrojový kód toho příkladu, tak uvidíte že to zas tak těžké není. Mě se hlavně nechtělo jej tady popisovat.</p><h2 id="vliv-svetel-na-vykon" class="heading-secondary u-mb-2">Vliv světel na výkon</h2><p class="paragraph u-mb-2">Prošli jsme si celkem 6 typů světel, které nám Three.js nabízí. Můžete je tedy ve svých aplikacích dle potřeby používat. Světla nás ale mohou stát hodně výkonu, proto je důležité vědět, která světla mají minimální vliv na výkon a která naopak velký. Měli bychom se snažit používat co nejméně světel a používat světla, která nás stojí méně výkonu. Zde jsem sepsal seznamy světel rozdělené podle jejich vlivu na výkon:</p><p class="paragraph"><b>Minimální vliv na výkon:</b></p><ul class="list u-mb-2"><li>AmbientLight</li><li>HemisphereLight</li></ul><p class="paragraph"><b>Střední vliv na výkon:</b></p><ul class="list u-mb-2"><li>DirectionalLight</li><li>PointLight</li></ul><p class="paragraph"><b>Velký vliv na výkon:</b></p><ul class="list u-mb-6"><li>SpotLight</li><li>RectAreaLight</li></ul><h2 id="vypekani-svetel-do-textur" class="heading-secondary u-mb-2">Vypékání světel do textur</h2><p class="paragraph u-mb-6">Protože světla mohou mít velký vliv na výkon, tak se je v některých případech můžeme rozhodnout nepoužít vůbec a namísto toho si světlo již připravit (vypéct) do textury. To můžeme udělat v nějakém 3D programu jako je třeba Blender. Na to jak to udělat bude na internetu určitě spoustu tutoriálů. Nevýhoda samozřejmě je, že poté světlem již nemůžeme pohybovat. Může se to tedy hodit třeba na nějaké statické scény.</p><h2 id="helpery" class="heading-secondary u-mb-2">Helpery</h2><p class="paragraph u-mb-4">Pozicování a nastavování světel může být těžké. Proto nám Three.js poskytuje pro světla pár helperů, které nám s tím mohou pomoci. Už jste je vlastně viděli v interaktivních ukázkách, které se v této části nacházejí. Teď se je naučíme používat.</p><h3 id="directional-light-helper" class="heading-tertiary u-mb-2">Directional Light Helper</h3><p class="paragraph u-mb-2">Jako první si ukážeme <a href="https://threejs.org/docs/index.html?q=light#api/en/helpers/DirectionalLightHelper" target="_blank" class="link">DirectionalLightHelper</a>. Helpery používáme tak, že si vytvoříme jejich instanci a do konstruktoru jako parametr předáme světlo, pro které chceme helper vytvořit. Poté vytvořený helper jen přidáme do scény a to je vše. Akorát pokud bychom později světlo nějakým způsobem změnili, tak často musíme helper aktualizovat pomocí metody update. To už by jste si sami ozkoušeli. A někdy je také potřeba zavolat na světle po jeho změně metodu updateMatrixWorld aby se helper aktualizoval. Nevím proč, jen jsem na to narazil, když jsem měl s aktualizací helperů problém. Tohle to vyřešilo.</p><p class="paragraph u-mb-2">Abychom si mohli helpery vyzkoušet v našem příkladu, tak si můžete v kódu vymazat všechna světla a začneme znovu. Můžete si zkopírovat následující kód, který vytváří DirectionalLight světlo a poté pro něj vytváří helper.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření DirectionalLight světla
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+// nastavení směru DirectionalLight světla
+directionalLight.position.set(0.5, 1.5, 0.3);
+// přidání DirectionalLight světla do scény
+scene.add(directionalLight);
+
+// vytvoření helperu
+const helper = new THREE.DirectionalLightHelper(directionalLight);
+// přidání helperu do scény
+scene.add(helper);</code></pre><p class="paragraph u-mb-2">V předchozí ukázce vidíte, jak si do scény DirectionalLightHelper přidat. Není to nic složitého. Po spuštění aplikace byste měli helper ve scéně vidět.</p><div data-example-id="11" class="u-mb-4"></div><h3 id="hemisphere-light-helper" class="heading-tertiary u-mb-2">Hemisphere Light Helper</h3><p class="paragraph u-mb-2">Jako další helper si ukážeme <a href="https://threejs.org/docs/index.html?q=light#api/en/helpers/HemisphereLightHelper" target="_blank" class="link">HemisphereLightHelper</a>. Ten podle mě není moc užitečný, ale když existuje, tak si jej zkusíme vytvořit. Smažte si předchozí kód pro vytvoření DirectionalLightHelperu a zkopírujte si následující kód, který vytváří HemisphereLight a pro něj helper.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření HemisphereLight světla
+const hemisphereLight = new THREE.HemisphereLight(0x0000ff, 0xff0000, 0.4);
+// přidání HemisphereLight do scény
+scene.add(hemisphereLight);
+
+// vytvoření helperu
+const helper = new THREE.HemisphereLightHelper(hemisphereLight);
+// přidání helperu do scény
+scene.add(helper);</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete HemisphereLightHelper ve scéně prohlédnout.</p><div data-example-id="12" class="u-mb-4"></div><h3 id="point-light-helper" class="heading-tertiary u-mb-2">Point Light Helper</h3><p class="paragraph u-mb-2">Teď si ukážeme <a href="https://threejs.org/docs/index.html?q=light#api/en/helpers/PointLightHelper" target="_blank" class="link">PointLightHelper</a>. Umožňuje nám vidět pozici PointLight světla. Smažte si předchozí kód a zkopírujte si kód z následující ukázky, který vytváří PointLight světlo a přidává pro něj helper.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření PointLight světla
+const pointLight = new THREE.PointLight(0xffffff, 1, 3);
+// nastavení pozice PointLight světla
+pointLight.position.set(0.7, 1, 1);
+// přidání PointLight světla do scény
+scene.add(pointLight);
+
+// vytvoření helperu
+// - jako druhý parametr nastavujeme velikost helperu
+const helper = new THREE.PointLightHelper(pointLight, 0.2);
+// přidání helperu do scény
+scene.add(helper);</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete PointLightHelper prohlédnout.</p><div data-example-id="13" class="u-mb-4"></div><h3 id="spot-light-helper" class="heading-tertiary u-mb-2">Spot Light Helper</h3><p class="paragraph u-mb-2">Poslední helper, který si ukážeme, je <a href="https://threejs.org/docs/index.html?q=light#api/en/helpers/SpotLightHelper" target="_blank" class="link">SpotLightHelper</a>. Smažte si předchozí kód, a zkopírujte si kód z následující ukázky, který vytváří SpotLight světlo a pro něj helper.</p><pre class="code-box u-mb-2"><code>/* ... */
+
+// vytvoření SpotLight světla
+const spotLight = new THREE.SpotLight(0xffffff, 1.5, 3, Math.PI * 0.2);
+// nastavení pozice SpotLight světla
+spotLight.position.y = 2;
+// přidání SpotLight světla do scény
+scene.add(spotLight);
+
+// posunutí targetu (na jaké místo SpotLight světlo směřuje)
+spotLight.target.position.x = 1.5;
+// aby to fungovalo, tak musíme target přidat do scény
+scene.add(spotLight.target);
+
+// vytvoření helperu
+const helper = new THREE.SpotLightHelper(spotLight);
+// přidání helperu do scény
+scene.add(helper);
+
+// jak jsem psal, tak někdy je potřeba zavolat metodu
+// updateMatrixWorld, když něco nefunguje - může to pomoct
+spotLight.target.updateMatrixWorld();
+helper.update();</code></pre><p class="paragraph u-mb-2">Po spuštění aplikace si můžete SpotLightHelper prohlédnout.</p><div data-example-id="14" class="u-mb-6"></div><p class="paragraph u-mb-4">Pro tuto část je to vše. Dozvěděli jste se o různých typech světel, které teď ve svých scénách můžete používat. Když ale světla používáme, tak často chceme mít i stíny. Jak je nastavit se dozvíte v další části, která se stíny zabývá.</p><div class="u-center-text"><a href="../stiny/" class="button-primary">Pokračovat</a></div></main></div></div><footer class="footer">Tento web vytvořil <a href="https://jirkasa.github.io/" target="_blank" class="footer__link">Jiří Satora</a></footer></div></body></html>
