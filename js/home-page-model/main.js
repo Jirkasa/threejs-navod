@@ -95,10 +95,10 @@ function loadAssets() {
     scene.environment = environmentMap;
     
     // load textures
-    const colorTexture = textureLoader.load("../../static/models/little-creature-statue/textures/LittleCreatureStatue_BaseColor.png");
-    const roughnessTexture = textureLoader.load("../../static/models/little-creature-statue/textures/LittleCreatureStatue_Roughness.png");
-    const normalTexture = textureLoader.load("../../static/models/little-creature-statue/textures/LittleCreatureStatue_Normal.png");
-    const ambientOcclusionTexture = textureLoader.load("../../static/models/little-creature-statue/textures/LittleCreatureStatue_AmbientOcclusion.png");
+    const colorTexture = textureLoader.load("./static/models/little-creature-statue/textures/LittleCreatureStatue_BaseColor.png");
+    const roughnessTexture = textureLoader.load("./static/models/little-creature-statue/textures/LittleCreatureStatue_Roughness.png");
+    const normalTexture = textureLoader.load("./static/models/little-creature-statue/textures/LittleCreatureStatue_Normal.png");
+    const ambientOcclusionTexture = textureLoader.load("./static/models/little-creature-statue/textures/LittleCreatureStatue_AmbientOcclusion.png");
     
     // create material using loaded textures
     const material = new THREE.MeshStandardMaterial({
